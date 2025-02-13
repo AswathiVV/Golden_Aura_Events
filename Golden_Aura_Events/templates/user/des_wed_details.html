@@ -269,9 +269,7 @@
                             <i class="bi bi-heart-fill"></i> Go to wishlist
                         </a>
                     {% else %}
-                        <!-- <a href="../add_to_cart/{{ DestinationWedding.id }}" class="btn btn-secondary">
-                            <i class="bi bi-heart-fill"></i> Save to Wishlist
-                        </a> -->
+                      
     
                         {% if DestinationWedding and DestinationWedding.id %}
                             <a href="{% url 'contact_vendor' DestinationWedding.id 'wedding' %}" class="btn btn-primary">

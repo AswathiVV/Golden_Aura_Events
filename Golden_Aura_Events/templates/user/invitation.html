@@ -81,7 +81,6 @@
                     <h3>{{ card.name }}</h3>
                     <p class="price">${{ card.price }}</p>
                     <p><strong>Size:</strong> {{ card.size }}</p>
-                    <!-- Fixed link to contact_vendor -->
                     <a href="{% url 'contact_vendor' id=card.id %}">Contact Vendor</a>
                 </div>
                 {% endif %}
@@ -90,8 +89,6 @@
     </div>
     {% endfor %}
 </div>
-
-
 
 </body>
 </html>
