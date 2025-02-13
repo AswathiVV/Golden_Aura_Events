@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -107,5 +107,51 @@
         </div>
         {% endfor %}
     </div>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=-, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for booking in data %}
+  <div>
+    <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+    <p><strong>Customer Name:</strong> {{ booking.customer_name }}</p>
+    <p><strong>Status:</strong> {{ booking.status }}</p>
+    <p><strong>Purchase Date:</strong> {{ booking.purchase_date }}</p>
+
+    {% if booking.wedding %}
+      <p><strong>Wedding Package:</strong> {{ booking.wedding.name }}</p>
+    {% else %}
+      <p>No wedding package selected.</p>
+    {% endif %}
+
+    {% if booking.invitation %}
+      <p><strong>Invitation:</strong> {{ booking.invitation.name }}</p>
+    {% else %}
+      <p>No invitation selected.</p>
+    {% endif %}
+
+    <p><strong>Items:</strong>
+      <ul>
+        {% for item in booking.buyitem_set.all %}
+          <li>{{ item.item.name }} - Quantity: {{ item.quantity }}</li>
+        {% endfor %}
+      </ul>
+    </p>
+
+    {% if booking.is_cancellable %}
+      <p><strong>Status:</strong> Cancellable</p>
+    {% else %}
+      <p><strong>Status:</strong> Non-Cancellable</p>
+    {% endif %}
+  </div>
+{% endfor %}
+
 </body>
 </html>

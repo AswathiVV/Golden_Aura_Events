@@ -60,7 +60,7 @@ class Buy(models.Model):
     customer_name = models.CharField(max_length=255)  
     customer_email = models.EmailField()
     customer_phone = models.CharField(max_length=15)  
-    message = models.TextField(blank=True, null=True)
+    address = models.TextField(default="Not Provided")
     purchase_date = models.DateField(auto_now_add=True)  
     status = models.CharField(
         max_length=50,

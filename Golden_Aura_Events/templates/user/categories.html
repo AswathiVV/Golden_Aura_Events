@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -143,7 +143,39 @@
 
     </div>
 </body>
-</html> -->
+</html>  -->
 
 
  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>Categories</title>
+</head>
+<body>
+    <h1>Item Categories</h1>
+    <ul>
+        {% for category in categories %}
+            <li>
+                <a href="{% url 'item_list' category.id %}">
+                    {{ category.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+console.log("Redirecting to contact vendor page...");
+console.log("Selected items:", selectedItems);
+console.log("Total price:", totalPrice);
+console.log("Submitting form with selected items:", selectedItems);
+</body>
+</html>

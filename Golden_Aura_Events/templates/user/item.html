@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>Items in {{ category.name }}</title>
+</head>
+<body>
+    <h1>Items in {{ category.name }}</h1>
+    <ul>
+        {% for item in items %}
+            <li>
+                <img src="{{ item.img.url }}" alt="{{ item.name }}" style="width: 100px;">
+                <p>{{ item.name }}</p>
+                <p>Price: ${{ item.price }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'category_list' %}">Back to Categories</a>
+</body>
+</html>
+
+</body>
+</html>

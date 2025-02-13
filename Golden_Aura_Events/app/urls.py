@@ -53,7 +53,9 @@ urlpatterns=[
     path('wedding_planners',views.wedding_planners),
     path('photographers',views.photographers),
     path('beauty',views.beauty),
-
+    
+    path('category_list', views.category_list, name='category_list'),
+    path('category/<int:category_id>/', views.item_list, name='item_list'),
 
     path('view_bookings/', views.user_view_bookings, name='user_view_bookings'),
     path('cancel-booking/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),

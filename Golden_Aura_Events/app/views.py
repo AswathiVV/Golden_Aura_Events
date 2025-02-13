@@ -372,11 +372,8 @@ def user_home(req):
         return redirect(shop_login)
     
 def destination_wedding(request):
-    # if 'user' in request.session: 
         weddings = DestinationWedding.objects.all() 
         return render(request, 'user/destination_wedding.html', {'weddings': weddings})
-    # else:
-        # return redirect(login)  
     
     
 def view_des_wed(req,id):
@@ -396,15 +393,9 @@ def photographers(req):
 
 def beauty(req):
     return render(req,'user/beauty.html')
-# def user_view_bookings(request):
-#     if 'user' in request.session:
-#         user = request.user
-#         data = Buy.objects.filter(user=user).order_by('-purchase_date')
-#         for booking in data:
-#             booking.is_cancellable = (date.today() - booking.purchase_date) <= timedelta(days=2)
-#         return render(request, 'user/bookings.html', {'data': data})
-#     else:
-#         return redirect('login')  
+
+
+
 
 # def user_view_bookings(request):
 #     if 'user' in request.session:
@@ -412,6 +403,11 @@ def beauty(req):
 #         data = Buy.objects.filter(user=user).prefetch_related('buyitem_set__item__category').order_by('-purchase_date')
 #         for booking in data:
 #             booking.is_cancellable = (date.today() - booking.purchase_date) <= timedelta(days=2)
+
+#             print("Booking ID:", booking.id)
+#             print("Wedding:", booking.wedding)  
+#             print("Invitation:", booking.invitation) 
+            
 #         return render(request, 'user/bookings.html', {'data': data})
 #     else:
 #         return redirect('login')
@@ -419,15 +415,30 @@ def beauty(req):
 def user_view_bookings(request):
     if 'user' in request.session:
         user = request.user
+        
+        # Fetch the user's bookings and prefetch related data
         data = Buy.objects.filter(user=user).prefetch_related('buyitem_set__item__category').order_by('-purchase_date')
+        
+        # Loop through each booking and check if it's cancellable
         for booking in data:
             booking.is_cancellable = (date.today() - booking.purchase_date) <= timedelta(days=2)
 
-            # Debugging logs to check if wedding and invitation exist
+            # Debugging: print booking details
             print("Booking ID:", booking.id)
-            print("Wedding:", booking.wedding)  # Should print the related DestinationWedding object if exists
-            print("Invitation:", booking.invitation)  # Should print the related InvitationCard object if exists
+            print("Wedding:", booking.wedding)  # Should not be None if wedding is assigned
+            print("Invitation:", booking.invitation)  # Should not be None if invitation is assigned
             
+            # Check if the wedding and invitation objects are properly linked
+            if booking.wedding:
+                print(f"Wedding exists: {booking.wedding.name}")
+            else:
+                print("No wedding linked to this booking.")
+            
+            if booking.invitation:
+                print(f"Invitation exists: {booking.invitation.name}")
+            else:
+                print("No invitation linked to this booking.")
+        
         return render(request, 'user/bookings.html', {'data': data})
     else:
         return redirect('login')
@@ -443,46 +454,122 @@ def cancel_booking(request, booking_id):
         messages.error(request, "Booking cannot be canceled.")
     return redirect('user_view_bookings')
 
-def item_category_list(req):
+# def item_category_list(req):
+#     categories = ItemCategory.objects.all()
+#     return render(req, 'user/categories.html', {'categories': categories})
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import ItemCategory, Item
+
+# View to display all categories
+def category_list(request):
     categories = ItemCategory.objects.all()
-    return render(req, 'user/categories.html', {'categories': categories})
+    return render(request, 'user/category.html', {'categories': categories})
 
+# View to display items in a specific category
+def item_list(request, category_id):
+    category = get_object_or_404(ItemCategory, pk=category_id)
+    items = Item.objects.filter(category=category)
+    return render(request, 'user/item.html', {'category': category, 'items': items})
 
+# def contact_vendor(request, id=None, type=None): 
+#     if request.method == "POST":
+#         customer_name = request.POST.get("name")
+#         customer_email = request.POST.get("email")
+#         customer_phone = request.POST.get("phone")
+#         message = request.POST.get("message", "")
 
+#         wedding_id = request.POST.get("wedding_id")
+#         invitation_id = request.POST.get("invitation_id")
+#         item_ids = request.POST.getlist("item_ids")  
+
+#         buy = Buy.objects.create(
+#             user=request.user,
+#             customer_name=customer_name,
+#             customer_email=customer_email,
+#             customer_phone=customer_phone,
+#             message=message,
+#             status="Pending",
+#         )
+
+#         if wedding_id:
+#             buy.wedding = get_object_or_404(DestinationWedding, id=wedding_id)
+#         if invitation_id:
+#             buy.invitation = get_object_or_404(InvitationCard, id=invitation_id)
+
+#         buy.save()
+
+#         for item_id in item_ids:
+#             item = get_object_or_404(Item, id=item_id)
+#             BuyItem.objects.create(buy=buy, item=item, quantity=1)
+
+#         return redirect("user_view_bookings")
+
+#     items = Item.objects.all()
+#     context = {"items": items}
+
+#     if type == "wedding":
+#         context["wedding"] = get_object_or_404(DestinationWedding, id=id)
+#     elif type == "invitation":
+#         context["invitation"] = get_object_or_404(InvitationCard, id=id)
+
+#     return render(request, "user/contact_vendor.html", context)
 def contact_vendor(request, id=None, type=None): 
     if request.method == "POST":
+        # Get form data
         customer_name = request.POST.get("name")
         customer_email = request.POST.get("email")
         customer_phone = request.POST.get("phone")
-        message = request.POST.get("message", "")
+        address = request.POST.get("address")
 
         wedding_id = request.POST.get("wedding_id")
         invitation_id = request.POST.get("invitation_id")
         item_ids = request.POST.getlist("item_ids")  
 
+        # Create a Buy object
         buy = Buy.objects.create(
             user=request.user,
             customer_name=customer_name,
             customer_email=customer_email,
             customer_phone=customer_phone,
-            message=message,
+            address=address,
             status="Pending",
         )
 
+        # If wedding ID is provided, link it to the Buy object
         if wedding_id:
-            buy.wedding = get_object_or_404(DestinationWedding, id=wedding_id)
-        if invitation_id:
-            buy.invitation = get_object_or_404(InvitationCard, id=invitation_id)
+            try:
+                wedding = get_object_or_404(DestinationWedding, id=wedding_id)
+                buy.wedding = wedding
+            except DestinationWedding.DoesNotExist:
+                # Handle the case where the wedding doesn't exist
+                pass
 
+        # If invitation ID is provided, link it to the Buy object
+        if invitation_id:
+            try:
+                invitation = get_object_or_404(InvitationCard, id=invitation_id)
+                buy.invitation = invitation
+            except InvitationCard.DoesNotExist:
+                # Handle the case where the invitation doesn't exist
+                pass
+
+        # Save the buy object after assigning wedding and invitation
         buy.save()
 
+        # Create BuyItem objects for each item in the order
         for item_id in item_ids:
             item = get_object_or_404(Item, id=item_id)
             BuyItem.objects.create(buy=buy, item=item, quantity=1)
 
         return redirect("user_view_bookings")
+    
+    # Get items only if the type is correct (i.e., wedding or invitation)
+    items = None
+    if type == "items":
+        items = Item.objects.all()  # Get items only if needed
 
-    items = Item.objects.all()
     context = {"items": items}
 
     if type == "wedding":
