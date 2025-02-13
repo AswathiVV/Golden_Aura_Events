@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+        }
+        .category {
+            margin-bottom: 40px;
+        }
+        .category img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+        .invitation-card {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .card {
+            background-color: white;
+            padding: 20px;
+            width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #333;
+        }
+        .card h3 {
+            color: #4CAF50;
+        }
+        .price {
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Wedding Invitations</h1>
+</header>
+
+<div class="container">
+    {% for category in categories %}
+    <div class="category">
+        <h2>{{ category.name }}</h2>
+        <img src="{{ category.img.url }}" alt="{{ category.name }} image">
+        <div class="invitation-card">
+            {% for card in invitation_cards %}
+                {% if card.category == category %}
+                <div class="card">
+                    <img src="{{ card.img1.url }}" alt="{{ card.name }} image">
+                    <h3>{{ card.name }}</h3>
+                    <p class="price">${{ card.price }}</p>
+                    <p><strong>Size:</strong> {{ card.size }}</p>
+                    <!-- Fixed link to contact_vendor -->
+                    <a href="{% url 'contact_vendor' id=card.id %}">Contact Vendor</a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+</body>
+</html>

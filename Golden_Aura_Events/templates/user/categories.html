@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Items</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .category {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+        .category h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 150px;
+            text-align: center;
+        }
+        .item img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .item label {
+            display: block;
+            margin-top: 5px;
+        }
+        .total-price {
+            font-size: 18px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .btn-buy {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .btn-buy:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function redirectToContactVendor() {
+    const selectedItems = [];
+    document.querySelectorAll('.item-checkbox:checked').forEach((checkbox) => {
+        selectedItems.push(checkbox.value);
+    });
+
+    if (selectedItems.length === 0) {
+        alert("Please select at least one item.");
+        return;
+    }
+
+    const url = "{% url 'contact_vendor' %}" + "?items=" + selectedItems.join(",");
+    window.location.href = url;
+}
+
+        function updateTotalPrice() {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            let totalPrice = 0;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalPrice += parseFloat(checkbox.dataset.price);
+                }
+            });
+            document.getElementById('total-price').textContent = `Total Price: ₹${totalPrice.toFixed(2)}`;
+        }
+
+        function submitForm() {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            const selectedItems = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedItems.push(checkbox.value);
+                }
+            });
+            if (selectedItems.length > 0) {
+                const form = document.getElementById('buy-form');
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selected_items';
+                hiddenInput.value = selectedItems.join(',');
+                form.appendChild(hiddenInput);
+
+                form.submit();
+            } else {
+                alert('Please select at least one item.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Items</h1>
+        {% for category in categories %}
+            <div class="category">
+                <h2>{{ category.name }}</h2>
+                <img src="{{ category.img.url }}" alt="">
+
+                <p><strong>Price per item:</strong>₹ {{ category.price }}</p>
+                <div class="items">
+                    {% for item in category.item_set.all %}
+                        <div class="item">
+                            <img src="{{ item.img.url }}" alt="{{ item.name }}">
+                            <p>{{ item.name }}</p>
+                            <label>
+                                <input type="checkbox" class="item-checkbox" value="{{ item.id }}" data-price="{{ category.price }}" onclick="updateTotalPrice()">
+                                Select
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <p id="total-price" class="total-price">Total Price: ₹0.00</p>
+    
+        <button type="button" class="btn btn-primary" onclick="redirectToContactVendor()">Buy Selected Items</button>
+
+    </div>
+</body>
+</html> -->
+
+
+ 

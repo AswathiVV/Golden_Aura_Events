@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makeup Artists</title>
+    {% load static %}
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .makeup-artist-card {
+            margin-bottom: 30px;
+        }
+        .makeup-artist-card img {
+            max-width: 100%;
+            height: auto;
+        }
+        .makeup-artist-card .card-body {
+            text-align: center;
+        }
+        .makeup-artist-card .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Makeup Artists</h1>
+
+    <div class="row">
+        <!-- Makeup Artist 1 -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card makeup-artist-card">
+                <img src="{% static 'img/v4.jpg' %}" alt="Makeup Artist 1">
+                <div class="card-body">
+                    <h5 class="card-title">Makeup Artist 1</h5>
+                    <p class="card-text">Specializing in bridal makeup, special events, and glam looks.</p>
+                    <p><strong>Phone:</strong> (123) 456-7890</p>
+                    <p><strong>Email:</strong> makeupartist1@example.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Makeup Artist 2 -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card makeup-artist-card">
+                <img src="{% static 'img/v4.jpg' %}" alt="Makeup Artist 2">
+                <div class="card-body">
+                    <h5 class="card-title">Makeup Artist 2</h5>
+                    <p class="card-text">Expert in high-fashion makeup and special effects for photoshoots.</p>
+                    <p><strong>Phone:</strong> (987) 654-3210</p>
+                    <p><strong>Email:</strong> makeupartist2@example.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Makeup Artist 3 -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card makeup-artist-card">
+                <img src="{% static 'img/v4.jpg' %}" alt="Makeup Artist 3">
+                <div class="card-body">
+                    <h5 class="card-title">Makeup Artist 3</h5>
+                    <p class="card-text">Specializes in natural looks, bridal makeup, and makeup lessons.</p>
+                    <p><strong>Phone:</strong> (555) 123-9876</p>
+                    <p><strong>Email:</strong> makeupartist3@example.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies (Popper.js, jQuery) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
