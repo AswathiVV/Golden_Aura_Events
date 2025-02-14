@@ -1,1 +1,0 @@
-(function(){"use strict";const e=window,i={ANON_ID_PARAMS:()=>{var n;try{const t=(n=e.dataLayer)==null?void 0:n.find(c=>c.event==="User Identified");return t&&t.userId}catch{}}};e.__attentive_client_cfg=i})();

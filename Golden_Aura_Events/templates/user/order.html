@@ -1,0 +1,307 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Vendor & Place Order</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #ddd;
+    }
+    .vendor-details, .order-form {
+      flex: 1;
+      min-width: 300px;
+      margin: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .vendor-details {
+      border-right: 1px solid #ddd;
+    }
+    .vendor-details img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 15px;
+    }
+    .order-form form div {
+      margin-bottom: 15px;
+    }
+    .order-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .order-form input[type="text"],
+    .order-form input[type="email"],
+    .order-form textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .order-form button {
+      padding: 10px 15px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .order-form button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Contact Vendor & Place Order</h2>
+  <div class="container">
+    <div class="vendor-details">
+      <h3>{{ des.name }}</h3>
+      {% if des.img %}
+        <img src="{{ des.img.url }}" alt="{{ des.name }}">
+      {% endif %}
+      <p>{{ des.about }}</p>
+      <p><strong>Location:</strong> {{ des.location }}</p>
+      <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
+    </div>
+    <div class="order-form">
+      <h4>Enter Your Details</h4>
+      <form method="POST">
+        {% csrf_token %}
+        <div>
+          <label for="name">Your Name:</label>
+          <input type="text" name="name" id="name" required>
+        </div>
+        <div>
+          <label for="address">Address:</label>
+          <textarea name="address" id="address" rows="3" required></textarea>
+        </div>
+        <div>
+          <label for="phone_number">Phone Number:</label>
+          <input type="text" name="phone_number" id="phone_number" required>
+        </div>
+        <div>
+          <label for="email">Email:</label>
+          <input type="email" name="email" id="email" required>
+        </div>
+        <button type="submit">Place Order</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Vendor & Place Order</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    /* Global Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    /* Container */
+    .container {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    /* Vendor Details */
+    .vendor-details {
+      padding: 20px;
+      border-right: 1px solid #ddd;
+    }
+    .vendor-details img {
+      width: 100%;
+      max-width: 350px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .vendor-details p {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    /* Order Form */
+    .order-form {
+      padding: 20px;
+    }
+    .order-form h4 {
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .order-form label {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .order-form input,
+    .order-form textarea {
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .order-form button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .order-form button:hover {
+      background-color: #0056b3;
+    }
+    /* Responsive Flex Layout */
+    @media (min-width: 768px) {
+      .flex-container {
+        display: flex;
+      }
+    }
+    /* Success Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 1000;
+    }
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .overlay-content {
+      text-align: center;
+      color: #fff;
+    }
+    .overlay-content .tick {
+      font-size: 100px;
+      color: #28a745;
+      animation: tick-pop 0.8s ease forwards;
+    }
+    .overlay-content p {
+      margin-top: 20px;
+      font-size: 1.5rem;
+    }
+    @keyframes tick-pop {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      60% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2 class="text-center">Contact Vendor & Place Order</h2>
+  <div class="container">
+    <div class="flex-container">
+      <!-- Vendor Details -->
+      <div class="vendor-details">
+        <h3>{{ des.name }}</h3>
+        {% if des.img %}
+          <img src="{{ des.img.url }}" alt="{{ des.name }}" />
+        {% endif %}
+        <p><strong>Location:</strong> {{ des.location }}</p>
+        <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
+      </div>
+      <!-- Order Form -->
+      <div class="order-form">
+        <h4>Enter Your Details</h4>
+        <form id="orderForm" method="POST">
+          {% csrf_token %}
+          <div>
+            <label for="name">Your Name:</label>
+            <input type="text" name="name" id="name" required />
+          </div>
+          <div>
+            <label for="address">Address:</label>
+            <textarea name="address" id="address" rows="3" required></textarea>
+          </div>
+          <div>
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" name="phone_number" id="phone_number" required />
+          </div>
+          <div>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required />
+          </div>
+          <div>
+            <label for="date">Wedding Date:</label>
+            <input type="date" name="date" id="date" required />
+          </div>
+          <button type="submit">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div class="overlay" id="successOverlay">
+    <div class="overlay-content">
+      <i class="bi bi-check-circle-fill tick"></i>
+      <p>Order Placed Successfully!</p>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Handle form submission with success animation
+    const orderForm = document.getElementById('orderForm');
+    orderForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const overlay = document.getElementById('successOverlay');
+      overlay.classList.add('show');
+      // Wait 2 seconds to let the animation play before submitting the form
+      setTimeout(() => {
+        orderForm.submit();
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

@@ -51,9 +51,89 @@
         .customize-btn:hover {
             background: #444;
         }
+        .navbar {
+            position: absolute;
+            width: 100%;
+            background: transparent;
+            transition: background 0.3s ease-in-out;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.2); 
+            padding: 1rem 2rem;
+
+
+        }
+
+.navbar.scrolled {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.navbar .nav-link {
+    color: white !important;
+    font-size: 1rem;
+    transition: color 0.3s ease-in-out;
+}
+
+        .navbar-nav {
+            margin: 0 auto; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0 10px;
+            color: #e5dfdf;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #d4a256;
+        }
+
     </style>
 </head>
 <body>
+    
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+           
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../view_bookings">Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container row">
         <div class="col-md-6 left-column">
             <img id="mainImage" src="{{ card.img1.url }}" alt="Invitation Card">

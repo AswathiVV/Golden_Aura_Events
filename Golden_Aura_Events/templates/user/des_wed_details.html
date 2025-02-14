@@ -1,348 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Destination Wedding Details</title>
-    {% load static %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        .navbar {
-            padding: 1rem 2rem;
-            background-color: #fffaf3;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #d4a256;
-        }
-        .navbar-nav {
-            margin: 0 auto; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .navbar-nav .nav-link {
-            font-size: 1rem;
-            font-weight: 500;
-            margin: 0 10px;
-            color: #333;
-            transition: color 0.3s;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #d4a256;
-        }
-
-        .btn-book {
-            background-color: #d4a256;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        .btn-book:hover {
-            background-color: #b98b44;
-        }
-
-        .product-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-            text-align: center;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .product-price {
-            font-size: 1.8rem;
-            color: #0f0d1d;
-            text-align: center;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .product-location {
-            font-size: 1.2rem;
-            color: #666;
-            text-align: center;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .fade-in img {
-            width: 100%;
-            max-width: 1100px;
-            height: auto;
-            object-fit: cover;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-        }
-
-        .btn-primary {
-            padding: 10px 30px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            align-items: center;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #6a5acd, #836fff);
-            color: white;
-            box-shadow: 0 6px 15px rgba(106, 90, 205, 0.3);
-        }
-       
-
-        .btn-primary:hover {
-            background: linear-gradient(45deg, #483d8b, #6a5acd);
-            box-shadow: 0 8px 20px rgba(72, 61, 139, 0.4);
-        }
-
-        
-      /* body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            background-color: white;
-            overflow-x: hidden;
-        } */
-
-        .navbar {
-            padding: 1rem 2rem;
-            background-color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .navbar-nav {
-            margin: 0 auto; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .navbar-nav .nav-link {
-            font-size: 1rem;
-            font-weight: 500;
-            margin: 0 10px;
-            color: #333;
-            transition: color 0.3s;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #d4a256;
-        }
-
-
-        .logo-img {
-            max-height: 50px; 
-            width: 150px; 
-        }
-        @media (max-width: 768px) {
-            .logo-img {
-                max-height: 40px; 
-            }
-        }
-
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: slideIn 1s ease-in-out;
-            margin-top: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .product-title {
-                font-size: 2rem;
-            }
-
-            .product-price {
-                font-size: 1.5rem;
-            }
-
-            img {
-                max-height: 500px;
-            }
-
-            .btn {
-                padding: 12px 20px;
-                font-size: 1rem;
-            }
-            .fade-in{
-                margin-top: 2rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Destination Wedding Details</title>
+  {% load static %}
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+      background-color: #ffffff; /* white background */
+    }
+    /* Navbar - Positioned in normal flow with white background */
+    .navbar {
+      position: relative;
+      width: 100%;
+      background-color: #ffffff;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .navbar-nav {
+      margin: 0 auto; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .navbar-nav .nav-link {
+      font-size: 1rem;
+      font-weight: 500;
+      margin: 0 10px;
+      color: #333;
+      transition: color 0.3s;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #d4a256;
+    }
+    /* Main Container */
+    .container {
+      margin-top: 2rem;
+      background-color: #ffffff;
+      padding-bottom: 2rem;
+    }
+    /* Fade-in Animation for Main Content */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-in img {
+      width: 100%;
+      max-width: 1100px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    /* Product Details */
+    .product-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+    }
+    .product-price {
+      font-size: 1.8rem;
+      color: #0f0d1d;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+    }
+    .product-location {
+      font-size: 1.2rem;
+      color: #666;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+    }
+    /* Centered Buy Now Button */
+    .buy-btn-container {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .btn-primary {
+      padding: 10px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 50px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-family: 'Playfair Display', serif;
+      background: linear-gradient(45deg, #6a5acd, #836fff);
+      color: #fff;
+      border: none;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(45deg, #483d8b, #6a5acd);
+      box-shadow: 0 8px 20px rgba(72, 61, 139, 0.4);
+      transform: scale(1.03);
+    }
+    /* About Section */
+    .about-section {
+      margin-top: 3rem;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+    }
+    @media (max-width: 768px) {
+      .product-title {
+        font-size: 2rem;
+      }
+      .product-price {
+        font-size: 1.5rem;
+      }
+      img {
+        max-height: 500px;
+      }
+      .btn-primary {
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+      .about-section{
+        margin-top: 2rem;
+      }
+    }
+    @media (max-width: 500px) {
+      .product-title {
+        margin-top: 2rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <!-- <a class="navbar-brand" href="#">
-                <img src="{% static 'img/logoo.png' %}" class="logo-img" alt="Logo">
-            </a> -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Events</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Menu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-book" href="view_bookings">Bookings</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-logout" href="logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container" style="margin-top: 2rem;">
-        <div class="row align-items-center">
-            <div class="col-md-7 fade-in">
-                <img src="{{ DestinationWedding.img.url }}" alt="Destination Wedding">
-            </div>
-    
-            <div class="col-md-5 fade-in" style="animation-delay: 0.3s;">
-                <h1 class="product-title">{{ DestinationWedding.name }}</h1>
-                <p class="product-price">₹ {{ DestinationWedding.package_price }}</p>
-                <p class="product-location">Location: {{ DestinationWedding.location }}</p>
-    
-                <div class="btn-group">
-                    {% if cart %}
-                        <a href="../cart_display" class="btn btn-secondary">
-                            <i class="bi bi-heart-fill"></i> Go to wishlist
-                        </a>
-                    {% else %}
-                      
-    
-                        {% if DestinationWedding and DestinationWedding.id %}
-                            <a href="{% url 'contact_vendor' DestinationWedding.id 'wedding' %}" class="btn btn-primary">
-                                Contact Vendor
-                            </a>
-                        {% else %}
-                            <p style="color: red;">Error: Destination Wedding ID is missing.</p>
-                        {% endif %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    
-        <div class="row mt-4 fade-in" style="animation-delay: 0.6s;font-family: 'Playfair Display', serif;">
-            <div class="col-12">
-                <h4 style="font-weight: bold;text-align: center;margin-top: 3rem;">About</h4>
-                <p style="margin-top: 1.5rem;">{{ DestinationWedding.about }}</p>
-            </div>
-        </div>
+  <!-- Navbar (Unchanged in style) -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Menu</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../view_bookings">Bookings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="logout">Logout</a>
+          </li>
+        </ul>
+      </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.fade-in').forEach((el, index) => {
-            el.style.animationDelay = `${index * 0.2}s`;
-        });
-    </script>
-    
-    <!-- <div class="container" style="margin-top: 2rem;">
-        <div class="row align-items-center">
-            <div class="col-md-7 fade-in">
-                <img src="{{ DestinationWedding.img.url }}" alt="Destination Wedding">
-            </div>
-
-            <div class="col-md-5 fade-in" style="animation-delay: 0.3s;">
-                <h1 class="product-title">{{ DestinationWedding.name }}</h1>
-                <p class="product-price">₹ {{ DestinationWedding.package_price }}</p>
-                <p class="product-location">Location: {{ DestinationWedding.location }}</p>
-
-                <div class="btn-group">
-                    {% if cart %}
-                    <a href="../cart_display" class="btn btn-secondary">
-                        <i class="bi bi-heart-fill"></i> Go to wishlist
-                    </a>
-                    {% else %}
-                    <a href="../add_to_cart/{{ cake.pk }}" class="btn btn-secondary">
-                        <i class="bi bi-heart-fill"></i> Save to Wishlist
-                    </a>
-                    <a href="{% url 'contact_vendor' DestinationWedding.id %}" class="btn btn-primary">
-                        Contact Vendor
-                    </a>
-                    
-                    
-                    {% endif %}
-                </div>
-            </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-7 fade-in">
+        {% if des.img %}
+          <img src="{{ des.img.url }}" alt="{{ des.name }}">
+        {% else %}
+          <p style="color: red;">No Image Available</p>
+        {% endif %}
+      </div>
+      <div class="col-md-5 fade-in">
+        <h1 class="product-title">{{ des.name }}</h1>
+        <p class="product-price">₹ {{ des.package_price }}</p>
+        <p class="product-location">Location: {{ des.location }}</p>
+        <div class="buy-btn-container">
+          {% if des and des.pk %}
+            <a id="buyNowBtn" href="{% url 'address_page' des.pk %}" class="btn btn-primary">
+              <i class="bi bi-chevron-double-right"></i> Buy Now
+            </a>
+          {% else %}
+            <p style="color: red;">Error: Destination Wedding ID is missing.</p>
+          {% endif %}
         </div>
-
-        <div class="row mt-4 fade-in" style="animation-delay: 0.6s;font-family: 'Playfair Display', serif;">
-            <div class="col-12">
-                <h4 style="font-weight: bold;text-align: center;margin-top: 3rem;">About</h4>
-                <p style="margin-top: 1.5rem;">{{ DestinationWedding.about }}</p>
-            </div>
-        </div>
+      </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.fade-in').forEach((el, index) => {
-            el.style.animationDelay = `${index * 0.2}s`;
-        });
-    </script> -->
+    <div class="row mt-4 fade-in">
+      <div class="col-12 about-section">
+        <h4>About</h4>
+        <p>{{ des.about }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Intersection Observer for fade-in animation on scroll
+    const faders = document.querySelectorAll('.fade-in');
+    const appearOptions = { threshold: 0.3 };
+    const appearOnScroll = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
+      });
+    }, appearOptions);
+    faders.forEach(fader => {
+      appearOnScroll.observe(fader);
+    });
+  </script>
 </body>
 </html>
-
-
