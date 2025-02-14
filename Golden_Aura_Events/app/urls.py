@@ -35,6 +35,10 @@ urlpatterns=[
     path('destination_wedding',views.destination_wedding),
     # path('item_category_list',views.item_category_list),
     path('invitation_list',views.invitation_list),
+    path('invitation_detail/<int:id>/',views.invitation_detail, name='invitation_detail'),
+    path('customize/<int:id>/',views.customize_invitation, name='customize_invitation'),
+
+
     path('cancel_booking/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
 
     path('view_des_wed/<id>',views.view_des_wed),   

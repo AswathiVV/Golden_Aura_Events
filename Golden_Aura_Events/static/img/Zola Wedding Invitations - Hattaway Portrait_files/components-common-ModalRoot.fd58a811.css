@@ -1,0 +1,2 @@
+@keyframes openAnimation{0%,to{max-height:0}to{max-height:100vh}}#modal{overflow:hidden auto}@media (min-width:768px){.modal-root .modal-dialog.v2Styles:not(.modal-sm){width:568px!important}}@media (max-width:767px){.modal-root .modal-dialog.v2Styles{animation:openAnimation .5s ease-in-out;bottom:0;margin:0;max-height:100%;position:absolute;top:auto;width:100%}.modal-root .modal-dialog.v2Styles .modal-content{border-radius:16px 16px 0 0}.modal-root .modal-dialog.v2Styles .modal-content>div{margin-bottom:0}}
+/*# sourceMappingURL=components-common-ModalRoot.fd58a811.css.map*/

@@ -424,6 +424,39 @@ def invitation_list(request):
     invitation_cards = InvitationCard.objects.all()
     return render(request, 'user/invitation.html', {'categories': categories, 'invitation_cards': invitation_cards})
 
+def invitation_detail(request, id):  
+    card = get_object_or_404(InvitationCard, id=id)
+    return render(request, 'user/invitation_detail.html', {'card': card})
+
+def customize_invitation(request, id):
+    card = get_object_or_404(InvitationCard, id=id)
+    if request.method == "POST":
+        groom_name = request.POST.get('groom_name')
+        bride_name = request.POST.get('bride_name')
+        wedding_date = request.POST.get('wedding_date')
+        location = request.POST.get('location')
+        guest_count = request.POST.get('guest_count')
+        time = request.POST.get('time')
+        additional_notes = request.POST.get('additional_notes')
+
+        # Simulating Buy instance creation (Assume 'Buy' object is linked)
+        buy = Buy.objects.create(invitation=card)
+
+        # Save customization details
+        customization = Customization.objects.create(
+            buy=buy,
+            groom_name=groom_name,
+            bride_name=bride_name,
+            wedding_date=wedding_date,
+            location=location,
+            guest_count=guest_count,
+            time=time,
+            additional_notes=additional_notes
+        )
+
+        return redirect('contact_vendor', id=customization.id)
+
+    return render(request, 'user/invitation_detail.html', {'card': card})
 
 def cancel_booking(request, booking_id):
     booking = get_object_or_404(Buy, id=booking_id)
