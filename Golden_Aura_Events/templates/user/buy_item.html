@@ -23,9 +23,9 @@
         <h2 class="text-center">Buy Item</h2>
         <img src="{{ item.img.url }}" class="img-fluid mb-3" alt="{{ item.name }}">
         <p><strong>Item Name:</strong> {{ item.name }}</p>
-        <p><strong>Price:</strong> ₹{{ item.category.price }}</p>
+        <p><strong>Price:</strong> ₹{{ total_price }}</p>
 
-        <form method="POST" action="{% url 'buy_item' item.id %}">
+        <form method="POST" action="{% url 'buy_item' %}">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="quantity" class="form-label">Quantity</label>

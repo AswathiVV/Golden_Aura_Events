@@ -3,28 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Item List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-title {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2em;
+        }
+
+        .item-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .item-card {
+            width: 100%;
+            max-width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .item-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .item-card h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .item-card p {
+            font-size: 1em;
+            color: #777;
+            margin: 10px 0;
+        }
+
+        .checkbox-container {
+            margin: 10px 0;
+        }
+
+        .total-price {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .buy-btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .buy-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .buy-btn:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .item-card {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .item-list {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!DOCTYPE html>
-<html>
-<head>
-    <title>Items in {{ category.name }}</title>
-</head>
-<body>
-    <h1>Items in {{ category.name }}</h1>
-    <ul>
+
+<div class="container">
+    <h1 class="category-title">{{ category.name }}</h1>
+
+    <div class="item-list">
         {% for item in items %}
-            <li>
-                <img src="{{ item.img.url }}" alt="{{ item.name }}" style="width: 100px;">
-                <p>{{ item.name }}</p>
-                <p>Price: ${{ item.price }}</p>
-            </li>
+            <div class="item-card">
+                <img src="{{ item.img.url }}" alt="{{ item.name }}">
+                <h3>{{ item.name }}</h3>
+                <p>${{ item.category.price }}</p>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="item-{{ item.id }}" class="item-checkbox" data-price="{{ item.category.price }}" data-item-id="{{ item.id }}">
+                    <label for="item-{{ item.id }}">Select this item</label>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
-    <a href="{% url 'categories' %}">Back to Categories</a>
-</body>
-</html>
+    </div>
+
+    <div class="total-price">
+        <p>Total: $<span id="total-price">0.00</span></p>
+    </div>
+
+    <div class="buy-btn-container">
+        <button id="buy-btn" class="buy-btn" style="display:none;">Buy Now</button>
+    </div>
+</div>
+
+<script>
+    const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+    const totalPriceElem = document.getElementById('total-price');
+    const buyBtn = document.getElementById('buy-btn');
+    let totalPrice = 0;
+    let selectedItems = [];
+
+    // Update total price when checkboxes are changed
+    itemCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', (e) => {
+            const itemPrice = parseFloat(e.target.getAttribute('data-price'));
+            const itemId = e.target.getAttribute('data-item-id');
+
+            if (e.target.checked) {
+                totalPrice += itemPrice;
+                selectedItems.push(itemId);
+            } else {
+                totalPrice -= itemPrice;
+                selectedItems = selectedItems.filter(id => id !== itemId);
+            }
+
+            totalPriceElem.textContent = totalPrice.toFixed(2);
+
+            // Show the "Buy Now" button if at least one item is selected
+            if (selectedItems.length > 0) {
+                buyBtn.style.display = 'inline-block';
+            } else {
+                buyBtn.style.display = 'none';
+            }
+        });
+    });
+
+    buyBtn.addEventListener('click', () => {
+        if (selectedItems.length > 0) {
+            window.location.href = "{% url 'buy_item' %}?items=" + selectedItems.join(',');
+        }
+    });
+</script>
 
 </body>
 </html>

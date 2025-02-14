@@ -65,4 +65,9 @@ urlpatterns=[
     path('buy_item/', views.buy_item, name='buy_item'),
 
     path('contact_vendor/',views.contact_vendor, name='contact_vendor'), 
+    
+    # path('buy_item/', views.buy_item, name='buy_item'),
+    
+    path('buy_item', views.buy_item, name='buy_item'),
+
 ]

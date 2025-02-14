@@ -547,8 +547,22 @@ def items(request, category_id):
 #         return redirect(contact_vendor)
 
 #     return render(request, 'user/buy_item.html', {'item': item})
-def buy_item(request):
-    item_ids = request.GET.get("items", "").split(",")  # Get selected items from URL
-    items = Item.objects.filter(id__in=item_ids)  # Fetch items from DB
+# def buy_item(request):
+#     item_ids = request.GET.get("items", "").split(",")  
+#     items = Item.objects.filter(id__in=item_ids)  
     
-    return render(request, "user/buy_item.html", {"items": items})
+#     return render(request, "user/buy_item.html", {"items": items})
+
+
+
+def buy_item(request):
+    item_ids = request.GET.get('items', '').split(',')
+    print(item_ids)
+    items = Item.objects.filter(id__in=item_ids)
+    total_price = sum(item.category.price for item in items)
+
+    if request.method == 'POST':
+        
+        return redirect('contact_vendor')
+
+    return render(request, 'user/buy_item.html', {'item':item_ids, 'total_price': total_price})
