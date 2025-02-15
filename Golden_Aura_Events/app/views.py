@@ -256,8 +256,56 @@ def items(request, category_id):
 #     return redirect(address_page, id=id)
 
 def buy_des(req, id):
-    des = get_object_or_404(DeprecationWarning, pk=id)  
+    des = get_object_or_404(DestinationWedding, pk=id)  
     return redirect(address_page, id=id)
+
+def buy_inv(req, id):
+    card = get_object_or_404(InvitationCard, pk=id)  
+    return redirect(invitation_address_page, id=id)
+
+
+def invitation_address_page(req, id):
+    card = get_object_or_404(InvitationCard, pk=id)
+
+    if req.method == 'POST':
+        name = req.POST.get('name')
+        address = req.POST.get('address')
+        phone_number = req.POST.get('phone_number')
+        email = req.POST.get('email')
+        wedding_date = req.POST.get('date')
+        quantity = req.POST.get('quantity')
+        message = req.POST.get('message') 
+
+        # if not all([name, address, phone_number, email, wedding_date, quantity]):
+        #     return render(req, 'user/order.html', {'card': card, 'error': 'All fields are required!'})
+
+        # try:
+        #     quantity = int(quantity)
+        # except ValueError:
+        #     return render(req, 'user/order.html', {'card': card, 'error': 'Quantity must be a number!'})
+
+        user_address = Address.objects.create(
+            user=req.user,
+            name=name,
+            address=address,
+            phone_number=phone_number,
+            email=email
+        )
+
+        buy = BuyInv.objects.create(
+            user=req.user,
+            inv=card, 
+            qty=quantity,
+            price=card.price * quantity, 
+            date=wedding_date,
+            message=message, 
+            address=user_address
+        )
+
+        return redirect(view_bookings)  
+
+    return render(req, 'user/order.html', {'card': card})
+
 
 
 def address_page(req, id):
@@ -280,7 +328,27 @@ def address_page(req, id):
 
     return render(req, 'user/order.html', {'des': des})
 
-    
+
+def inv_address_page(req, id):
+    des = DestinationWedding.objects.get(id=id)
+
+    if req.method == 'POST':
+        name = req.POST.get('name')
+        address = req.POST.get('address')
+        phone_number = req.POST.get('phone_number')
+        email = req.POST.get('email')
+        wedding_date = req.POST.get('date')  
+
+        user_address = Address(user=req.user, name=name, address=address, phone_number=phone_number, email=email)
+        user_address.save()
+
+        buy = BuyDesWedding(user=req.user, des=des, price=des.package_price, date=wedding_date, address=user_address)
+        buy.save()
+
+        return redirect(view_bookings)
+
+    return render(req, 'user/order.html', {'des': des})
+
 
 def view_bookings(req):
     user = User.objects.get(username=req.session['user'])

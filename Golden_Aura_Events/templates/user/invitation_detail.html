@@ -52,7 +52,8 @@
             background: #444;
         }
         .navbar {
-            position: absolute;
+            position: sticky;
+    top: 0;
             width: 100%;
             background: transparent;
             transition: background 0.3s ease-in-out;
@@ -148,9 +149,10 @@
             <h2>{{ card.name }}</h2>
             <h4>From ${{ card.price }}</h4>
             <p><strong>Size:</strong> {{ card.size }}</p>
-            <a href="{% url 'customize_invitation' card.id %}" class="customize-btn">Customize & Buy</a>
         </div>
     </div>
+    <a id="buyNowBtn" href="{% url 'invitation_address_page' card.pk %}" class="btn btn-primary">
+
     <script>
         function changeImage(img) {
             document.getElementById('mainImage').src = img.src;
