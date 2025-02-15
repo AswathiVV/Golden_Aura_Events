@@ -251,9 +251,6 @@ def items(request, category_id):
     items = Item.objects.filter(category=category)
     return render(request, 'user/item.html', {'category': category, 'items': items})
 
-# def buy_des(req,id):
-#     des=DestinationWedding.objects.get(pk=id)
-#     return redirect(address_page, id=id)
 
 def buy_des(req, id):
     des = get_object_or_404(DestinationWedding, pk=id)  
@@ -262,6 +259,10 @@ def buy_des(req, id):
 def buy_inv(req, id):
     card = get_object_or_404(InvitationCard, pk=id)  
     return redirect(invitation_address_page, id=id)
+
+def buy_item(req, id):
+    item = get_object_or_404(Item ,pk=id)
+    return redirect(Items_address_page, id=id)
 
 
 def invitation_address_page(req, id):
@@ -273,39 +274,20 @@ def invitation_address_page(req, id):
         phone_number = req.POST.get('phone_number')
         email = req.POST.get('email')
         wedding_date = req.POST.get('date')
-        quantity = req.POST.get('quantity')
+        quantity = req.POST.get('qty')  # Field name 'qty' used for quantity
         message = req.POST.get('message') 
 
-        # if not all([name, address, phone_number, email, wedding_date, quantity]):
-        #     return render(req, 'user/order.html', {'card': card, 'error': 'All fields are required!'})
+        # Create and save the user address
+        user_address = Address(user=req.user, name=name, address=address, phone_number=phone_number, email=email)
+        user_address.save()
 
-        # try:
-        #     quantity = int(quantity)
-        # except ValueError:
-        #     return render(req, 'user/order.html', {'card': card, 'error': 'Quantity must be a number!'})
+        # Create and save the order with BuyInv
+        buy = BuyInv(user=req.user, inv=card, qty=quantity, price=card.price, date=wedding_date, message=message, address=user_address)
+        buy.save()
 
-        user_address = Address.objects.create(
-            user=req.user,
-            name=name,
-            address=address,
-            phone_number=phone_number,
-            email=email
-        )
-
-        buy = BuyInv.objects.create(
-            user=req.user,
-            inv=card, 
-            qty=quantity,
-            price=card.price * quantity, 
-            date=wedding_date,
-            message=message, 
-            address=user_address
-        )
-
-        return redirect(view_bookings)  
+        return redirect('view_bookings')  # Redirect to bookings page after successful order placement
 
     return render(req, 'user/order.html', {'card': card})
-
 
 
 def address_page(req, id):
@@ -330,7 +312,7 @@ def address_page(req, id):
 
 
 def inv_address_page(req, id):
-    des = DestinationWedding.objects.get(id=id)
+    card = InvitationCard.objects.get(id=id)
 
     if req.method == 'POST':
         name = req.POST.get('name')
@@ -338,19 +320,38 @@ def inv_address_page(req, id):
         phone_number = req.POST.get('phone_number')
         email = req.POST.get('email')
         wedding_date = req.POST.get('date')  
+        message = req.POST.get('message')  
+        qty= req.POST.geet('qty')
+
+        qty = req.POST.get('qty')  
+        if qty is None:
+            qty = 1  
+        else:
+            qty = int(qty)  
+
+        price = card.price if card.price is not None else 0
 
         user_address = Address(user=req.user, name=name, address=address, phone_number=phone_number, email=email)
         user_address.save()
+        
+        total_price = price * qty
 
-        buy = BuyDesWedding(user=req.user, des=des, price=des.package_price, date=wedding_date, address=user_address)
+        buy = BuyDesWedding(user=req.user, card=card, qty=qty,price=total_price, date=wedding_date,message=message,address=user_address)
         buy.save()
 
         return redirect(view_bookings)
 
-    return render(req, 'user/order.html', {'des': des})
+    return render(req, 'user/order.html', {'card': card})
 
 
 def view_bookings(req):
     user = User.objects.get(username=req.session['user'])
-    bookings = BuyDesWedding.objects.filter(user=user)[::-1]
-    return render(req, 'user/view_bookings.html', {'bookings': bookings})
+    destination_bookings = BuyDesWedding.objects.filter(user=user)[::-1]
+    invitation_bookings = BuyInv.objects.filter(user=user)[::-1]
+
+    return render(req, 'user/view_bookings.html', {
+        'destination_bookings': destination_bookings,
+        'invitation_bookings': invitation_bookings
+    })
+
+

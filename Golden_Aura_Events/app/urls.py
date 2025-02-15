@@ -22,6 +22,7 @@ urlpatterns=[
     path('invitation_address_page/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
 
     path('view_bookings/', views.view_bookings, name='view_bookings'),
+    # path('view_invitation_bookings/', views.view_invitation_bookings, name='view_invitation_bookings'),
 
 
 ]

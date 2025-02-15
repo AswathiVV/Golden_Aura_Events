@@ -1,24 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <h1>Your Bookings ({{ bookings|length }})</h1>
-  {% if bookings %}
-    <ul>
-      {% for booking in bookings %}
-        <li>Booking ID: {{ booking.id }} - Price: ₹{{ booking.price }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No bookings found.</p>
-  {% endif %}
-  
-</body>
-</html> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,9 +61,12 @@
 </head>
 <body>
   <div class="container my-5">
-    <h1 class="mb-4 text-center">Your Bookings ({{ bookings|length }})</h1>
-    {% if bookings %}
-      {% for booking in bookings %}
+    <h1 class="mb-4 text-center">Your Bookings</h1>
+
+    <!-- Destination Wedding Bookings -->
+    <h2 class="text-center mb-4">Destination Wedding Bookings ({{ destination_bookings|length }})</h2>
+    {% if destination_bookings %}
+      {% for booking in destination_bookings %}
       <div class="booking-item row align-items-center">
         <div class="col-4 col-md-3 col-lg-2">
           {% if booking.des.img %}
@@ -106,11 +88,38 @@
       </div>
       {% endfor %}
     {% else %}
-      <p class="text-center">No bookings found.</p>
+      <p class="text-center">No destination wedding bookings found.</p>
+    {% endif %}
+
+    <!-- Invitation Card Bookings -->
+    <h2 class="text-center mb-4">Invitation Card Bookings ({{ invitation_bookings|length }})</h2>
+    {% if invitation_bookings %}
+      {% for booking in invitation_bookings %}
+      <div class="booking-item row align-items-center">
+        <div class="col-4 col-md-3 col-lg-2">
+          {% if booking.inv.img1 %}
+          <img src="{{ booking.inv.img1.url }}" alt="{{ booking.inv.name }}" class="img-fluid booking-img">
+          {% else %}
+          <img src="https://via.placeholder.com/120" alt="No image available" class="img-fluid booking-img">
+          {% endif %}
+        </div>
+        <div class="col-8 col-md-6 col-lg-7">
+          <h4 class="booking-title">{{ booking.inv.name }}</h4>
+          <h6 class="booking-price">₹ {{ booking.price }}</h6>
+          <p class="booking-date">{{ booking.purchase_date }}</p>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 text-center">
+          <a href="#" class="btn btn-outline-danger bg-danger text-light">
+            Cancel Order
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center">No invitation card bookings found.</p>
     {% endif %}
   </div>
   
-  <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

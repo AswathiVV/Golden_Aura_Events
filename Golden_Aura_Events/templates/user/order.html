@@ -1,107 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Vendor & Place Order</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f5f5f5;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      background-color: #fff;
-      padding: 20px;
-      border: 1px solid #ddd;
-    }
-    .vendor-details, .order-form {
-      flex: 1;
-      min-width: 300px;
-      margin: 10px;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    .vendor-details {
-      border-right: 1px solid #ddd;
-    }
-    .vendor-details img {
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 15px;
-    }
-    .order-form form div {
-      margin-bottom: 15px;
-    }
-    .order-form label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    .order-form input[type="text"],
-    .order-form input[type="email"],
-    .order-form textarea {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .order-form button {
-      padding: 10px 15px;
-      background-color: #007BFF;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .order-form button:hover {
-      background-color: #0056b3;
-    }
-  </style>
-</head>
-<body>
-  <h2>Contact Vendor & Place Order</h2>
-  <div class="container">
-    <div class="vendor-details">
-      <h3>{{ des.name }}</h3>
-      {% if des.img %}
-        <img src="{{ des.img.url }}" alt="{{ des.name }}">
-      {% endif %}
-      <p>{{ des.about }}</p>
-      <p><strong>Location:</strong> {{ des.location }}</p>
-      <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
-    </div>
-    <div class="order-form">
-      <h4>Enter Your Details</h4>
-      <form method="POST">
-        {% csrf_token %}
-        <div>
-          <label for="name">Your Name:</label>
-          <input type="text" name="name" id="name" required>
-        </div>
-        <div>
-          <label for="address">Address:</label>
-          <textarea name="address" id="address" rows="3" required></textarea>
-        </div>
-        <div>
-          <label for="phone_number">Phone Number:</label>
-          <input type="text" name="phone_number" id="phone_number" required>
-        </div>
-        <div>
-          <label for="email">Email:</label>
-          <input type="email" name="email" id="email" required>
-        </div>
-        <button type="submit">Place Order</button>
-      </form>
-    </div>
-  </div>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,8 +6,6 @@
   <title>Contact Vendor & Place Order</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <style>
     /* Global Styles */
     body {
@@ -181,12 +75,6 @@
     .order-form button:hover {
       background-color: #0056b3;
     }
-    /* Responsive Flex Layout */
-    @media (min-width: 768px) {
-      .flex-container {
-        display: flex;
-      }
-    }
     /* Success Overlay */
     .overlay {
       position: fixed;
@@ -235,6 +123,19 @@
       }
     }
   </style>
+  <script>
+    function updateTotalPrice() {
+      const priceElement = document.getElementById('priceData');
+      const price = parseFloat(priceElement.getAttribute('data-price')); // Get price as number
+
+      const qty = document.getElementById('qty').value; // Get quantity value
+      const totalPrice = qty * price; // Calculate total price
+
+      // Update total price in the HTML
+      const totalPriceElement = document.getElementById('total_price');
+      totalPriceElement.textContent = "₹" + totalPrice.toFixed(2); // Format to 2 decimal places
+    }
+  </script>
 </head>
 <body>
   <h2 class="text-center">Contact Vendor & Place Order</h2>
@@ -242,14 +143,24 @@
     <div class="flex-container">
       <!-- Vendor Details -->
       <div class="vendor-details">
-        <h3>{{ des.name }}</h3>
-        {% if des.img %}
-          <img src="{{ des.img.url }}" alt="{{ des.name }}" />
+        {% if is_destination_wedding %}
+          <h3>{{ des.name }}</h3>
+          {% if des.img %}
+            <img src="{{ des.img.url }}" alt="{{ des.name }}" />
+          {% endif %}
+          <p><strong>Location:</strong> {{ des.location }}</p>
+          <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
+        {% else %}
+          <h3>{{ card.name }}</h3>
+          {% if card.category and card.category.img %}
+            <img src="{{ card.category.img.url }}" alt="{{ card.name }}" />
+          {% else %}
+            <p>No image available for this category</p>
+          {% endif %}
+          <p><strong>Price:</strong> ₹{{ card.price }}</p>
         {% endif %}
-        <p><strong>Location:</strong> {{ des.location }}</p>
-        <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
       </div>
-      <!-- Order Form -->
+
       <div class="order-form">
         <h4>Enter Your Details</h4>
         <form id="orderForm" method="POST">
@@ -274,7 +185,33 @@
             <label for="date">Wedding Date:</label>
             <input type="date" name="date" id="date" required />
           </div>
-          <button type="submit">Place Order</button>
+
+          {% if not is_destination_wedding %}
+            <div>
+              <label for="qty">Quantity (Number of Invitations):</label>
+              <input type="number" name="qty" id="qty" value="1" min="1" required onchange="updateTotalPrice()" />
+            </div>
+            <div>
+              <label for="total_price">Total Price:</label>
+              <p id="total_price">₹{{ card.price }}</p>
+            </div>
+
+            <!-- Store price as a hidden data attribute -->
+            <div id="priceData" data-price="{{ card.price|floatformat:2 }}"></div>
+          {% endif %}
+
+          <div>
+            <label for="message">Customize Message:</label>
+            <textarea name="message" id="message" rows="3"></textarea>
+          </div>
+
+          <button type="submit">
+            {% if is_destination_wedding %}
+              Place Order for Destination Wedding
+            {% else %}
+              Place Order for Invitation Card
+            {% endif %}
+          </button>
         </form>
       </div>
     </div>
@@ -290,18 +227,7 @@
 
   <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Handle form submission with success animation
-    const orderForm = document.getElementById('orderForm');
-    orderForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const overlay = document.getElementById('successOverlay');
-      overlay.classList.add('show');
-      // Wait 2 seconds to let the animation play before submitting the form
-      setTimeout(() => {
-        orderForm.submit();
-      }, 2000);
-    });
-  </script>
 </body>
 </html>
+
+
