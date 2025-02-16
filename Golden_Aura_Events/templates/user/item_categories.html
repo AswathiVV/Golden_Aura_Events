@@ -1,187 +1,232 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Items</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-        }
-        .category {
-            margin-bottom: 30px;
-            padding: 20px;
-            border-bottom: 1px solid #ccc;
-        }
-        .category h2 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .item {
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-            max-width: 150px;
-            text-align: center;
-        }
-        .item img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px;
-        }
-        .item label {
-            display: block;
-            margin-top: 5px;
-        }
-        .total-price {
-            font-size: 18px;
-            margin: 20px 0;
-            font-weight: bold;
-        }
-        .btn-buy {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 16px;
-        }
-        .btn-buy:hover {
-            background-color: #0056b3;
-        }
-    </style>
-    <script>
-        function redirectToContactVendor() {
-    const selectedItems = [];
-    document.querySelectorAll('.item-checkbox:checked').forEach((checkbox) => {
-        selectedItems.push(checkbox.value);
-    });
-
-    if (selectedItems.length === 0) {
-        alert("Please select at least one item.");
-        return;
-    }
-
-    const url = "{% url 'contact_vendor' %}" + "?items=" + selectedItems.join(",");
-    window.location.href = url;
-}
-
-        function updateTotalPrice() {
-            const checkboxes = document.querySelectorAll('.item-checkbox');
-            let totalPrice = 0;
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    totalPrice += parseFloat(checkbox.dataset.price);
-                }
-            });
-            document.getElementById('total-price').textContent = `Total Price: ₹${totalPrice.toFixed(2)}`;
-        }
-
-        function submitForm() {
-            const checkboxes = document.querySelectorAll('.item-checkbox');
-            const selectedItems = [];
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    selectedItems.push(checkbox.value);
-                }
-            });
-            if (selectedItems.length > 0) {
-                const form = document.getElementById('buy-form');
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'selected_items';
-                hiddenInput.value = selectedItems.join(',');
-                form.appendChild(hiddenInput);
-
-                form.submit();
-            } else {
-                alert('Please select at least one item.');
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1>Select Items</h1>
-        {% for category in categories %}
-            <div class="category">
-                <h2>{{ category.name }}</h2>
-                <img src="{{ category.img.url }}" alt="">
-
-                <p><strong>Price per item:</strong>₹ {{ category.price }}</p>
-                <div class="items">
-                    {% for item in category.item_set.all %}
-                        <div class="item">
-                            <img src="{{ item.img.url }}" alt="{{ item.name }}">
-                            <p>{{ item.name }}</p>
-                            <label>
-                                <input type="checkbox" class="item-checkbox" value="{{ item.id }}" data-price="{{ category.price }}" onclick="updateTotalPrice()">
-                                Select
-                            </label>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endfor %}
-        <p id="total-price" class="total-price">Total Price: ₹0.00</p>
-    
-        <button type="button" class="btn btn-primary" onclick="redirectToContactVendor()">Buy Selected Items</button>
-
-    </div>
-</body>
-</html>  -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Item Categories</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Item Selection</title>
     <style>
         body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: white;
+            text-align: center;
         }
-        .category-card {
+
+        .category-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        .category-item {
+            cursor: pointer;
+            text-align: center;
             transition: transform 0.3s ease-in-out;
+            padding: 10px;
         }
-        .category-card:hover {
+
+        .category-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-item:hover {
+            transform: scale(1.1);
+        }
+
+        .category-item p {
+            margin-top: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .items-container {
+            display: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 15px;
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            text-align: center;
+        }
+
+        .card img {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .card h3 {
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .card label {
+            display: block;
+            margin-top: 5px;
+        }
+
+        .card input {
+            margin-top: 5px;
+            cursor: pointer;
+        }
+
+        .card:hover {
             transform: scale(1.05);
+        }
+
+        .total-container {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            text-decoration: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .category-container {
+                gap: 10px;
+                padding: 10px;
+            }
+            .category-item img {
+                width: 80px;
+                height: 80px;
+            }
+            .card {
+                width: 90%;
+                margin: auto;
+            }
+            .card img {
+                height: 120px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Item Categories</h2>
-    <div class="row">
-        {% for category in categories %}
-        <div class="col-md-4 mb-4">
-            <div class="card shadow category-card">
-                <img src="{{ category.img.url }}" class="card-img-top" alt="{{ category.name }}">
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{ category.name }}</h5>
-                    <a href="{% url 'items' category.id %}" class="btn btn-primary">View Items</a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+<h2>Select a Category</h2>
+<div class="category-container">
+    {% for category in categories %}
+    <div class="category-item" data-category-id="{{ category.id }}">
+        <img src="{{ category.img.url }}" alt="{{ category.name }}">
+        <p>{{ category.name }}</p>
     </div>
+    {% endfor %}
 </div>
+
+<h2>Select Items</h2>
+{% for category in categories %}
+<div class="items-container" id="category-{{ category.id }}">
+    {% for item in items %}
+    {% if item.category == category %}
+    <div class="card">
+        <img src="{{ item.img.url }}" alt="{{ item.name }}">
+        <h3>{{ item.name }}</h3>
+        <label>
+            <input type="checkbox" class="item-checkbox"
+                   data-item-id="{{ item.id }}"
+                   data-price="{{ item.category.price }}"
+                   onchange="updateTotalPrice()"> Select Item
+        </label>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endfor %}
+
+<div class="total-container">
+    <p>Total Price: ₹<span id="total-price">0</span></p>
+    <a id="buyNowBtn" class="btn">Buy Now</a>
+</div>
+
+<script>
+    // Show items based on selected category
+    document.querySelectorAll('.category-item').forEach(item => {
+        item.addEventListener('click', function () {
+            let categoryId = this.getAttribute('data-category-id');
+            document.querySelectorAll('.items-container').forEach(el => el.style.display = 'none');
+            let selectedCategory = document.getElementById('category-' + categoryId);
+            if (selectedCategory) {
+                selectedCategory.style.display = 'flex';
+                selectedCategory.classList.add('fade-in');
+            }
+        });
+    });
+
+    // Update total price dynamically and update Buy Now link
+    function updateTotalPrice() {
+        let total = 0;
+        let selectedItems = document.querySelectorAll('.item-checkbox:checked');
+
+        let selectedItemIds = [];
+
+        selectedItems.forEach(item => {
+            let itemId = item.getAttribute('data-item-id');
+            let itemPrice = parseFloat(item.getAttribute('data-price'));
+
+            total += itemPrice;
+            selectedItemIds.push(itemId);
+        });
+
+        document.getElementById('total-price').textContent = total;
+
+        // Update Buy Now button URL dynamically
+        if (selectedItemIds.length > 0) {
+            document.getElementById('buyNowBtn').href = `/order/address/items/${selectedItemIds.join(',')}/`;
+
+        } else {
+            document.getElementById('buyNowBtn').href = "javascript:void(0);"; // Prevent empty link action
+        }
+    }
+</script>
 
 </body>
 </html>

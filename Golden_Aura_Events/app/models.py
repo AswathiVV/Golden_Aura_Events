@@ -1,6 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import timedelta, date
+from django.utils.timezone import now
+
+STATUS_CHOICES = [
+    ('pending', 'Pending'),
+    ('confirmed', 'Confirmed'),
+    ('cancelled', 'Cancelled'),
+]
 
 
 class DestinationWedding(models.Model):
@@ -70,6 +77,15 @@ class BuyItem(models.Model):
     date = models.DateField()
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
+    def get_total_price(self):
+        return self.quantity * self.price
+    
+
+    def can_cancel(self):
+        return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'
+
 
 
 class BuyDesWedding(models.Model):
@@ -79,6 +95,11 @@ class BuyDesWedding(models.Model):
     date = models.DateField()
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
+    def can_cancel(self):
+        return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'    
+  
 
 class BuyInv(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -89,7 +110,11 @@ class BuyInv(models.Model):
     message = models.TextField(blank=True, null=True)
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
 
     def total_price(self):
         return self.qty * self.price
 
+    def can_cancel(self):
+        return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'

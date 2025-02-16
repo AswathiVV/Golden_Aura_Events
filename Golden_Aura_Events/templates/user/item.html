@@ -140,7 +140,6 @@
     let totalPrice = 0;
     let selectedItems = [];
 
-    // Update total price when checkboxes are changed
     itemCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', (e) => {
             const itemPrice = parseFloat(e.target.getAttribute('data-price'));
