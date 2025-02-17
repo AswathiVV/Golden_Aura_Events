@@ -41,6 +41,7 @@ path('bookings/',views.bookings, name='bookings'),
 
     path('user_home',views.user_home),
     path('about',views.about),
+    path('contact',views.contact, name='contact'),
 
     path('invitation',views.invitation),
     path('invitation_detail/<id>',views.invitation_detail, name='invitation_detail'),

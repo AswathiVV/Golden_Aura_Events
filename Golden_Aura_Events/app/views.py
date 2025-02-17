@@ -326,6 +326,43 @@ def user_home(req):
     
 def about(req):
     return render(req,'user/about.html')    
+
+def contact(req):
+    return render(req,'user/contact.html')
+
+# from django.shortcuts import render, redirect
+# from django.core.mail import send_mail
+# from django.contrib import messages
+# from .models import User
+# from django.conf import settings
+
+# def contact(request):
+#     if request.method == 'POST':
+#         name = request.POST['name']
+#         email = request.POST['email']
+#         subject = request.POST['subject']
+#         message = request.POST['message']
+
+#         send_mail(
+#             'Golden Aura Events - Contact Form Submission',
+#             f'Hello {name},\n\nThank you for reaching out to us! We have received your message: \n\n"{message}".',
+#             settings.EMAIL_HOST_USER,
+#             [email]
+#         )
+
+#         send_mail(
+#             f'New Message from {name}',
+#             f'You have received a new message from {name} ({email}) regarding: {subject}\n\nMessage: \n{message}',
+#             settings.EMAIL_HOST_USER,
+#         )
+
+#         messages.success(request, 'Thank you for contacting us! We will get back to you soon.')
+#         return redirect(contact)  
+
+#     else:
+#         return render(request, 'user/contact.html')
+
+    
     
 def destination_wedding(request):
         des = DestinationWedding.objects.all() 
