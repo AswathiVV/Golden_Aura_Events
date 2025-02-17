@@ -19,7 +19,9 @@
 
         .navbar {
             padding: 1rem 2rem;
-            background-color: #fffaf3;
+            /* background-color: #fffaf3; */
+            background: rgba(0, 0, 0, 0.2);
+
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
@@ -27,7 +29,11 @@
             font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
             font-weight: bold;
-            color: #d4a256;
+            color: white;
+        }
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
         }
         .navbar-nav {
             margin: 0 auto; 
@@ -40,25 +46,28 @@
             font-size: 1rem;
             font-weight: 500;
             margin: 0 10px;
-            color: #333;
+            color: white;
             transition: color 0.3s;
         }
 
         .navbar-nav .nav-link:hover {
             color: #d4a256;
         }
+        .btn-logout{
+            color: white;
+        }
 
         .btn-book {
-            background-color: #d4a256;
+            /* background-color: #d4a256; */
             color: white;
             padding: 8px 20px;
             border-radius: 20px;
             font-weight: 600;
         }
 
-        .btn-book:hover {
+        /* .btn-book:hover {
             background-color: #b98b44;
-        }
+        } */
 
         .hero {
             display: flex;
@@ -101,14 +110,14 @@
         }
 
         .btn-primary-custom {
-            background-color: #d4a256;
+            /* background-color: #d4a256; */
             color: #fff;
             border: none;
         }
 
-        .btn-primary-custom:hover {
+        /* .btn-primary-custom:hover {
             background-color: #b98b44;
-        }
+        } */
 
         .hero img {
             max-width: 36%;
@@ -161,35 +170,10 @@
     </style>
 </head>
 <body>
-    <!-- <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Lunessence</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Add</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-book" href="view_bookings">Bookings</a>
-                    </li>
-            
-                    
-                    <li class="nav-item">
-                        <a class="btn btn-logout" href="logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav> -->
+
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Lunessence</a>
+            <a class="navbar-brand" href="#">Golden Aura Events</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -211,7 +195,7 @@
                     </li>
     
                     <li class="nav-item">
-                        <a class="btn btn-book" href="view_bookings">Bookings</a>
+                        <a class="btn btn-book" href="bookings">Bookings</a>
                     </li>
     
                     <li class="nav-item">

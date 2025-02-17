@@ -282,6 +282,40 @@ def delete_invitation_card(req, card_id):
     return redirect(shop_invitations)
 
 
+# def bookings(req):
+#     user = User.objects.get(username=req.session['user'])
+
+#     if user.is_superuser:
+#         destination_bookings = BuyDesWedding.objects.all().order_by('-id')
+#         invitation_bookings = BuyInv.objects.all().order_by('-id')
+#         item_bookings = BuyItem.objects.all().order_by('-id')
+#     else:
+#         destination_bookings = BuyDesWedding.objects.filter(user=user).order_by('-id')
+#         invitation_bookings = BuyInv.objects.filter(user=user).order_by('-id')
+#         item_bookings = BuyItem.objects.filter(user=user).order_by('-id')
+
+#     return render(req, 'user/view_bookings.html', {
+#         'destination_bookings': destination_bookings,
+#         'invitation_bookings': invitation_bookings,
+#         'item_bookings': item_bookings
+#     })
+
+
+def bookings(req):
+    if not req.user.is_superuser:
+        return redirect('login') 
+
+    destination_bookings = BuyDesWedding.objects.all().order_by('-id')
+    invitation_bookings = BuyInv.objects.all().order_by('-id')
+    item_bookings = BuyItem.objects.all().order_by('-id')
+
+    return render(req, 'shop/bookings.html', {
+        'destination_bookings': destination_bookings,
+        'invitation_bookings': invitation_bookings,
+        'item_bookings': item_bookings
+    })
+
+
 # #------------------------------------- User--------------------------------------------------------------
 
 def user_home(req):
@@ -289,6 +323,9 @@ def user_home(req):
         return render(req,'user/user_home.html')  
     else:
         return redirect(shop_login)
+    
+def about(req):
+    return render(req,'user/about.html')    
     
 def destination_wedding(request):
         des = DestinationWedding.objects.all() 
@@ -453,3 +490,5 @@ def cancel_booking(request, booking_type, booking_id):
     messages.success(request, "Your booking has been cancelled.")
     
     return redirect(view_bookings) 
+
+

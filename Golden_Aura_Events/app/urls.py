@@ -34,12 +34,14 @@ path("delete_invitation_category/<int:category_id>/", views.delete_invitation_ca
 path("edit_invitation_card/<int:card_id>/", views.edit_invitation_card, name="edit_invitation_card"),
 path("delete_invitation_card/<int:card_id>/", views.delete_invitation_card, name="delete_invitation_card"),
 
-
+path('bookings/',views.bookings, name='bookings'),
 
 
     #_____user______________________________________________________________________________
 
     path('user_home',views.user_home),
+    path('about',views.about),
+
     path('invitation',views.invitation),
     path('invitation_detail/<id>',views.invitation_detail, name='invitation_detail'),
 
