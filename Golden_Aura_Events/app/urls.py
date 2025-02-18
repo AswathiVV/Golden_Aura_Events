@@ -10,7 +10,6 @@ urlpatterns=[
     path('shop_home',views.shop_home),
     
     path("add_deswedding/", views.add_deswedding, name="add_deswedding"),
-
     path("add_category/",views.add_category, name="add_category"),
     path("add_item/",views.add_item, name="add_item"),
     path('add_invitation_category/',views.add_invitation_category, name='add_invitation_category'),
@@ -28,13 +27,13 @@ urlpatterns=[
     path('delete_category/<int:category_id>/', views.delete_category, name='delete_category'),
     path('edit_item/<int:item_id>/', views.edit_item, name='edit_item'),
     path('delete_item/<int:item_id>/', views.delete_item, name='delete_item'),
-path("shop_invitations/", views.shop_invitations, name="shop_invitations"),
-path("edit_invitation_category/<int:category_id>/", views.edit_invitation_category, name="edit_invitation_category"),
-path("delete_invitation_category/<int:category_id>/", views.delete_invitation_category, name="delete_invitation_category"),
-path("edit_invitation_card/<int:card_id>/", views.edit_invitation_card, name="edit_invitation_card"),
-path("delete_invitation_card/<int:card_id>/", views.delete_invitation_card, name="delete_invitation_card"),
+    path("shop_invitations/", views.shop_invitations, name="shop_invitations"),
+    path("edit_invitation_category/<int:category_id>/", views.edit_invitation_category, name="edit_invitation_category"),
+    path("delete_invitation_category/<int:category_id>/", views.delete_invitation_category, name="delete_invitation_category"),
+    path("edit_invitation_card/<int:card_id>/", views.edit_invitation_card, name="edit_invitation_card"),
+    path("delete_invitation_card/<int:card_id>/", views.delete_invitation_card, name="delete_invitation_card"),
 
-path('bookings/',views.bookings, name='bookings'),
+    path('bookings/',views.bookings, name='bookings'),
 
 
     #_____user______________________________________________________________________________
