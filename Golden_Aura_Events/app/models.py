@@ -2,12 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import timedelta, date
 from django.utils.timezone import now
-
-STATUS_CHOICES = [
-    ('pending', 'Pending'),
-    ('confirmed', 'Confirmed'),
-    ('cancelled', 'Cancelled'),
-]
+from .constants import PaymentStatus
+from django.db.models.fields import CharField
+from django.utils.translation import gettext_lazy as _
 
 
 class DestinationWedding(models.Model):
@@ -69,6 +66,27 @@ class Address(models.Model):
     def __str__(self):
         return self.name 
 
+
+class Order(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    price=models.IntegerField()
+    status=CharField(
+        _("Payment Status"),
+        default=PaymentStatus.PENDING,
+        max_length=254,
+        blank=False,
+        null=False
+    )
+    provider_order_id = models.CharField(
+        _("Order ID"), max_length=40, null=False,blank=False
+    )
+    payment_id = models.CharField(
+        _("Payment ID"),max_length=36, null=False, blank=False
+    )
+    signature_id = models.CharField(
+        _("Signature ID"), max_length=128, null=False, blank=False
+    )  
+
 class BuyItem(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -77,14 +95,15 @@ class BuyItem(models.Model):
     date = models.DateField()
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    is_confirmed = models.BooleanField(default=False)
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
 
     def get_total_price(self):
         return self.quantity * self.price
     
 
-    def can_cancel(self):
-        return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'
+    # def can_cancel(self):
+    #     return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'
 
 
 
@@ -95,11 +114,12 @@ class BuyDesWedding(models.Model):
     date = models.DateField()
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
 
-    def can_cancel(self):
-        return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'    
-  
+
+    # def can_cancel(self):
+    #     return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'    
+
 
 class BuyInv(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -110,11 +130,11 @@ class BuyInv(models.Model):
     message = models.TextField(blank=True, null=True)
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
 
 
     def total_price(self):
         return self.qty * self.price
 
-    def can_cancel(self):
-        return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'
+    # def can_cancel(self):
+    #     return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'

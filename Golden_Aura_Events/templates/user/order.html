@@ -568,7 +568,7 @@
 </html> -->
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -597,7 +597,6 @@
     <form method="POST">
       {% csrf_token %}
 
-      <!-- Customer Details -->
       <div>
         <label for="name">Your Name:</label>
         <input type="text" name="name" id="name" class="form-control" required>
@@ -619,7 +618,6 @@
         <input type="date" name="date" id="date" class="form-control" required>
       </div>
 
-      <!-- Invitation Card Section -->
       {% if card %}
         <div class="mt-4">
           <h4>Invitation Card Details</h4>
@@ -637,16 +635,12 @@
         </div>
       {% endif %}
 
-      <!-- Destination Wedding Section -->
       {% if des %}
         <div class="mt-4">
           <h4>Destination Wedding Details</h4>
           <p><strong>Location:</strong> {{ des.location }}</p>
           <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
 
-          <!-- <label for="qty_des">Number of Guests:</label>
-          <input type="number" name="qty_des" id="qty_des" class="form-control" value="1" min="1" 
-                 data-price="{{ des.package_price|floatformat:2 }}" onchange="updateTotalPrice('des')"> -->
 
           <p><strong>Total Price:</strong> <span id="total_price_des">₹{{ des.package_price }}</span></p>
         </div>
@@ -678,17 +672,247 @@
     </form>
   </div>
 
+
+  
+  {% block content %}
+  <div class="pay">
+    <form method="POST">
+      {% csrf_token %}
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      <script>
+      var options = {
+          key: "{{razorpay_key}}",
+          amount: "{{order.amount}}",
+          currency: "INR",
+          name: "{{order.name}}",
+          description: "Test Transaction",
+          image: "https://example.com/your_logo",
+          order_id: "{{order.provider_order_id}}",
+          callback_url: "{{callback_url}}",
+          redirect: true,
+          prefill: {
+              "name": "Gaurav Kumar",
+              "email": "gaurav.kumar@example.com",
+              "contact": "9999999999"
+          },
+          notes: {
+              "address": "Razorpay Corporate Office"
+          },
+          theme: {
+              "color": "#3399cc"
+          }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+      </script>
+      <input type="hidden" custom="Hidden Element" name="hidden">
+  </form>
+  {% endblock %}
+  </div>
+
+
   <script>
     function updateTotalPrice(id) {
         let qtyElement = document.getElementById('qty_' + id);
         let price = parseFloat(qtyElement.getAttribute('data-price'));
-        let qty = parseInt(qtyElement.value) || 1; // Default to 1 if empty or invalid
+        let qty = parseInt(qtyElement.value) || 1; 
         let totalPrice = (price * qty).toFixed(2);
 
         document.getElementById('total_price_' + id).textContent = "₹" + totalPrice;
     }
   </script>
 
+
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({ offset: 0 });
+</script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html> -->
+
+
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order & Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+        h2, h4 { text-align: center; }
+        input, textarea, button { width: 100%; padding: 10px; margin: 10px 0; }
+        button { background-color: #F37254; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #d35400; }
+        .details { margin-top: 20px; border-top: 1px solid #ddd; padding-top: 20px; }
+    </style>
+</head>
+<body> -->
+<!-- 
+<div class="container">
+
+    <h2>Golden Aura - Wedding Order & Payment</h2>
+
+    {% if not trigger_payment %}
+    <form id="addressForm" method="post">
+        {% csrf_token %}
+        <h4>Enter Your Details</h4>
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="text" name="address" placeholder="Address" required>
+        <input type="text" name="phone_number" placeholder="Phone Number" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <button type="submit">Proceed to Payment</button>
+    </form>
+    {% endif %}
+
+    <div class="details">
+        {% if des %}
+        <h4>Destination Wedding Details</h4>
+        <p><strong>Location:</strong> {{ des.location }}</p>
+        <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
+        <p><strong>Total Price:</strong> ₹{{ des.package_price }}</p>
+        {% endif %}
+
+        {% if card %}
+        <h4>Invitation Card Details</h4>
+        <p><strong>Name:</strong> {{ card.name }}</p>
+        <p><strong>Price per card:</strong> ₹{{ card.price|floatformat:2 }}</p>
+
+        <label for="qty_card">Quantity:</label>
+        <input type="number" name="qty_card" id="qty_card" value="1" min="1"
+               data-price="{{ card.price|floatformat:2 }}" onchange="updateTotalPrice('card')">
+
+        <p><strong>Total Price:</strong> <span id="total_price_card">₹{{ card.price|floatformat:2 }}</span></p>
+
+        <label for="message">Customize Message:</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+        {% endif %}
+
+        {% if items %}
+        <h4>Selected Items</h4>
+        {% for item in items %}
+        <div class="mb-3 p-3 border rounded">
+            <p><strong>{{ item.name }}</strong> - ₹{{ item.category.price|floatformat:2 }}</p>
+
+            <label for="qty_{{ item.id }}">Quantity:</label>
+            <input type="number" name="qty_{{ item.id }}" id="qty_{{ item.id }}" value="1" min="1"
+                   data-price="{{ item.category.price|floatformat:2 }}" onchange="updateTotalPrice('{{ item.id }}')">
+
+            <p><strong>Total Price:</strong> <span id="total_price_{{ item.id }}">₹{{ item.category.price|floatformat:2 }}</span></p>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    {% if trigger_payment %}
+    <script>
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount }}",
+            "currency": "INR",
+            "name": "Golden Aura",
+            "description": "Wedding Package",
+            "order_id": "{{ order_id }}",
+            "handler": function (response) {
+                window.location.href = "{{ callback_url }}";
+            },
+            "prefill": {
+              "name": "Gaurav Kumar",
+              "email": "gaurav.kumar@example.com",
+              "contact": "9999999999"
+            },
+            "theme": {
+                "color": "#F37254"
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+    </script>
+    {% endif %}
+
+</div>
+
+<script>
+    function updateTotalPrice(itemId) {
+        let qty = document.getElementById(`qty_${itemId}`).value;
+        let price = document.getElementById(`qty_${itemId}`).getAttribute('data-price');
+        let total = qty * price;
+        document.getElementById(`total_price_${itemId}`).innerText = '₹' + total.toFixed(2);
+    }
+</script> -->
+
+<!-- </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center">Order Details</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea name="address" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="phone_number" class="form-label">Phone Number</label>
+            <input type="tel" name="phone_number" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+
+        {% if card %}
+            <div class="mb-3">
+                <label for="qty_card" class="form-label">Quantity</label>
+                <input type="number" name="qty_card" class="form-control" value="1" min="1" required>
+            </div>
+        {% endif %}
+
+        {% if des %}
+            <div class="mb-3">
+                <label for="date" class="form-label">Wedding Date</label>
+                <input type="date" name="date" class="form-control" required>
+            </div>
+        {% endif %}
+
+        {% if items %}
+            <h5>Selected Items:</h5>
+            <ul class="list-group">
+                {% for item in items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ item.name }}
+                        <input type="number" name="qty_{{ item.id }}" value="1" min="1" class="form-control w-25">
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Proceed to Payment</button>
+        </div>
+    </form>
+</div>
+</body>
 </html>
+

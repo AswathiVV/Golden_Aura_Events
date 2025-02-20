@@ -103,8 +103,7 @@
         <a href="{% url 'invitation_detail' id=card.id %}">
             <img src="{{ card.img1.url }}" alt="{{ card.name }}">
             <h3>{{ card.name }}</h3>
-            <!-- <p class="price">${{ card.price }}</p> -->
-            <!-- <p><strong>Size:</strong> {{ card.size }}</p> -->
+         
         </a>
     </div>
     {% endif %}
@@ -112,7 +111,7 @@
 </div>
 {% endfor %}
 
-<script>
+<!-- <script>
     document.querySelectorAll('.category-item').forEach(item => {
         item.addEventListener('click', function() {
             let categoryId = this.getAttribute('data-category-id');
@@ -127,6 +126,37 @@
         let categoryDiv = document.getElementById('category-' + categoryId);
         if (categoryDiv) {
             categoryDiv.style.display = 'flex';
+            categoryDiv.classList.add('fade-in');
+        }
+    }
+</script> -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        showAllInvitations(); // Show all invitations by default
+    });
+
+    document.querySelectorAll('.category-item').forEach(item => {
+        item.addEventListener('click', function() {
+            let categoryId = this.getAttribute('data-category-id');
+            showInvitations(categoryId);
+        });
+    });
+
+    function showAllInvitations() {
+        document.querySelectorAll('.invitation-container').forEach(el => {
+            el.style.display = 'flex'; // Show all invitations initially
+        });
+    }
+
+    function showInvitations(categoryId) {
+        document.querySelectorAll('.invitation-container').forEach(el => {
+            el.style.display = 'none'; // Hide all
+        });
+
+        let categoryDiv = document.getElementById('category-' + categoryId);
+        if (categoryDiv) {
+            categoryDiv.style.display = 'flex'; // Show selected category
             categoryDiv.classList.add('fade-in');
         }
     }

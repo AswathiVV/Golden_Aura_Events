@@ -2,14 +2,18 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate,login,logout
 from .models import *
 import os
+import re
 from django.contrib.auth.models import User
 from django.contrib import messages
-
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils import timezone
-
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+import razorpay
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 def shop_login(req):
     if 'shop' in req.session:
@@ -39,23 +43,130 @@ def shop_logout(req):
     req.session.flush()              
     return redirect(shop_login) 
 
-def  register(req):
-     if req.method=='POST':
-        name=req.POST['name']       
-        email=req.POST['email']
-        password=req.POST['password']
-        send_mail('Lunessence registration', 'Welcome to Lunessence! Your account has been created successfully', settings.EMAIL_HOST_USER, [email])
+# def  register(req):
+#      if req.method=='POST':
+#         name=req.POST['name']       
+#         email=req.POST['email']
+#         password=req.POST['password']
+#         send_mail('Golden Aura Events registration', 'Welcome to Golden Aura Events! Your account has been created successfully', settings.EMAIL_HOST_USER, [email])
+
+#         try:
+#             data=User.objects.create_user(first_name=name,username=email,email=email,password=password)
+#             data.save()
+#             return redirect(shop_login)
+#         except:
+#             messages.warning(req,"user details already exits")
+#             return redirect(register)
+#      else:
+#          return render(req,'register.html')
+
+
+# def register(req):
+#     if req.method == 'POST':
+#         name = req.POST.get('name', '').strip()
+#         email = req.POST.get('email', '').strip()
+#         password = req.POST.get('password', '').strip()
+
+#         if not name or not email or not password:
+#             messages.error(req, "All fields are required.")
+#             return redirect(register)
+
+#         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+#         if not re.match(email_regex, email):
+#             messages.error(req, "Invalid email format.")
+#             return redirect(register)
+
+#         if len(password) < 6:
+#             messages.error(req, "Password must be at least 6 characters long.")
+#             return redirect(register)
+#         if not re.search(r'[A-Z]', password):
+#             messages.error(req, "Password must contain at least one uppercase letter.")
+#             return redirect(register)
+#         if not re.search(r'\d', password):
+#             messages.error(req, "Password must contain at least one number.")
+#             return redirect(register)
+
+#         if User.objects.filter(username=email).exists():
+#             messages.warning(req, "User already exists.")
+#             return redirect(register)
+
+#         try:
+#             user = User.objects.create_user(first_name=name, username=email, email=email, password=password)
+#             user.save()
+
+#             # Send welcome email
+#             send_mail(
+#                 'Golden Aura Events Registration',
+#                 'Welcome to Golden Aura Events! Your account has been created successfully.',
+#                 settings.EMAIL_HOST_USER,
+#                 [email],
+#                 fail_silently=False
+#             )
+
+#             messages.success(req, "Registration successful! Please log in.")
+#             return redirect(shop_login)
+#         except Exception as e:
+#             messages.error(req, f"Registration failed: {str(e)}")
+#             return redirect(register)
+
+#     return render(req, 'register.html')
+     
+# import re
+# from django.contrib import messages
+# from django.shortcuts import redirect, render
+# from django.core.mail import send_mail
+# from django.conf import settings
+# from django.contrib.auth.models import User
+
+def register(req):
+    if req.method == 'POST':
+        name = req.POST.get('name', '').strip()
+        email = req.POST.get('email', '').strip()
+        password = req.POST.get('password', '').strip()
+
+        if not name or not email or not password:
+            messages.error(req, "All fields are required.")
+            return redirect(register)
+
+        email_regex = r'^[a-z][a-z0-9._%+-]*\d[a-z0-9._%+-]*@[a-z0-9.-]+\.[a-z]{2,}$'
+        if not re.fullmatch(email_regex, email): 
+            messages.error(req, "Invalid email format.")
+            return redirect(register)
+
+        if len(password) < 6:
+            messages.error(req, "Password must be at least 6 characters long.")
+            return redirect(register)
+        if not re.search(r'[A-Z]', password):
+            messages.error(req, "Password must contain at least one uppercase letter.")
+            return redirect(register)
+        if not re.search(r'\d', password):
+            messages.error(req, "Password must contain at least one number.")
+            return redirect(register)
+
+        if User.objects.filter(username=email).exists():
+            messages.warning(req, "User already exists.")
+            return redirect(register)
 
         try:
-            data=User.objects.create_user(first_name=name,username=email,email=email,password=password)
-            data.save()
+            user = User.objects.create_user(first_name=name, username=email, email=email, password=password)
+            user.save()
+
+            send_mail(
+                'Golden Aura Events Registration',
+                'Welcome to Golden Aura Events! Your account has been created successfully.',
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False
+            )
+
+            messages.success(req, "Registration successful! Please log in.")
             return redirect(shop_login)
-        except:
-            messages.warning(req,"user details already exits")
+
+        except Exception as e:
+            messages.error(req, f"Registration failed: {str(e)}")
             return redirect(register)
-     else:
-         return render(req,'register.html')
-     
+
+    return render(req, 'register.html')
 
 #--------------------- admin-------------------------------------------------------------------------------------------  
 def shop_home(req):
@@ -330,45 +441,22 @@ def about(req):
 def contact(req):
     return render(req,'user/contact.html')
 
-# from django.shortcuts import render, redirect
-# from django.core.mail import send_mail
-# from django.contrib import messages
-# from .models import User
-# from django.conf import settings
-
-# def contact(request):
-#     if request.method == 'POST':
-#         name = request.POST['name']
-#         email = request.POST['email']
-#         subject = request.POST['subject']
-#         message = request.POST['message']
-
-#         send_mail(
-#             'Golden Aura Events - Contact Form Submission',
-#             f'Hello {name},\n\nThank you for reaching out to us! We have received your message: \n\n"{message}".',
-#             settings.EMAIL_HOST_USER,
-#             [email]
-#         )
-
-#         send_mail(
-#             f'New Message from {name}',
-#             f'You have received a new message from {name} ({email}) regarding: {subject}\n\nMessage: \n{message}',
-#             settings.EMAIL_HOST_USER,
-#         )
-
-#         messages.success(request, 'Thank you for contacting us! We will get back to you soon.')
-#         return redirect(contact)  
-
-#     else:
-#         return render(request, 'user/contact.html')
-
     
+# def destination_wedding(request):
+#         des = DestinationWedding.objects.all() 
+#         return render(request, 'user/destination_wedding.html', {'des': des})
     
+
 def destination_wedding(request):
-        des = DestinationWedding.objects.all() 
-        return render(request, 'user/destination_wedding.html', {'des': des})
+    des_list = DestinationWedding.objects.all()  # Fetch all destination weddings
+    paginator = Paginator(des_list, 9)  # Show 9 items per page
+
+    page_number = request.GET.get('page')  # Get the current page number from URL
+    des = paginator.get_page(page_number)  # Get paginated objects
+
+    return render(request, 'user/destination_wedding.html', {'des': des})
     
-    
+
 def view_des_wed(req,id):
      if 'user' in req.session:
         user=User.objects.get(username=req.session['user'])
@@ -416,6 +504,8 @@ def invitation_address_page(request, id):
         phone_number = request.POST.get('phone_number')
         email = request.POST.get('email')
         order_date = request.POST.get('date')
+        order=Order.objects.get(pk=request.session['order_id'])
+
 
         quantity = request.POST.get('qty_card', '1')  
         try:
@@ -434,11 +524,14 @@ def invitation_address_page(request, id):
             qty=quantity,  
             price=price,
             date=order_date,
-            address=user_address
+            address=user_address,
+            order=order
+
         )
         buy.save()
 
-        return redirect('view_bookings')
+        return redirect(view_bookings)
+    
 
     return render(request, 'user/order.html', {'card': card})
 
@@ -462,6 +555,7 @@ def des_address_page(req, id):
         return redirect(view_bookings)
 
     return render(req, 'user/order.html', {'des': des})
+
 
 def items_address_page(request, item_ids):
     item_ids = item_ids.split(',')  
@@ -496,6 +590,7 @@ def items_address_page(request, item_ids):
     return render(request, 'user/order.html', {'items': items})
 
 
+
 def view_bookings(req):
     user = User.objects.get(username=req.session['user'])
     destination_bookings = BuyDesWedding.objects.filter(user=user)[::-1]
@@ -527,5 +622,173 @@ def cancel_booking(request, booking_type, booking_id):
     messages.success(request, "Your booking has been cancelled.")
     
     return redirect(view_bookings) 
+
+
+
+# def invitation_address_page(request, id):
+#     card = get_object_or_404(InvitationCard, pk=id)
+
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         address = request.POST.get('address')
+#         phone_number = request.POST.get('phone_number')
+#         email = request.POST.get('email')
+#         order_date = request.POST.get('date')
+#         quantity = int(request.POST.get('qty_card', '1') or 1)
+
+#         user_address = Address.objects.create(
+#             user=request.user, name=name, address=address,
+#             phone_number=phone_number, email=email
+#         )
+
+#         request.session['service_type'] = 'invitation'
+#         request.session['service_id'] = id
+#         request.session['quantity'] = quantity
+
+#         return redirect('order_payment', service_type='invitation', id=id)
+
+#     return render(request, 'user/order.html', {'card': card})
+
+
+# def des_address_page(request, id):
+#     des = get_object_or_404(DestinationWedding, pk=id)
+
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         address = request.POST.get('address')
+#         phone_number = request.POST.get('phone_number')
+#         email = request.POST.get('email')
+
+#         user_address = Address.objects.create(
+#             user=request.user, name=name, address=address,
+#             phone_number=phone_number, email=email
+#         )
+
+#         request.session['service_type'] = 'wedding'
+#         request.session['service_id'] = id
+
+#         # return redirect('order_payment', service_type='wedding', id=id)
+#         # return redirect(order_payment, service_type='wedding', id=id)
+#         return redirect('order_payment', obj_type='wedding', obj_id=id)
+
+
+#     return render(request, 'user/order.html', {'des': des})
+
+
+# def items_address_page(request, item_ids):
+#     item_ids = item_ids.split(',')
+#     items = Item.objects.filter(id__in=item_ids)
+
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         address = request.POST.get('address')
+#         phone_number = request.POST.get('phone_number')
+#         email = request.POST.get('email')
+
+#         user_address = Address.objects.create(
+#             user=request.user, name=name, address=address,
+#             phone_number=phone_number, email=email
+#         )
+
+#         request.session['service_type'] = 'item'
+#         request.session['service_ids'] = item_ids
+
+#         return redirect('order_payment', service_type='item', id=item_ids[0])
+
+#     return render(request, 'user/order.html', {'items': items})
+
+# # ---------------------- Payment Flow ----------------------
+# def order_payment(request, obj_type, obj_id):
+#     if 'user' in request.session:
+#         user = get_object_or_404(User, username=request.session['user'])
+
+#         if obj_type == "wedding":
+#             service = get_object_or_404(DestinationWedding, pk=obj_id)
+#             amount = service.package_price
+#         elif obj_type == "invitation":
+#             service = get_object_or_404(InvitationCard, pk=obj_id)
+#             amount = service.price
+#         elif obj_type == "item":
+#             service = get_object_or_404(Item, pk=obj_id)
+#             amount = service.category.price
+#         else:
+#             messages.error(request, "Invalid service type.")
+#             return redirect('user_home')
+
+#         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+#         razorpay_order = client.order.create({
+#             "amount": int(amount) * 100,
+#             "currency": "INR",
+#             "payment_capture": "1"
+#         })
+#         order = Order.objects.create(
+#             user=user,
+#             price=amount,
+#             provider_order_id=razorpay_order['id']
+#         )
+#         request.session['order_id'] = order.pk
+
+#         return render(request, "user/order.html", {
+#             "callback_url": "http://127.0.0.1:8000/callback/",
+#             "razorpay_key": settings.RAZORPAY_KEY_ID,
+#             "order": order,
+#         })
+#     else:
+#         return redirect(shop_login)
+
+# # ---------------------- Razorpay Callback ----------------------
+
+# @csrf_exempt
+# def callback(request):
+#     def verify_signature(response_data):
+#         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+#         return client.utility.verify_payment_signature(response_data)
+
+#     if "razorpay_signature" in request.POST:
+#         payment_id = request.POST.get("razorpay_payment_id", "")
+#         provider_order_id = request.POST.get("razorpay_order_id", "")
+#         signature_id = request.POST.get("razorpay_signature", "")
+
+#         order = get_object_or_404(Order, provider_order_id=provider_order_id)
+#         order.payment_id = payment_id
+#         order.signature_id = signature_id
+
+#         if not verify_signature(request.POST):
+#             order.status = PaymentStatus.SUCCESS
+#             messages.success(request, "Payment successful!")
+
+#             # Booking based on service type
+#             service_type = request.session.get('service_type')
+#             service_id = request.session.get('service_id')
+
+#             if service_type == "wedding":
+#                 des = get_object_or_404(DestinationWedding, pk=service_id)
+#                 BuyDesWedding.objects.create(user=request.user, des=des, price=des.package_price, order=order)
+
+#             elif service_type == "invitation":
+#                 card = get_object_or_404(InvitationCard, pk=service_id)
+#                 quantity = int(request.session.get('quantity', 1))
+#                 BuyInv.objects.create(user=request.user, inv=card, qty=quantity, price=card.price * quantity, order=order)
+
+#             elif service_type == "item":
+#                 item_ids = request.session.get('service_ids', [])
+#                 items = Item.objects.filter(id__in=item_ids)
+#                 for item in items:
+#                     BuyItem.objects.create(user=request.user, item=item, quantity=1, price=item.category.price, order=order)
+
+#         else:
+#             order.status = PaymentStatus.FAILURE
+#             messages.error(request, "Payment verification failed.")
+#         order.save()
+
+#         return redirect("view_bookings")
+#     else:
+#         error_data = json.loads(request.POST.get("error[metadata]", '{}'))
+#         provider_order_id = error_data.get("order_id")
+#         order = get_object_or_404(Order, provider_order_id=provider_order_id)
+#         order.status = PaymentStatus.FAILURE
+#         order.save()
+#         messages.error(request, "Payment failed.")
+#         return redirect("view_bookings")
 
 

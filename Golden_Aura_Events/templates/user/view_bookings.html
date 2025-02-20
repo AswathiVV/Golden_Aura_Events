@@ -285,14 +285,11 @@
           <p><strong>Quantity:</strong> {{ booking.quantity }}</p>
         </div>
         <div class="col-12 col-md-3 col-lg-3 text-center">
-          {% if booking.status == "cancelled" %}
-            <span class="text-danger fw-bold">This order is cancelled</span>
-          {% elif booking.can_cancel %}  
-          <a href="{% url 'cancel_booking' 'item' booking.id %}" class="btn btn-outline-danger bg-danger text-light">
+         
+          <!-- <a href="{% url 'cancel_booking' 'item' booking.id %}" class="btn btn-outline-danger bg-danger text-light">
 
               Cancel Order
-            </a>
-          {% endif %}
+            </a> -->
         </div>
       </div>
       {% endfor %}
