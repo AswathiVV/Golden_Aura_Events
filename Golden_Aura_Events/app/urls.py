@@ -61,8 +61,8 @@ urlpatterns=[
 
 # path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),
 # path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),
-path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),
+# path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),
 
     # path("create_order",views.create_order, name="create_order"),
-    path("razorpay/callback/",views.callback, name="callback"),
+    # path("razorpay/callback/",views.callback, name="callback"),
 ]
