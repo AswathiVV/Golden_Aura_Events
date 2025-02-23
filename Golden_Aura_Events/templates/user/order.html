@@ -1,576 +1,6 @@
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact Vendor & Place Order</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
-    h2 {
-      font-weight: 700;
-      margin-bottom: 30px;
-    }
-    .container {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      padding: 30px;
-      max-width: 1000px;
-      margin: auto;
-    }
-    /* Vendor Details */
-    .vendor-details {
-      padding: 20px;
-      border-right: 1px solid #ddd;
-    }
-    .vendor-details img {
-      width: 100%;
-      max-width: 350px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-    .vendor-details p {
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
-    /* Order Form */
-    .order-form {
-      padding: 20px;
-    }
-    .order-form h4 {
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-    .order-form label {
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-    .order-form input,
-    .order-form textarea {
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      width: 100%;
-      margin-bottom: 15px;
-    }
-    .order-form button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .order-form button:hover {
-      background-color: #0056b3;
-    }
-    /* Success Overlay */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-      z-index: 1000;
-    }
-    .overlay.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    .overlay-content {
-      text-align: center;
-      color: #fff;
-    }
-    .overlay-content .tick {
-      font-size: 100px;
-      color: #28a745;
-      animation: tick-pop 0.8s ease forwards;
-    }
-    .overlay-content p {
-      margin-top: 20px;
-      font-size: 1.5rem;
-    }
-    @keyframes tick-pop {
-      0% {
-        transform: scale(0.5);
-        opacity: 0;
-      }
-      60% {
-        transform: scale(1.2);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-  </style>
-  <script>
-    function updateTotalPrice() {
-      const priceElement = document.getElementById('priceData');
-      const price = parseFloat(priceElement.getAttribute('data-price'));
-
-      const qty = document.getElementById('qty').value; 
-      const totalPrice = qty * price; 
-
-      const totalPriceElement = document.getElementById('total_price');
-      totalPriceElement.textContent = "₹" + totalPrice.toFixed(2); 
-    }
-  </script>
-</head>
-<body>
-  <h2 class="text-center">Contact Vendor & Place Order</h2>
-  <div class="container">
-    <div class="flex-container">
-      <div class="vendor-details">
-        {% if is_destination_wedding %}
-          <h3>{{ des.name }}</h3>
-          {% if des.img %}
-            <img src="{{ des.img.url }}" alt="{{ des.name }}" />
-          {% endif %}
-          <p><strong>Location:</strong> {{ des.location }}</p>
-          <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
-        {% else %}
-          <h3>{{ card.name }}</h3>
-          {% if card.category and card.category.img %}
-            <img src="{{ card.category.img.url }}" alt="{{ card.name }}" />
-          {% else %}
-            <p>No image available for this category</p>
-          {% endif %}
-          <p><strong>Price:</strong> ₹{{ card.price }}</p>
-        {% endif %}
-      </div>
-
-      <div class="order-form">
-        <h4>Enter Your Details</h4>
-        <form id="orderForm" method="POST">
-          {% csrf_token %}
-          <div>
-            <label for="name">Your Name:</label>
-            <input type="text" name="name" id="name" required />
-          </div>
-          <div>
-            <label for="address">Address:</label>
-            <textarea name="address" id="address" rows="3" required></textarea>
-          </div>
-          <div>
-            <label for="phone_number">Phone Number:</label>
-            <input type="text" name="phone_number" id="phone_number" required />
-          </div>
-          <div>
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" required />
-          </div>
-          <div>
-            <label for="date">Wedding Date:</label>
-            <input type="date" name="date" id="date" required />
-          </div>
-
-          {% if not is_destination_wedding %}
-            <div>
-              <label for="qty">Quantity (Number of Invitations):</label>
-              <input type="number" name="qty" id="qty" value="1" min="1" required onchange="updateTotalPrice()" />
-            </div>
-            <div>
-              <label for="total_price">Total Price:</label>
-              <p id="total_price">₹{{ card.price }}</p>
-            </div>
-
-            <div id="priceData" data-price="{{ card.price|floatformat:2 }}"></div>
-          {% endif %}
-
-          <div>
-            <label for="message">Customize Message:</label>
-            <textarea name="message" id="message" rows="3"></textarea>
-          </div>
-
-          <button type="submit">
-            {% if is_destination_wedding %}
-              Place Order for Destination Wedding
-            {% else %}
-              Place Order for Invitation Card
-            {% endif %}
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay" id="successOverlay">
-    <div class="overlay-content">
-      <i class="bi bi-check-circle-fill tick"></i>
-      <p>Order Placed Successfully!</p>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html> -->
-
-<!-- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact Vendor & Place Order</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
-    h2 {
-      font-weight: 700;
-      margin-bottom: 30px;
-    }
-    .container {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      padding: 30px;
-      max-width: 900px;
-      margin: auto;
-    }
-    .vendor-details img {
-      width: 100%;
-      max-width: 350px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-    .order-form input, .order-form textarea {
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      width: 100%;
-      margin-bottom: 15px;
-    }
-    .order-form button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .order-form button:hover {
-      background-color: #0056b3;
-    }
-  </style>
-  <script>
-    function updateTotalPrice() {
-      const priceElement = document.getElementById('priceData');
-      const price = parseFloat(priceElement.getAttribute('data-price'));
-
-      const qty = document.getElementById('qty').value; 
-      const totalPrice = qty * price; 
-
-      const totalPriceElement = document.getElementById('total_price');
-      totalPriceElement.textContent = "₹" + totalPrice.toFixed(2); 
-    }
-  </script>
-</head>
-<body>
-
-  <h2 class="text-center">Contact Vendor & Place Order</h2>
-  <div class="container">
-    <div class="vendor-details">
-      {% if type == "wedding" %}
-        <h3>{{ des.name }}</h3>
-        {% if des.img %}
-          <img src="{{ des.img.url }}" alt="{{ des.name }}" />
-        {% endif %}
-        <p><strong>Location:</strong> {{ des.location }}</p>
-        <p><strong>Package Price:</strong> ₹{{ price }}</p>
-
-      {% elif type == "invitation" %}
-        <h3>{{ card.name }}</h3>
-        {% if card.category and card.category.img %}
-          <img src="{{ card.category.img.url }}" alt="{{ card.name }}" />
-        {% endif %}
-        <p><strong>Price Per Card:</strong> ₹{{ price }}</p>
-
-      {% elif type == "item" %}
-        <h3>{{ item.name }}</h3>
-        {% if item.category and item.category.img %}
-          <img src="{{ item.category.img.url }}" alt="{{ item.name }}" />
-        {% endif %}
-        <p><strong>Category:</strong> {{ item.category.name }}</p>
-        <p><strong>Price Per Item:</strong> ₹{{ price }}</p>
-      {% endif %}
-    </div>
-
-    <div class="order-form">
-      <h4>Enter Your Details</h4>
-      <form id="orderForm" method="POST">
-        {% csrf_token %}
-        <div>
-          <label for="name">Your Name:</label>
-          <input type="text" name="name" id="name" required />
-        </div>
-        <div>
-          <label for="address">Address:</label>
-          <textarea name="address" id="address" rows="3" required></textarea>
-        </div>
-        <div>
-          <label for="phone_number">Phone Number:</label>
-          <input type="text" name="phone_number" id="phone_number" required />
-        </div>
-        <div>
-          <label for="email">Email:</label>
-          <input type="email" name="email" id="email" required />
-        </div>
-        <div>
-          <label for="date">Date:</label>
-          <input type="date" name="date" id="date" required />
-        </div>
-
-        {% if type != "wedding" %}
-          <div>
-            <label for="qty">Quantity:</label>
-            <input type="number" name="qty" id="qty" value="1" min="1" required onchange="updateTotalPrice()" />
-          </div>
-          <div>
-            <label>Total Price:</label>
-            <p id="total_price">₹{{ price }}</p>
-          </div>
-          <div id="priceData" data-price="{{ price|floatformat:2 }}"></div>
-        {% endif %}
-
-        {% if type == "invitation" %}
-          <div>
-            <label for="message">Customize Message:</label>
-            <textarea name="message" id="message" rows="3"></textarea>
-          </div>
-        {% endif %}
-
-        <button type="submit">
-          {% if type == "wedding" %}
-            Book Destination Wedding
-          {% elif type == "invitation" %}
-            Order Invitation Cards
-          {% else %}
-            Buy Item
-          {% endif %}
-        </button>
-      </form>
-    </div>
-  </div>
-
-</body>
-</html> -->
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <form id="orderForm" method="POST">
-    {% csrf_token %}
-    
-  
-    <label for="name">Your Name:</label>
-    <input type="text" name="name" id="name" value="{{ address.name }}" required />
-  
-    <label for="address">Address:</label>
-    <textarea name="address" id="address" required>{{ address.address }}</textarea>
-  
-    <label for="phone_number">Phone Number:</label>
-    <input type="text" name="phone_number" id="phone_number" value="{{ address.phone_number }}" required />
-  
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email" value="{{ address.email }}" required />
-  
-    <label for="date">Date:</label>
-    <input type="date" name="date" id="date" required />
-  
-    {% if type == "item" %}
-      <label for="qty">Quantity:</label>
-      <input type="number" name="qty" id="qty" value="1" min="1" required onchange="updateTotalPrice()" />
-  
-      <label>Total Price:</label>
-      <p id="total_price">₹{{ price }}</p>
-      <div id="priceData" data-price="{{ price|floatformat:2 }}"></div>
-    
-    {% elif type == "invitation" %}
-      <label for="qty">Quantity:</label>
-      <input type="number" name="qty" id="qty" value="1" min="1" required onchange="updateTotalPrice()" />
-  
-      <label>Total Price:</label>
-      <p id="total_price">₹{{ price }}</p>
-      <div id="priceData" data-price="{{ price|floatformat:2 }}"></div>
-  
-      <label for="message">Customize Message:</label>
-      <textarea name="message" id="message" rows="3"></textarea>
-    {% endif %}
-  
-    <button type="submit">
-      {% if type == "wedding" %}
-        Book Destination Wedding
-      {% elif type == "invitation" %}
-        Order Invitation Cards
-      {% else %}
-        Buy Item
-      {% endif %}
-    </button>
-  </form>
-  
-  <script>
-    function updateTotalPrice() {
-      const pageType = "{{ type }}";
-      if (pageType !== "item" && pageType !== "invitation") return; 
-  
-      const priceElement = document.getElementById('priceData');
-      const qtyElement = document.getElementById('qty');
-      const totalPriceElement = document.getElementById('total_price');
-  
-      if (!priceElement || !qtyElement || !totalPriceElement) return;
-  
-      const price = parseFloat(priceElement.getAttribute('data-price'));
-      const qty = parseInt(qtyElement.value, 10) || 1;
-  
-      totalPriceElement.textContent = "₹" + (qty * price).toFixed(2);
-    }
-  
-    document.getElementById('qty')?.addEventListener('input', updateTotalPrice);
-  </script>
-  
-</body>
-</html> -->
-
-<!-- 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Place Order</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f5f5f5;
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      max-width: 800px;
-      background: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    .hidden { display: none; }
-  </style>
-  <script>
-    function updateTotalPrice() {
-      let price = parseFloat(document.getElementById('priceData').getAttribute('data-price'));
-      let qty = document.getElementById('qty').value;
-      document.getElementById('total_price').textContent = "₹" + (price * qty).toFixed(2);
-    }
-  </script>
-</head>
-<body>
-
-  <div class="container mt-4">
-    <h2 class="text-center">Place Your Order</h2>
-    
-    <form method="POST">
-      {% csrf_token %}
-
-      <div>
-        <label for="name">Your Name:</label>
-        <input type="text" name="name" id="name" class="form-control" required>
-      </div>
-      <div>
-        <label for="address">Address:</label>
-        <textarea name="address" id="address" class="form-control" rows="3" required></textarea>
-      </div>
-      <div>
-        <label for="phone_number">Phone Number:</label>
-        <input type="text" name="phone_number" id="phone_number" class="form-control" required>
-      </div>
-      <div>
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" class="form-control" required>
-      </div>
-      <div>
-        <label for="date">Wedding Date:</label>
-        <input type="date" name="date" id="date" class="form-control" required>
-      </div>
-
-      {% if card %}
-        <div>
-          <h4>Invitation Card Details</h4>
-          <p><strong>Name:</strong> {{ card.name }}</p>
-          <p><strong>Price per card:</strong> ₹{{ card.price }}</p>
-
-          <label for="qty">Quantity:</label>
-          <input type="number" name="qty" id="qty" class="form-control" value="1" min="1" required onchange="updateTotalPrice()">
-          
-          <p><strong>Total Price:</strong> <span id="total_price">₹{{ card.price }}</span></p>
-          <div id="priceData" data-price="{{ card.price|floatformat:2 }}"></div>
-
-          <label for="message">Customize Message:</label>
-          <textarea name="message" id="message" class="form-control" rows="3"></textarea>
-        </div>
-      {% elif des %}
-        <div>
-          <h4>Destination Wedding Details</h4>
-          <p><strong>Location:</strong> {{ des.location }}</p>
-          <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
-        </div>
-      {% elif items %}
-        <div>
-          <h4>Selected Items</h4>
-          {% for item in items %}
-            <div>
-              <p><strong>{{ item.name }}</strong> - ₹{{ item.price }}</p>
-              <label for="qty_{{ item.id }}">Quantity:</label>
-              <input type="number" name="qty_{{ item.id }}" id="qty_{{ item.id }}" class="form-control" value="1" min="1">
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-
-      <button type="submit" class="btn btn-primary mt-3">
-        {% if card %} Place Order for Invitation Card
-        {% elif des %} Book Destination Wedding
-        {% elif items %} Confirm Item Purchase
-        {% endif %}
-      </button>
-
-    </form>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html> -->
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Place Order</title>
@@ -849,7 +279,7 @@
 </html> -->
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -915,4 +345,408 @@
 </div>
 </body>
 </html>
+ -->
 
+ 
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Place Order</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+      max-width: 900px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-top: 40px;
+    }
+
+    h2 {
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .saved-address-box {
+      border: 2px dashed #198754;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #e9f7ef;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .saved-address-box h5 {
+      margin-bottom: 15px;
+    }
+
+    .highlight {
+      background-color: #e0f7fa;
+      transition: background-color 0.5s ease;
+    }
+
+    .btn-use-address {
+      background-color: #198754;
+      color: white;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-use-address:hover {
+      background-color: #145c43;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" data-aos="fade-up">
+  <h2 class="text-center">Place Your Order</h2>
+
+  {% if user_address %}
+  <div id="saved-address-box" class="saved-address-box"
+       data-name="{{ user_address.name }}"
+       data-address="{{ user_address.address }}"
+       data-phone="{{ user_address.phone_number }}"
+       data-email="{{ user_address.email }}">
+    <h5>Saved Address</h5>
+    <p><strong>Name:</strong> {{ user_address.name }}</p>
+    <p><strong>Address:</strong> {{ user_address.address }}</p>
+    <p><strong>Phone:</strong> {{ user_address.phone_number }}</p>
+    <p><strong>Email:</strong> {{ user_address.email }}</p>
+
+    <button type="button" id="use-saved-address-btn" class="btn btn-use-address mt-2">Use Saved Address</button>
+  </div>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="name">Your Name:</label>
+      <input type="text" name="name" id="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="address">Address:</label>
+      <textarea name="address" id="address" class="form-control" rows="3" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="phone_number">Phone Number:</label>
+      <input type="text" name="phone_number" id="phone_number" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="date">Wedding Date:</label>
+      <input type="date" name="date" id="date" class="form-control" required>
+    </div>
+
+    {% if items %}
+    <div class="mt-4">
+      <h4>Selected Items</h4>
+      {% for item in items %}
+      <div class="mb-3 p-3 border rounded">
+        <p><strong>{{ item.name }}</strong> - ₹{{ item.category.price|floatformat:2 }}</p>
+
+        <label for="qty_{{ item.id }}">Quantity:</label>
+        <input type="number" name="qty_{{ item.id }}" id="qty_{{ item.id }}" class="form-control" value="1" min="1"
+               data-price="{{ item.category.price|floatformat:2 }}" onchange="updateTotalPrice('{{ item.id }}')">
+
+        <p><strong>Total Price:</strong> <span id="total_price_{{ item.id }}">₹{{ item.category.price|floatformat:2 }}</span></p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary mt-3 w-100">Confirm Order</button>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const useAddressBtn = document.getElementById('use-saved-address-btn');
+      const savedAddressBox = document.getElementById('saved-address-box');
+
+      if (useAddressBtn && savedAddressBox) {
+          useAddressBtn.addEventListener('click', function () {
+              const name = savedAddressBox.getAttribute('data-name');
+              const address = savedAddressBox.getAttribute('data-address');
+              const phone = savedAddressBox.getAttribute('data-phone');
+              const email = savedAddressBox.getAttribute('data-email');
+
+              document.getElementById('name').value = name;
+              document.getElementById('address').value = address;
+              document.getElementById('phone_number').value = phone;
+              document.getElementById('email').value = email;
+
+              document.querySelectorAll('#name, #address, #phone_number, #email').forEach(input => {
+                  input.classList.add('highlight');
+                  setTimeout(() => input.classList.remove('highlight'), 1000);
+              });
+          });
+      }
+  });
+
+  function updateTotalPrice(id) {
+      let qtyElement = document.getElementById('qty_' + id);
+      let price = parseFloat(qtyElement.getAttribute('data-price'));
+      let qty = parseInt(qtyElement.value) || 1;
+      let totalPrice = (price * qty).toFixed(2);
+      document.getElementById('total_price_' + id).textContent = "₹" + totalPrice;
+  }
+</script>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+  AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Place Order</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+      max-width: 900px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-top: 40px;
+    }
+
+    h2 {
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .saved-address-box {
+      border: 2px dashed #198754;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #e9f7ef;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .saved-address-box h5 {
+      margin-bottom: 15px;
+    }
+
+    .highlight {
+      background-color: #e0f7fa;
+      transition: background-color 0.5s ease;
+    }
+
+    .btn-use-address {
+      background-color: #198754;
+      color: white;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-use-address:hover {
+      background-color: #145c43;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" data-aos="fade-up">
+  <h2 class="text-center">Place Your Order</h2>
+
+  {% if user_address %}
+  <div id="saved-address-box" class="saved-address-box"
+       data-name="{{ user_address.name }}"
+       data-address="{{ user_address.address }}"
+       data-phone="{{ user_address.phone_number }}"
+       data-email="{{ user_address.email }}">
+    <h5>Saved Address</h5>
+    <p><strong>Name:</strong> {{ user_address.name }}</p>
+    <p><strong>Address:</strong> {{ user_address.address }}</p>
+    <p><strong>Phone:</strong> {{ user_address.phone_number }}</p>
+    <p><strong>Email:</strong> {{ user_address.email }}</p>
+
+    <button type="button" id="use-saved-address-btn" class="btn btn-use-address mt-2">Use Saved Address</button>
+  </div>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="name">Your Name:</label>
+      <input type="text" name="name" id="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="address">Address:</label>
+      <textarea name="address" id="address" class="form-control" rows="3" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="phone_number">Phone Number:</label>
+      <input type="text" name="phone_number" id="phone_number" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="date">Wedding Date:</label>
+      <input type="date" name="date" id="date" class="form-control" required>
+    </div>
+
+    {% if card %}
+      <div class="mt-4">
+        <h4>Invitation Card Details</h4>
+        <p><strong>Name:</strong> {{ card.name }}</p>
+        <p><strong>Price per card:</strong> ₹{{ card.price|floatformat:2 }}</p>
+
+        <label for="qty_card">Quantity:</label>
+        <input type="number" name="qty_card" id="qty_card" class="form-control" value="1" min="1"
+               data-price="{{ card.price|floatformat:2 }}" onchange="updateTotalPrice('card')">
+
+        <p><strong>Total Price:</strong> <span id="total_price_card">₹{{ card.price|floatformat:2 }}</span></p>
+
+        <label for="message">Customize Message:</label>
+        <textarea name="message" id="message" class="form-control" rows="3"></textarea>
+      </div>
+    {% endif %}
+
+    {% if des %}
+      <div class="mt-4">
+        <h4>Destination Wedding Details</h4>
+        <p><strong>Location:</strong> {{ des.location }}</p>
+        <p><strong>Package Price:</strong> ₹{{ des.package_price }}</p>
+
+        <p><strong>Total Price:</strong> <span id="total_price_des">₹{{ des.package_price }}</span></p>
+      </div>
+    {% endif %}
+
+    {% if items %}
+      <div class="mt-4">
+        <h4>Selected Items</h4>
+        {% for item in items %}
+          <div class="mb-3 p-3 border rounded">
+          
+            <p><strong>{{ item.name }}</strong> - ₹{{ item.category.price|floatformat:2 }}</p>
+
+            <label for="qty_{{ item.id }}">Quantity:</label>
+            <input type="number" name="qty_{{ item.id }}" id="qty_{{ item.id }}" class="form-control" value="1" min="1"
+                   data-price="{{ item.category.price|floatformat:2 }}" onchange="updateTotalPrice('{{ item.id }}')">
+
+            <p><strong>Total Price:</strong> <span id="total_price_{{ item.id }}">₹{{ item.category.price|floatformat:2 }}</span></p>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary mt-3 w-100">
+      {% if card %} Place Order for Invitation Card
+      {% elif des %} Book Destination Wedding
+      {% elif items %} Confirm Item Purchase
+      {% else %} Confirm Order
+      {% endif %}
+    </button>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const useAddressBtn = document.getElementById('use-saved-address-btn');
+      const savedAddressBox = document.getElementById('saved-address-box');
+
+      if (useAddressBtn && savedAddressBox) {
+          useAddressBtn.addEventListener('click', function () {
+              const name = savedAddressBox.getAttribute('data-name');
+              const address = savedAddressBox.getAttribute('data-address');
+              const phone = savedAddressBox.getAttribute('data-phone');
+              const email = savedAddressBox.getAttribute('data-email');
+
+              document.getElementById('name').value = name;
+              document.getElementById('address').value = address;
+              document.getElementById('phone_number').value = phone;
+              document.getElementById('email').value = email;
+
+              document.querySelectorAll('#name, #address, #phone_number, #email').forEach(input => {
+                  input.classList.add('highlight');
+                  setTimeout(() => input.classList.remove('highlight'), 1000);
+              });
+          });
+      }
+  });
+
+  function updateTotalPrice(id) {
+      let qtyElement = document.getElementById('qty_' + id);
+      let price = parseFloat(qtyElement.getAttribute('data-price'));
+      let qty = parseInt(qtyElement.value) || 1;
+      let totalPrice = (price * qty).toFixed(2);
+      document.getElementById('total_price_' + id).textContent = "₹" + totalPrice;
+  }
+</script>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+  AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

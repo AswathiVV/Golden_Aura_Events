@@ -14,6 +14,9 @@ from django.http import JsonResponse
 import razorpay
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 def shop_login(req):
     if 'shop' in req.session:
@@ -557,37 +560,81 @@ def des_address_page(req, id):
     return render(req, 'user/order.html', {'des': des})
 
 
+# def items_address_page(request, item_ids):
+#     item_ids = item_ids.split(',')  
+#     items = Item.objects.select_related('category').filter(id__in=item_ids) 
+
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         address = request.POST.get('address')
+#         phone_number = request.POST.get('phone_number')
+#         email = request.POST.get('email')
+#         order_date = request.POST.get('date')
+
+#         user_address = Address(user=request.user, name=name, address=address, phone_number=phone_number, email=email)
+#         user_address.save()
+
+#         for item in items:
+#             quantity = int(request.POST.get(f'qty_{item.id}', 1))  
+#             price = item.category.price  
+
+#             order = BuyItem(
+#                 user=request.user, 
+#                 item=item, 
+#                 quantity=quantity,  
+#                 price=price,  
+#                 date=order_date, 
+#                 address=user_address
+#             )
+#             order.save()
+
+#         return redirect('view_bookings')  
+
+#     return render(request, 'user/order.html', {'items': items})
+@login_required
 def items_address_page(request, item_ids):
     item_ids = item_ids.split(',')  
-    items = Item.objects.select_related('category').filter(id__in=item_ids) 
+    items = Item.objects.select_related('category').filter(id__in=item_ids)
+
+    user_address = Address.objects.filter(user=request.user).first()
 
     if request.method == 'POST':
-        name = request.POST.get('name')
-        address = request.POST.get('address')
-        phone_number = request.POST.get('phone_number')
-        email = request.POST.get('email')
-        order_date = request.POST.get('date')
+        use_saved_address = request.POST.get('use_saved_address')
 
-        user_address = Address(user=request.user, name=name, address=address, phone_number=phone_number, email=email)
-        user_address.save()
+        if use_saved_address == 'yes' and user_address:
+            selected_address = user_address
+        else:
+            name = request.POST.get('name')
+            address = request.POST.get('address')
+            phone_number = request.POST.get('phone_number')
+            email = request.POST.get('email')
+
+            selected_address = Address(
+                user=request.user,
+                name=name,
+                address=address,
+                phone_number=phone_number,
+                email=email
+            )
+            selected_address.save()
 
         for item in items:
-            quantity = int(request.POST.get(f'qty_{item.id}', 1))  
-            price = item.category.price  
+            quantity = int(request.POST.get(f'qty_{item.id}', 1))
+            price = item.category.price
 
             order = BuyItem(
-                user=request.user, 
-                item=item, 
-                quantity=quantity,  
-                price=price,  
-                date=order_date, 
-                address=user_address
+                user=request.user,
+                item=item,
+                quantity=quantity,
+                price=price,
+                date=request.POST.get('date'),
+                address=selected_address  
             )
             order.save()
 
         return redirect('view_bookings')  
 
-    return render(request, 'user/order.html', {'items': items})
+    return render(request, 'user/order.html', {'items': items, 'user_address': user_address})
 
 
 
@@ -792,3 +839,116 @@ def cancel_booking(request, booking_type, booking_id):
 #         return redirect("view_bookings")
 
 
+
+
+@login_required
+def profile_view(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    addresses = Address.objects.filter(user=request.user)
+    return render(request, 'user/profile.html', {'profile': profile, 'addresses': addresses})
+
+@login_required
+def add_address(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        address_text = request.POST.get('address')
+        phone_number = request.POST.get('phone_number')
+
+        if name and address_text and phone_number:
+            address = Address.objects.create(
+                user=request.user,
+                name=name,
+                address=address_text,
+                phone_number=phone_number
+            )
+
+            profile, created = Profile.objects.get_or_create(user=request.user)
+            if not profile.primary_address:
+                profile.primary_address = address
+                profile.save()
+
+            messages.success(request, "Address added successfully.")
+            return redirect('profile_view')
+        else:
+            messages.error(request, "All fields are required.")
+
+    return render(request, 'user/profile.html')
+
+@login_required
+def edit_address(request, address_id):
+    address = get_object_or_404(Address, id=address_id, user=request.user)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        address_text = request.POST.get('address')
+        phone_number = request.POST.get('phone_number')
+
+        if name and address_text and phone_number:
+            address.name = name
+            address.address = address_text
+            address.phone_number = phone_number
+            address.save()
+
+            messages.success(request, "Address updated successfully.")
+            return redirect('profile_view')
+        else:
+            messages.error(request, "All fields are required.")
+
+    return render(request, 'user/profile.html', {'address': address})
+
+@login_required
+def delete_address(request, address_id):
+    address = get_object_or_404(Address, id=address_id, user=request.user)
+    profile = get_object_or_404(Profile, user=request.user)
+
+    if profile.primary_address == address:
+        profile.primary_address = None
+        profile.save()
+
+    address.delete()
+    messages.success(request, "Address deleted successfully.")
+    return redirect(profile_view)
+
+
+@login_required
+def delete_account(request):
+    if request.method == "POST":
+        user = request.user
+        user.delete()
+        logout(request)
+        messages.success(request, "Your account has been deleted successfully.")
+        return redirect('login')
+    
+    return render(request, "user/profile.html")
+
+
+
+@login_required
+def update_profile(request):
+    if request.method == "POST":
+        user = request.user
+        first_name = request.POST.get("first_name", "").strip()
+        username = request.POST.get("username", "").strip()
+
+        if not first_name or not username:
+            messages.error(request, "Both fields are required.")
+            return render(request, "user/profile.html", {"user": user})
+
+        try:
+            validate_email(username)
+        except ValidationError:
+            messages.error(request, "Invalid email format.")
+            return render(request, "user/profile.html", {"user": user})
+
+        if user.username != username and user.__class__.objects.filter(username=username).exists():
+            messages.error(request, "This email is already in use.")
+            return render(request, "user/profile.html", {"user": user})
+
+        user.first_name = first_name
+        user.username = username
+        user.save()
+
+        messages.success(request, "Profile updated successfully.")
+        return redirect("profile_view")
+
+    return render(request, "user/profile.html", {"user": request.user})

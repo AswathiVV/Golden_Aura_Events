@@ -138,3 +138,9 @@ class BuyInv(models.Model):
 
     # def can_cancel(self):
     #     return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'
+
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    primary_address=models.ForeignKey(Address, on_delete=models.SET_NULL,null=True,blank=True)    

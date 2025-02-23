@@ -57,6 +57,12 @@ urlpatterns=[
     path('cancel-booking/<str:booking_type>/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
 
 
+    path('profile/', views.profile_view, name='profile_view'),
+    path('add-address/', views.add_address, name='add_address'),
+    path('edit-address/<int:address_id>/', views.edit_address, name='edit_address'),
+    path('delete-address/<int:address_id>/', views.delete_address, name='delete_address'),
+    path('delete_account', views.delete_account, name='delete_account'),
+    path('update_profile', views.update_profile, name='update_profile'),
 
 
 # path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),
