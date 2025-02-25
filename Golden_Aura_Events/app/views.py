@@ -171,6 +171,37 @@ def register(req):
 
     return render(req, 'register.html')
 
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+
+def contact_us(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        subject = f"New Message from {name}"
+        message_body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+
+        try:
+            send_mail(
+                subject,
+                message_body,
+                settings.EMAIL_HOST_USER,
+                ['lunessence2@gmail.com'],
+                fail_silently=False
+            )
+            messages.success(request, "Your message has been sent successfully!")
+        except:
+            messages.error(request, "Failed to send your message. Please try again.")
+
+        return redirect(contact_us)  # Redirect back to the Contact Us page after submission
+
+    return render(request, 'user/contact.html')
+
+
 #--------------------- admin-------------------------------------------------------------------------------------------  
 def shop_home(req):
     if 'shop' in req.session:
@@ -498,71 +529,9 @@ def buy_item(req, id):
     item = get_object_or_404(Item, pk=id)  
     return redirect(items_address_page, id=id)
 
-def invitation_address_page(request, id):
-    card = InvitationCard.objects.get(pk=id)
 
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        address = request.POST.get('address')
-        phone_number = request.POST.get('phone_number')
-        email = request.POST.get('email')
-        order_date = request.POST.get('date')
-        order=Order.objects.get(pk=request.session['order_id'])
-
-
-        quantity = request.POST.get('qty_card', '1')  
-        try:
-            quantity = int(quantity)
-        except ValueError:
-            quantity = 1  
-
-        user_address = Address(user=request.user, name=name, address=address, phone_number=phone_number, email=email)
-        user_address.save()
-
-        price = card.price
-
-        buy = BuyInv(
-            user=request.user,
-            inv=card,
-            qty=quantity,  
-            price=price,
-            date=order_date,
-            address=user_address,
-            order=order
-
-        )
-        buy.save()
-
-        return redirect(view_bookings)
-    
-
-    return render(request, 'user/order.html', {'card': card})
-
-
-def des_address_page(req, id):
-    des = DestinationWedding.objects.get(id=id)
-
-    if req.method == 'POST':
-        name = req.POST.get('name')
-        address = req.POST.get('address')
-        phone_number = req.POST.get('phone_number')
-        email = req.POST.get('email')
-        wedding_date = req.POST.get('date')  
-
-        user_address = Address(user=req.user, name=name, address=address, phone_number=phone_number, email=email)
-        user_address.save()
-
-        buy = BuyDesWedding(user=req.user, des=des, price=des.package_price, date=wedding_date, address=user_address)
-        buy.save()
-
-        return redirect(view_bookings)
-
-    return render(req, 'user/order.html', {'des': des})
-
-
-# def items_address_page(request, item_ids):
-#     item_ids = item_ids.split(',')  
-#     items = Item.objects.select_related('category').filter(id__in=item_ids) 
+# def invitation_address_page(request, id):
+#     card = InvitationCard.objects.get(pk=id)
 
 #     if request.method == 'POST':
 #         name = request.POST.get('name')
@@ -570,27 +539,142 @@ def des_address_page(req, id):
 #         phone_number = request.POST.get('phone_number')
 #         email = request.POST.get('email')
 #         order_date = request.POST.get('date')
+#         order=Order.objects.get(pk=request.session['order_id'])
+
+
+#         quantity = request.POST.get('qty_card', '1')  
+#         try:
+#             quantity = int(quantity)
+#         except ValueError:
+#             quantity = 1  
 
 #         user_address = Address(user=request.user, name=name, address=address, phone_number=phone_number, email=email)
 #         user_address.save()
 
-#         for item in items:
-#             quantity = int(request.POST.get(f'qty_{item.id}', 1))  
-#             price = item.category.price  
+#         price = card.price
 
-#             order = BuyItem(
-#                 user=request.user, 
-#                 item=item, 
-#                 quantity=quantity,  
-#                 price=price,  
-#                 date=order_date, 
-#                 address=user_address
-#             )
-#             order.save()
+#         buy = BuyInv(
+#             user=request.user,
+#             inv=card,
+#             qty=quantity,  
+#             price=price,
+#             date=order_date,
+#             address=user_address,
+#             order=order
 
-#         return redirect('view_bookings')  
+#         )
+#         buy.save()
 
-#     return render(request, 'user/order.html', {'items': items})
+#         return redirect(view_bookings)
+    
+
+#     return render(request, 'user/order.html', {'card': card})
+
+@login_required
+def invitation_address_page(request, id):
+    card = InvitationCard.objects.get(pk=id)
+    user_address = Address.objects.filter(user=request.user).first()
+
+    if request.method == 'POST':
+        use_saved_address = request.POST.get('use_saved_address')
+
+        if use_saved_address == 'yes' and user_address:
+            selected_address = user_address
+        else:
+            name = request.POST.get('name')
+            address = request.POST.get('address')
+            phone_number = request.POST.get('phone_number')
+            email = request.POST.get('email')
+
+            selected_address = Address(
+                user=request.user,
+                name=name,
+                address=address,
+                phone_number=phone_number,
+                email=email
+            )
+            selected_address.save()
+
+        quantity = int(request.POST.get('qty_card', 1))
+        price = card.price
+
+        buy_inv = BuyInv(
+            user=request.user,
+            inv=card,
+            qty=quantity,
+            price=price,
+            date=request.POST.get('date'),
+            address=selected_address
+        )
+        buy_inv.save()
+
+        return redirect('view_bookings')  # Redirect after saving
+
+    return render(request, 'user/order.html', {'card': card, 'user_address': user_address})
+
+
+# def des_address_page(req, id):
+#     des = DestinationWedding.objects.get(id=id)
+
+#     if req.method == 'POST':
+#         name = req.POST.get('name')
+#         address = req.POST.get('address')
+#         phone_number = req.POST.get('phone_number')
+#         email = req.POST.get('email')
+#         wedding_date = req.POST.get('date')  
+
+#         user_address = Address(user=req.user, name=name, address=address, phone_number=phone_number, email=email)
+#         user_address.save()
+
+#         buy = BuyDesWedding(user=req.user, des=des, price=des.package_price, date=wedding_date, address=user_address)
+#         buy.save()
+
+#         return redirect(view_bookings)
+
+#     return render(req, 'user/order.html', {'des': des})
+
+@login_required
+def des_address_page(request, id):
+    des = DestinationWedding.objects.get(id=id)
+    user_address = Address.objects.filter(user=request.user).first()  # Get saved address if available
+
+    if request.method == 'POST':
+        use_saved_address = request.POST.get('use_saved_address')
+
+        if use_saved_address == 'yes' and user_address:
+            selected_address = user_address  # Use saved address
+        else:
+            name = request.POST.get('name')
+            address = request.POST.get('address')
+            phone_number = request.POST.get('phone_number')
+            email = request.POST.get('email')
+
+            selected_address = Address(
+                user=request.user,
+                name=name,
+                address=address,
+                phone_number=phone_number,
+                email=email
+            )
+            selected_address.save()  
+
+        wedding_date = request.POST.get('date')
+
+
+        buy = BuyDesWedding(
+            user=request.user,
+            des=des,
+            price=des.package_price,
+            date=wedding_date,
+            address=selected_address
+        )
+        buy.save()
+
+        return redirect('view_bookings')
+
+    return render(request, 'user/order.html', {'des': des, 'user_address': user_address})
+
+
 @login_required
 def items_address_page(request, item_ids):
     item_ids = item_ids.split(',')  
@@ -743,100 +827,6 @@ def cancel_booking(request, booking_type, booking_id):
 #         return redirect('order_payment', service_type='item', id=item_ids[0])
 
 #     return render(request, 'user/order.html', {'items': items})
-
-# # ---------------------- Payment Flow ----------------------
-# def order_payment(request, obj_type, obj_id):
-#     if 'user' in request.session:
-#         user = get_object_or_404(User, username=request.session['user'])
-
-#         if obj_type == "wedding":
-#             service = get_object_or_404(DestinationWedding, pk=obj_id)
-#             amount = service.package_price
-#         elif obj_type == "invitation":
-#             service = get_object_or_404(InvitationCard, pk=obj_id)
-#             amount = service.price
-#         elif obj_type == "item":
-#             service = get_object_or_404(Item, pk=obj_id)
-#             amount = service.category.price
-#         else:
-#             messages.error(request, "Invalid service type.")
-#             return redirect('user_home')
-
-#         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-#         razorpay_order = client.order.create({
-#             "amount": int(amount) * 100,
-#             "currency": "INR",
-#             "payment_capture": "1"
-#         })
-#         order = Order.objects.create(
-#             user=user,
-#             price=amount,
-#             provider_order_id=razorpay_order['id']
-#         )
-#         request.session['order_id'] = order.pk
-
-#         return render(request, "user/order.html", {
-#             "callback_url": "http://127.0.0.1:8000/callback/",
-#             "razorpay_key": settings.RAZORPAY_KEY_ID,
-#             "order": order,
-#         })
-#     else:
-#         return redirect(shop_login)
-
-# # ---------------------- Razorpay Callback ----------------------
-
-# @csrf_exempt
-# def callback(request):
-#     def verify_signature(response_data):
-#         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-#         return client.utility.verify_payment_signature(response_data)
-
-#     if "razorpay_signature" in request.POST:
-#         payment_id = request.POST.get("razorpay_payment_id", "")
-#         provider_order_id = request.POST.get("razorpay_order_id", "")
-#         signature_id = request.POST.get("razorpay_signature", "")
-
-#         order = get_object_or_404(Order, provider_order_id=provider_order_id)
-#         order.payment_id = payment_id
-#         order.signature_id = signature_id
-
-#         if not verify_signature(request.POST):
-#             order.status = PaymentStatus.SUCCESS
-#             messages.success(request, "Payment successful!")
-
-#             # Booking based on service type
-#             service_type = request.session.get('service_type')
-#             service_id = request.session.get('service_id')
-
-#             if service_type == "wedding":
-#                 des = get_object_or_404(DestinationWedding, pk=service_id)
-#                 BuyDesWedding.objects.create(user=request.user, des=des, price=des.package_price, order=order)
-
-#             elif service_type == "invitation":
-#                 card = get_object_or_404(InvitationCard, pk=service_id)
-#                 quantity = int(request.session.get('quantity', 1))
-#                 BuyInv.objects.create(user=request.user, inv=card, qty=quantity, price=card.price * quantity, order=order)
-
-#             elif service_type == "item":
-#                 item_ids = request.session.get('service_ids', [])
-#                 items = Item.objects.filter(id__in=item_ids)
-#                 for item in items:
-#                     BuyItem.objects.create(user=request.user, item=item, quantity=1, price=item.category.price, order=order)
-
-#         else:
-#             order.status = PaymentStatus.FAILURE
-#             messages.error(request, "Payment verification failed.")
-#         order.save()
-
-#         return redirect("view_bookings")
-#     else:
-#         error_data = json.loads(request.POST.get("error[metadata]", '{}'))
-#         provider_order_id = error_data.get("order_id")
-#         order = get_object_or_404(Order, provider_order_id=provider_order_id)
-#         order.status = PaymentStatus.FAILURE
-#         order.save()
-#         messages.error(request, "Payment failed.")
-#         return redirect("view_bookings")
 
 
 
