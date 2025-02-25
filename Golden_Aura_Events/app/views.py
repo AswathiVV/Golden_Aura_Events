@@ -171,10 +171,10 @@ def register(req):
 
     return render(req, 'register.html')
 
-from django.shortcuts import render, redirect
-from django.core.mail import send_mail
-from django.conf import settings
-from django.contrib import messages
+# from django.shortcuts import render, redirect
+# from django.core.mail import send_mail
+# from django.conf import settings
+# from django.contrib import messages
 
 def contact_us(request):
     if request.method == 'POST':
@@ -197,7 +197,7 @@ def contact_us(request):
         except:
             messages.error(request, "Failed to send your message. Please try again.")
 
-        return redirect(contact_us)  # Redirect back to the Contact Us page after submission
+        return redirect(contact_us) 
 
     return render(request, 'user/contact.html')
 
