@@ -9,6 +9,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 </head>
@@ -157,6 +161,136 @@
         border-radius: 5px;
     }
 
+    
+.footer {
+    background:white; 
+    color: #fff; 
+    padding: 50px 20px;
+    border-top: 1px solid #333;
+
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: auto;
+    text-align: left;
+}
+
+.footer-section h4 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: black; 
+    text-transform: uppercase;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 3rem;
+}
+
+.footer-section ul li {
+    margin-bottom: 20px;
+}
+
+.footer-section ul li a {
+    text-decoration: none;
+    color: #403f3f; 
+    transition: color 0.3s ease-in-out;
+    font-size: 14px;
+}
+
+.footer-section ul li a:hover {
+    color: #D4AF37;
+}
+
+.footer-extras {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: auto;
+    padding-top: 30px;
+    border-top: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+
+.social-icons h4,
+.payment-icons h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #6b6b6a;
+    text-transform: uppercase;
+}
+
+.social-icons,
+.payment-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Social Media Icons Styling */
+.social-icons a {
+    font-size: 24px;
+    /* color: black; */
+    transition: color 0.3s ease-in-out;
+}
+
+.social-icons a:hover {
+    color: #D4AF37;
+}
+
+/* Payment Icons */
+.payment-icons i {
+    font-size: 28px;
+    /* color: black; */
+    transition: color 0.3s ease-in-out;
+}
+
+.payment-icons i:hover {
+    color: #D4AF37;
+}
+
+.footer-bottom {
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    border-top: 1px solid #333;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1rem;
+    }
+    .footer-section ul {
+        margin-bottom: 0px;
+    }
+
+    .footer-extras {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .social-icons,
+    .payment-icons {
+        justify-content: center;
+    }
+}
+
     @media (max-width: 500px) {
         h1 {
             font-size: 2rem;
@@ -205,7 +339,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="../">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../about">About</a>
@@ -288,6 +422,71 @@
             </ul>
         </nav>
     </div>
+ 
+
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="#">Destination Weddings</a></li>
+                    <li><a href="#">Catering</a></li>
+                    <li><a href="#">Invitation Design</a></li>
+                    <li><a href="#">Event Planning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Order Tracking</a></li>
+                    <li><a href="#">Customer Service</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Terms & Policies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="#">My Account</a></li>
+                    <li><a href="#">My Orders</a></li>
+                    <li><a href="#">Wishlist</a></li>
+                    <li><a href="#">Refer a Friend</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <ul>
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Our Team</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <div class="footer-extras">
+            <div class="social-icons">
+                <h4>Follow Us</h4>
+                <a href="#"><i class="fab fa-facebook" style="color: #1877F2;"></i></a> 
+                <a href="#"><i class="fab fa-instagram" style="color: #E4405F;"></i></a> 
+                <a href="#"><i class="fab fa-pinterest" style="color: #BD081C;"></i></a>
+                <a href="#"><i class="fab fa-tiktok" style="color: #000000;"></i></a> 
+            </div>
+            
+            <div class="payment-icons">
+                <h4>We Accept</h4>
+                <a href="#"><i class="fa-brands fa-cc-visa" style="color: #1A1F71;"></i></a> 
+                <a href="#"><i class="fa-brands fa-cc-mastercard" style="color: #EB001B;"></i></a> 
+                <a href="#"><i class="fa-brands fa-cc-paypal" style="color: #003087;"></i></a> 
+                <a href="#"><i class="fa-brands fa-cc-amex" style="color: #007BC1;"></i></a> 
+            </div>
+        </div>
+    
+        <div class="footer-bottom">
+            <p>Copyright &copy; 2025 Golden Aura. All Rights Reserved.</p>
+        </div>
+    </footer>    
     
 
 </body>

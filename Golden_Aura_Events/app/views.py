@@ -190,7 +190,7 @@ def contact_us(request):
                 subject,
                 message_body,
                 settings.EMAIL_HOST_USER,
-                ['lunessence2@gmail.com'],
+                ['goldenaurae@gmail.com'],
                 fail_silently=False
             )
             messages.success(request, "Your message has been sent successfully!")
