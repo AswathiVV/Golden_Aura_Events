@@ -149,7 +149,7 @@
 </body>
 </html> -->
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -212,7 +212,6 @@
   <div class="container my-5">
     <h1 class="mb-4 text-center">Your Bookings</h1>
 
-    <!-- Destination Wedding Bookings -->
     <h2 class="text-center mb-4">Destination Wedding Bookings ({{ destination_bookings|length }})</h2>
     {% if destination_bookings %}
       {% for booking in destination_bookings %}
@@ -241,7 +240,6 @@
       <p class="text-center">No destination wedding bookings found.</p>
     {% endif %}
 
-    <!-- Invitation Card Bookings -->
     <h2 class="text-center mb-4">Invitation Card Bookings ({{ invitation_bookings|length }})</h2>
     {% if invitation_bookings %}
       {% for booking in invitation_bookings %}
@@ -270,7 +268,6 @@
       <p class="text-center">No invitation card bookings found.</p>
     {% endif %}
 
-    <!-- Item Bookings -->
     <h2 class="text-center mb-4">Item Bookings ({{ item_bookings|length }})</h2>
     {% if item_bookings %}
       {% for booking in item_bookings %}
@@ -286,10 +283,7 @@
         </div>
         <div class="col-12 col-md-3 col-lg-3 text-center">
          
-          <!-- <a href="{% url 'cancel_booking' 'item' booking.id %}" class="btn btn-outline-danger bg-danger text-light">
-
-              Cancel Order
-            </a> -->
+        
         </div>
       </div>
       {% endfor %}
@@ -301,4 +295,200 @@
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Bookings</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    body {
+      background: #f7f7f7;
+      font-family: "Playfair Display", serif;
+    }
+    .booking-item {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .booking-item:hover {
+      background-color: #f1f1f1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transform: translateY(-3px);
+    }
+    .booking-img {
+      max-height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .booking-title {
+      font-size: 1.2rem;
+      color: #663233;
+      margin-bottom: 5px;
+    }
+    .booking-price {
+      font-size: 1rem;
+      color: #663233;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-5">
+    <h1 class="mb-4 text-center">Your Bookings</h1>
+    
+    <h2 class="text-center mb-4">Destination Wedding Bookings ({{ weddings|length }})</h2>
+    {% if weddings %}
+      {% for booking in weddings %}
+      <div class="booking-item row align-items-center">
+        <div class="col-4 col-md-3 col-lg-2">
+          <img src="{{ booking.des.img.url }}" alt="{{ booking.des.name }}" class="img-fluid booking-img">
+        </div>
+        <div class="col-8 col-md-6 col-lg-7">
+          <h4 class="booking-title">{{ booking.des.name }}</h4>
+          <h6 class="booking-price">₹ {{ booking.price }}</h6>
+          <p><strong>Booking Date:</strong> {{ booking.purchase_date }}</p>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 text-center">
+          <a href="{% url 'delete_order' booking.id %}" class="btn btn-outline-danger">Cancel Booking</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center">No destination wedding bookings found.</p>
+    {% endif %}
+
+    <h2 class="text-center mb-4">Invitation Card Bookings ({{ invitations|length }})</h2>
+    {% if invitations %}
+      {% for booking in invitations %}
+      <div class="booking-item row align-items-center">
+        <div class="col-4 col-md-3 col-lg-2">
+          <img src="{{ booking.inv.img1.url }}" alt="{{ booking.inv.name }}" class="img-fluid booking-img">
+        </div>
+        <div class="col-8 col-md-6 col-lg-7">
+          <h4 class="booking-title">{{ booking.inv.name }}</h4>
+          <h6 class="booking-price">₹ {{ booking.total_price }}</h6>
+          <p><strong>Booking Date:</strong> {{ booking.purchase_date }}</p>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 text-center">
+          <a href="{% url 'delete_order' booking.id %}" class="btn btn-outline-danger">Cancel Booking</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center">No invitation card bookings found.</p>
+    {% endif %}
+
+    <h2 class="text-center mb-4">Item Bookings ({{ items|length }})</h2>
+    {% if items %}
+      {% for booking in items %}
+      <div class="booking-item row align-items-center">
+        <div class="col-4 col-md-3 col-lg-2">
+          <img src="{{ booking.item.img.url }}" alt="{{ booking.item.name }}" class="img-fluid booking-img">
+        </div>
+        <div class="col-8 col-md-6 col-lg-7">
+          <h4 class="booking-title">{{ booking.item.name }}</h4>
+          <h6 class="booking-price">₹ {{ booking.total_price }}</h6>
+          <p><strong>Quantity:</strong> {{ booking.quantity }}</p>
+          <p><strong>Booking Date:</strong> {{ booking.purchase_date }}</p>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 text-center">
+          <a href="{% url 'delete_order' booking.id %}" class="btn btn-outline-danger">Cancel Booking</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center">No item bookings found.</p>
+    {% endif %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | Golden Aura</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container mt-3">
+        <b style="font-size: 1.5rem;">My Orders</b>
+        <hr class="mt-3 mb-5">
+
+        {% for order in items %}
+        <div class="row mt-5">
+            <div class="col-lg-5">
+                <img src="{{ order.item.img.url }}" class="img-fluid" alt="Item Image" style="width:250px; height: 300px;">
+            </div>
+            <div class="col-lg-6 mt-4">
+                <h5>{{ order.item.name }}</h5>
+                <p><b>Price per unit:</b> ₹{{ order.price }}</p>
+                <p><b>Total Price:</b> ₹{{ order.total_price }}</p>
+                <p><b>Quantity:</b> {{ order.quantity }}</p>
+                <p><b>Order Date:</b> {{ order.date }}</p>
+                <div>
+                    {% if not order.is_confirmed %}
+                        <a href="../delete_order/{{ order.id }}" class="btn btn-sm btn-danger">Cancel Order</a>
+                    {% endif %}
+                    <span class="badge {% if order.is_confirmed %}bg-success{% else %}bg-warning{% endif %}">
+                        {% if order.is_confirmed %}Confirmed{% else %}Pending{% endif %}
+                    </span>
+                </div>
+            </div>
+            <hr class="mt-3 mb-3">
+        </div>
+        {% endfor %}
+
+        {% for order in weddings %}
+        <div class="row mt-5">
+            <div class="col-lg-5">
+                <img src="{{ order.des.img.url }}" class="img-fluid" alt="Wedding Package" style="width:250px; height: 300px;">
+            </div>
+            <div class="col-lg-6 mt-4">
+                <h5>{{ order.des.name }}</h5>
+                <p><b>Location:</b> {{ order.des.location }}</p>
+                <p><b>Price:</b> ₹{{ order.price }}</p>
+                <p><b>Wedding Date:</b> {{ order.date }}</p>
+                <div>
+                    <span class="badge bg-info">Destination Wedding</span>
+                </div>
+            </div>
+            <hr class="mt-3 mb-3">
+        </div>
+        {% endfor %}
+
+        {% for order in invitations %}
+        <div class="row mt-5">
+            <div class="col-lg-5">
+                <img src="{{ order.inv.img1.url }}" class="img-fluid" alt="Invitation Card" style="width:250px; height: 300px;">
+            </div>
+            <div class="col-lg-6 mt-4">
+                <h5>{{ order.inv.name }}</h5>
+                <p><b>Price per card:</b> ₹{{ order.price }}</p>
+                <p><b>Total Price:</b> ₹{{ order.total_price }}</p>
+                <p><b>Quantity:</b> {{ order.qty }}</p>
+                <p><b>Order Date:</b> {{ order.date }}</p>
+                <div>
+                    <span class="badge bg-primary">Invitation Card</span>
+                </div>
+            </div>
+            <hr class="mt-3 mb-3">
+        </div>
+        {% endfor %}
+    </div>
+</body>
 </html>
+
+

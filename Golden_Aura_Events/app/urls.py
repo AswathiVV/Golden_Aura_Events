@@ -33,8 +33,20 @@ urlpatterns=[
     path("edit_invitation_card/<int:card_id>/", views.edit_invitation_card, name="edit_invitation_card"),
     path("delete_invitation_card/<int:card_id>/", views.delete_invitation_card, name="delete_invitation_card"),
 
-    path('bookings/',views.bookings, name='bookings'),
+    path('admin_bookings/',views.admin_bookings, name='admin_bookings'),
 
+    path('cancel_order/<int:order_id>/<str:order_type>/',views.cancel_order, name='cancel_order'),
+    path('confirm_order/<int:order_id>/<str:order_type>/',views.confirm_order, name='confirm_order'),
+
+    # path('toggle_confirmation/<int:order_id>/<str:order_type>/',views.toggle_confirmation, name='toggle_confirmation'),
+
+path('toggle_confirmation/<int:order_id>/<str:order_type>/', views.toggle_confirmation, name='toggle_confirmation'),
+
+
+    # path('admin_bookings/', views.admin_bookings, name='admin_bookings'),
+    # path('confirm_order/<int:order_id>/', views.confirm_order, name='confirm_order'),
+    # path('cancel_order/<int:order_id>/', views.cancel_order, name='cancel_order'),
+    # path('toggle_confirmation/<int:order_id>/', views.toggle_confirmation, name='toggle_confirmation'),
 
     #_____user______________________________________________________________________________
 
@@ -51,10 +63,10 @@ urlpatterns=[
     path('des_address_page/<int:id>/', views.des_address_page, name='des_address_page'),
     path('invitation_address_page/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
     path('order/address/items/<str:item_ids>/', views.items_address_page, name='items_address_page'),
-    path('view_bookings/', views.view_bookings, name='view_bookings'),
+    # path('view_bookings/', views.view_bookings, name='view_bookings'),
     path('item',views.item),
     path('buy_item/<int:id>/', views.buy_item, name='buy_item'), 
-    path('cancel-booking/<str:booking_type>/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
+    # path('cancel-booking/<str:booking_type>/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
 
 
     path('profile/', views.profile_view, name='profile_view'),
@@ -63,6 +75,11 @@ urlpatterns=[
     path('delete-address/<int:address_id>/', views.delete_address, name='delete_address'),
     path('delete_account', views.delete_account, name='delete_account'),
     path('update_profile', views.update_profile, name='update_profile'),
+
+
+    path('view_bookings/', views.view_bookings, name='view_bookings'),
+    path('user_orders/', views.user_orders, name='user_orders'),
+    path('delete_order/<int:id>/', views.delete_order, name='delete_order'),
 
 
 # path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),

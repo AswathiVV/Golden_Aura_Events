@@ -446,20 +446,111 @@ def delete_invitation_card(req, card_id):
 #     })
 
 
-def bookings(req):
-    if not req.user.is_superuser:
-        return redirect('login') 
+# def bookings(req):
+#     if not req.user.is_superuser:
+#         return redirect('login') 
 
-    destination_bookings = BuyDesWedding.objects.all().order_by('-id')
-    invitation_bookings = BuyInv.objects.all().order_by('-id')
-    item_bookings = BuyItem.objects.all().order_by('-id')
+#     destination_bookings = BuyDesWedding.objects.all().order_by('-id')
+#     invitation_bookings = BuyInv.objects.all().order_by('-id')
+#     item_bookings = BuyItem.objects.all().order_by('-id')
 
-    return render(req, 'shop/bookings.html', {
-        'destination_bookings': destination_bookings,
-        'invitation_bookings': invitation_bookings,
-        'item_bookings': item_bookings
+#     return render(req, 'shop/bookings.html', {
+#         'destination_bookings': destination_bookings,
+#         'invitation_bookings': invitation_bookings,
+#         'item_bookings': item_bookings
+#     })
+
+
+def admin_bookings(req):
+    users = User.objects.all()
+    
+    buy_items = BuyItem.objects.select_related('user', 'item', 'address', 'order').all().order_by('-purchase_date')
+    buy_weddings = BuyDesWedding.objects.select_related('user', 'des', 'address', 'order').all().order_by('-purchase_date')
+    buy_invites = BuyInv.objects.select_related('user', 'inv', 'address', 'order').all().order_by('-purchase_date')
+    
+    total_profit = (
+        sum(item.get_total_price() for item in buy_items) +
+        sum(wed.price for wed in buy_weddings) +
+        sum(inv.total_price() for inv in buy_invites)
+    )
+
+    return render(req, 'shop/admin_bookings.html', {
+        'users': users,
+        'buy_items': buy_items,
+        'buy_weddings': buy_weddings,
+        'buy_invites': buy_invites,
+        'total_profit': total_profit
     })
 
+
+def cancel_order(req, order_id, order_type):
+    """
+    Cancels an order based on its type.
+    order_type should be 'item', 'wedding', or 'inv'.
+    """
+    if order_type == "item":
+        order = get_object_or_404(BuyItem, pk=order_id)
+    elif order_type == "wedding":
+        order = get_object_or_404(BuyDesWedding, pk=order_id)
+    elif order_type == "inv":
+        order = get_object_or_404(BuyInv, pk=order_id)
+    else:
+        return redirect("admin_bookings")  # Invalid type, do nothing
+
+    order.delete()
+    return redirect("admin_bookings")
+
+
+def confirm_order(request, order_id, order_type):
+    if order_type == "item":
+        order = get_object_or_404(BuyItem, pk=order_id)
+        item_name = order.item.name
+    elif order_type == "wedding":
+        order = get_object_or_404(BuyDesWedding, pk=order_id)
+        item_name = order.des.name
+    elif order_type == "inv":
+        order = get_object_or_404(BuyInv, pk=order_id)
+        item_name = order.inv.name
+    else:
+        return redirect("admin_bookings")  # Invalid type, do nothing
+
+    if not order.is_confirmed:
+        order.is_confirmed = True
+        order.save()
+
+        subject = "Order Confirmation"
+        message = f"Dear {order.user.first_name},\n\nYour order ({item_name}) has been confirmed. Thank you for shopping with us!\n\nBest regards,\nDreamy Delights Team"
+
+        recipient_email = order.user.email  
+
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [recipient_email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            print(f"Email sending failed: {e}")
+
+    return redirect("admin_bookings")
+
+
+def toggle_confirmation(request, order_id, order_type):
+    if order_type == "item":
+        order = get_object_or_404(BuyItem, pk=order_id)
+    elif order_type == "wedding":
+        order = get_object_or_404(BuyDesWedding, pk=order_id)
+    elif order_type == "inv":
+        order = get_object_or_404(BuyInv, pk=order_id)
+    else:
+        return redirect(admin_bookings)  # Invalid type, do nothing
+
+    order.is_confirmed = True
+    order.save()
+
+    return redirect("admin_bookings")
 
 # #------------------------------------- User--------------------------------------------------------------
 
@@ -721,38 +812,91 @@ def items_address_page(request, item_ids):
     return render(request, 'user/order.html', {'items': items, 'user_address': user_address})
 
 
-
 def view_bookings(req):
-    user = User.objects.get(username=req.session['user'])
-    destination_bookings = BuyDesWedding.objects.filter(user=user)[::-1]
-    invitation_bookings = BuyInv.objects.filter(user=user)[::-1]
-    item_bookings = BuyItem.objects.filter(user=user)[::-1]
+    user = get_object_or_404(User, username=req.session.get('user'))
 
+    items = BuyItem.objects.filter(user=user).select_related('item').order_by('-id')
+    weddings = BuyDesWedding.objects.filter(user=user).select_related('des').order_by('-id')
+    invitations = BuyInv.objects.filter(user=user).select_related('inv').order_by('-id')
 
-    return render(req, 'user/view_bookings.html', {
-        'destination_bookings': destination_bookings,
-        'invitation_bookings': invitation_bookings,
-        'item_bookings': item_bookings
+    for booking in items:
+        booking.total_price = booking.price * booking.quantity  
+
+    for booking in invitations:
+        booking.total_price = booking.price * booking.qty  
+
+    context = {
+        'items': items,
+        'weddings': weddings,
+        'invitations': invitations,
+    }
+    return render(req, 'user/view_bookings.html', context)
+
+def user_orders(request):
+    user = get_object_or_404(User, username=request.session.get('user'))
+
+    items = BuyItem.objects.filter(user=user).select_related('item').order_by('-id')
+    weddings = BuyDesWedding.objects.filter(user=user).select_related('des').order_by('-id')
+    invitations = BuyInv.objects.filter(user=user).select_related('inv').order_by('-id')
+
+    for order in items:
+        print(f"Item Order ID: {order.id}, Is Confirmed: {order.is_confirmed}")
+    for order in weddings:
+        print(f"Wedding Order ID: {order.id}")
+    for order in invitations:
+        print(f"Invitation Order ID: {order.id}")
+
+    return render(request, 'user/view_bookings.html', {
+        'items': items,
+        'weddings': weddings,
+        'invitations': invitations
     })
 
 
-def cancel_booking(request, booking_type, booking_id):
-    if booking_type == "wedding":
-        booking = get_object_or_404(BuyDesWedding, id=booking_id)
-    elif booking_type == "invitation":
-        booking = get_object_or_404(BuyInv, id=booking_id)
-    elif booking_type == "item":
-        booking = get_object_or_404(BuyItem, id=booking_id)
-    else:
-        messages.error(request, "Invalid booking type.")
-        return redirect("view_bookings") 
+def delete_order(req, id):
+    order = BuyItem.objects.filter(pk=id).first()
+    if not order:
+        order = BuyDesWedding.objects.filter(pk=id).first()
+    if not order:
+        order = BuyInv.objects.filter(pk=id).first()
 
-    booking.status = "cancelled"
-    booking.save()
-
-    messages.success(request, "Your booking has been cancelled.")
+    if order:
+        order.delete()
     
-    return redirect(view_bookings) 
+    return redirect('view_bookings')  
+
+
+# def view_bookings(req):
+#     user = User.objects.get(username=req.session['user'])
+#     destination_bookings = BuyDesWedding.objects.filter(user=user)[::-1]
+#     invitation_bookings = BuyInv.objects.filter(user=user)[::-1]
+#     item_bookings = BuyItem.objects.filter(user=user)[::-1]
+
+
+#     return render(req, 'user/view_bookings.html', {
+#         'destination_bookings': destination_bookings,
+#         'invitation_bookings': invitation_bookings,
+#         'item_bookings': item_bookings
+#     })
+
+
+# def cancel_booking(request, booking_type, booking_id):
+#     if booking_type == "wedding":
+#         booking = get_object_or_404(BuyDesWedding, id=booking_id)
+#     elif booking_type == "invitation":
+#         booking = get_object_or_404(BuyInv, id=booking_id)
+#     elif booking_type == "item":
+#         booking = get_object_or_404(BuyItem, id=booking_id)
+#     else:
+#         messages.error(request, "Invalid booking type.")
+#         return redirect("view_bookings") 
+
+#     booking.status = "cancelled"
+#     booking.save()
+
+#     messages.success(request, "Your booking has been cancelled.")
+    
+#     return redirect(view_bookings) 
 
 
 

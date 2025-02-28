@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -160,5 +160,438 @@
             img.classList.add('active');
         }
     </script>
+</body>
+</html> -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation Detail</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+        }
+        .container {
+            max-width: 90%;
+            margin: 50px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .image-section {
+            flex: 62%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #mainImage {
+            width: 100%;
+            max-width: 700px;
+            height: 600px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .thumbnail-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .thumbnail-container img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+        .thumbnail-container img:hover, .thumbnail-container img.active {
+            border-color: #000;
+        }
+        .details-section {
+            flex: 38%;
+            padding-left: 40px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .details-section h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .details-section h4 {
+            font-size: 1.8rem;
+            color: #d4a256;
+            margin-bottom: 15px;
+        }
+        .details-section p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+        .btn-primary {
+            background: #d4a256;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .btn-primary:hover {
+            background: #b4873f;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                text-align: center;
+                padding: 10px;
+            }
+            .image-section {
+                order: 1;
+                width: 100%;
+            }
+            #mainImage {
+                height: 400px;
+            }
+            .thumbnail-container {
+                flex-direction: row;
+                justify-content: center;
+            }
+            .details-section {
+                order: 2;
+                padding-left: 0;
+                margin-top: 20px;
+                width: 100%;
+            }
+            .details-section h2 {
+                font-size: 2rem;
+            }
+            .details-section h4 {
+                font-size: 1.5rem;
+            }
+            .details-section p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="image-section">
+            <img id="mainImage" src="{{ card.img1.url }}" alt="Invitation Card">
+            <div class="thumbnail-container">
+                {% if card.img1 %}<img class="thumb active" src="{{ card.img1.url }}" onclick="changeImage(this)">{% endif %}
+                {% if card.img2 %}<img class="thumb" src="{{ card.img2.url }}" onclick="changeImage(this)">{% endif %}
+                {% if card.img3 %}<img class="thumb" src="{{ card.img3.url }}" onclick="changeImage(this)">{% endif %}
+                {% if card.img4 %}<img class="thumb" src="{{ card.img4.url }}" onclick="changeImage(this)">{% endif %}
+            </div>
+        </div>
+        <div class="details-section">
+            <h2>{{ card.name }}</h2>
+            <h4>From ${{ card.price }}</h4>
+            <p><strong>Size:</strong> {{ card.size }}</p>
+            <a id="buyNowBtn" href="{% url 'invitation_address_page' card.pk %}" class="btn btn-primary"> Buy</a>
+        </div>
+    </div>
+
+    <script>
+        function changeImage(img) {
+            document.getElementById('mainImage').src = img.src;
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            img.classList.add('active');
+        }
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation Detail</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: white;
+        }
+        
+        .navbar {
+            /* padding: 1rem 2rem; */
+            /* background-color: white; */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+                position: relative;
+                width: 100%;
+                background-color: white;
+                /* background: transparent; */
+                transition: background 0.3s ease-in-out;
+                z-index: 10;
+                /* background: rgba(76, 74, 74, 0.2);  */
+                padding: 1rem 2rem;
+            }
+
+        .navbar-nav {
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0 10px;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #d4a256;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 50px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .image-section {
+            flex: 62%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #mainImage {
+            width: 100%;
+            max-width: 700px;
+            height: 600px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .thumbnail-container img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .thumbnail-container img:hover, .thumbnail-container img.active {
+            border-color: #000;
+        }
+
+        /* Centering text within the details section */
+        .details-section {
+            flex: 38%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .details-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            color: #2c2c2c;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .details-section h4 {
+            font-size: 1.8rem;
+            font-family: 'Poppins', sans-serif;
+            color: #c0935f;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .details-section p {
+            font-size: 1.2rem;
+            font-family: 'Poppins', sans-serif;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: #b4873f;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background: #a06f32;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                text-align: center;
+                padding: 10px;
+            }
+
+            .image-section {
+                order: 1;
+                width: 100%;
+            }
+
+            #mainImage {
+                height: 400px;
+            }
+
+            .thumbnail-container {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .details-section {
+                order: 2;
+                padding-left: 0;
+                margin-top: 20px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .details-section h2 {
+                font-size: 2rem;
+            }
+
+            .details-section h4 {
+                font-size: 1.5rem;
+            }
+
+            .details-section p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+           
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../about">About</a>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Services
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="../destination_wedding">Destination Wedding</a></li><hr>
+                            <li><a class="dropdown-item" href="../invitation">Invitation Card</a></li><hr>
+                            <li><a class="dropdown-item" href="../item">Cattering Service</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="item">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../view_bookings">Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile">
+                          <i style="color:rgb(16, 16, 16); font-weight: bolder; font-size: 19px;" class="bi bi-person-circle"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    
+    <div class="container">
+        <div class="image-section">
+            <img id="mainImage" src="{{ card.img1.url }}" alt="Invitation Card">
+            <div class="thumbnail-container">
+                {% if card.img1 %}<img class="thumb active" src="{{ card.img1.url }}" onclick="changeImage(this)">{% endif %}
+                {% if card.img2 %}<img class="thumb" src="{{ card.img2.url }}" onclick="changeImage(this)">{% endif %}
+                {% if card.img3 %}<img class="thumb" src="{{ card.img3.url }}" onclick="changeImage(this)">{% endif %}
+                {% if card.img4 %}<img class="thumb" src="{{ card.img4.url }}" onclick="changeImage(this)">{% endif %}
+            </div>
+        </div>
+        <div class="details-section">
+            <h2>{{ card.name }}</h2>
+            <h4>From ${{ card.price }}</h4>
+            <p><strong>Size:</strong> {{ card.size }}</p>
+            <a id="buyNowBtn" href="{% url 'invitation_address_page' card.pk %}" class="btn btn-primary">Customize</a>
+        </div>
+    </div>
+
+    <script>
+        function changeImage(img) {
+            document.getElementById('mainImage').src = img.src;
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            img.classList.add('active');
+        }
+    </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
