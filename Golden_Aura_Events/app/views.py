@@ -46,80 +46,6 @@ def shop_logout(req):
     req.session.flush()              
     return redirect(shop_login) 
 
-# def  register(req):
-#      if req.method=='POST':
-#         name=req.POST['name']       
-#         email=req.POST['email']
-#         password=req.POST['password']
-#         send_mail('Golden Aura Events registration', 'Welcome to Golden Aura Events! Your account has been created successfully', settings.EMAIL_HOST_USER, [email])
-
-#         try:
-#             data=User.objects.create_user(first_name=name,username=email,email=email,password=password)
-#             data.save()
-#             return redirect(shop_login)
-#         except:
-#             messages.warning(req,"user details already exits")
-#             return redirect(register)
-#      else:
-#          return render(req,'register.html')
-
-
-# def register(req):
-#     if req.method == 'POST':
-#         name = req.POST.get('name', '').strip()
-#         email = req.POST.get('email', '').strip()
-#         password = req.POST.get('password', '').strip()
-
-#         if not name or not email or not password:
-#             messages.error(req, "All fields are required.")
-#             return redirect(register)
-
-#         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-#         if not re.match(email_regex, email):
-#             messages.error(req, "Invalid email format.")
-#             return redirect(register)
-
-#         if len(password) < 6:
-#             messages.error(req, "Password must be at least 6 characters long.")
-#             return redirect(register)
-#         if not re.search(r'[A-Z]', password):
-#             messages.error(req, "Password must contain at least one uppercase letter.")
-#             return redirect(register)
-#         if not re.search(r'\d', password):
-#             messages.error(req, "Password must contain at least one number.")
-#             return redirect(register)
-
-#         if User.objects.filter(username=email).exists():
-#             messages.warning(req, "User already exists.")
-#             return redirect(register)
-
-#         try:
-#             user = User.objects.create_user(first_name=name, username=email, email=email, password=password)
-#             user.save()
-
-#             # Send welcome email
-#             send_mail(
-#                 'Golden Aura Events Registration',
-#                 'Welcome to Golden Aura Events! Your account has been created successfully.',
-#                 settings.EMAIL_HOST_USER,
-#                 [email],
-#                 fail_silently=False
-#             )
-
-#             messages.success(req, "Registration successful! Please log in.")
-#             return redirect(shop_login)
-#         except Exception as e:
-#             messages.error(req, f"Registration failed: {str(e)}")
-#             return redirect(register)
-
-#     return render(req, 'register.html')
-     
-# import re
-# from django.contrib import messages
-# from django.shortcuts import redirect, render
-# from django.core.mail import send_mail
-# from django.conf import settings
-# from django.contrib.auth.models import User
 
 def register(req):
     if req.method == 'POST':
@@ -171,10 +97,6 @@ def register(req):
 
     return render(req, 'register.html')
 
-# from django.shortcuts import render, redirect
-# from django.core.mail import send_mail
-# from django.conf import settings
-# from django.contrib import messages
 
 def contact_us(request):
     if request.method == 'POST':
@@ -573,11 +495,11 @@ def contact(req):
     
 
 def destination_wedding(request):
-    des_list = DestinationWedding.objects.all()  # Fetch all destination weddings
-    paginator = Paginator(des_list, 9)  # Show 9 items per page
+    des_list = DestinationWedding.objects.all()  
+    paginator = Paginator(des_list, 9)  
 
-    page_number = request.GET.get('page')  # Get the current page number from URL
-    des = paginator.get_page(page_number)  # Get paginated objects
+    page_number = request.GET.get('page')  
+    des = paginator.get_page(page_number)  
 
     return render(request, 'user/destination_wedding.html', {'des': des})
     
@@ -661,156 +583,138 @@ def buy_item(req, id):
 
 #     return render(request, 'user/order.html', {'card': card})
 
-@login_required
-def invitation_address_page(request, id):
-    card = InvitationCard.objects.get(pk=id)
-    user_address = Address.objects.filter(user=request.user).first()
-
-    if request.method == 'POST':
-        use_saved_address = request.POST.get('use_saved_address')
-
-        if use_saved_address == 'yes' and user_address:
-            selected_address = user_address
-        else:
-            name = request.POST.get('name')
-            address = request.POST.get('address')
-            phone_number = request.POST.get('phone_number')
-            email = request.POST.get('email')
-
-            selected_address = Address(
-                user=request.user,
-                name=name,
-                address=address,
-                phone_number=phone_number,
-                email=email
-            )
-            selected_address.save()
-
-        quantity = int(request.POST.get('qty_card', 1))
-        price = card.price
-
-        buy_inv = BuyInv(
-            user=request.user,
-            inv=card,
-            qty=quantity,
-            price=price,
-            date=request.POST.get('date'),
-            address=selected_address
-        )
-        buy_inv.save()
-
-        return redirect('view_bookings')  # Redirect after saving
-
-    return render(request, 'user/order.html', {'card': card, 'user_address': user_address})
 
 
-# def des_address_page(req, id):
+# @login_required
+# def invitation_address_page(request, id):
+#     card = InvitationCard.objects.get(pk=id)
+#     user_address = Address.objects.filter(user=request.user).first()
+
+#     if request.method == 'POST':
+#         use_saved_address = request.POST.get('use_saved_address')
+
+#         if use_saved_address == 'yes' and user_address:
+#             selected_address = user_address
+#         else:
+#             name = request.POST.get('name')
+#             address = request.POST.get('address')
+#             phone_number = request.POST.get('phone_number')
+#             email = request.POST.get('email')
+
+#             selected_address = Address(
+#                 user=request.user,
+#                 name=name,
+#                 address=address,
+#                 phone_number=phone_number,
+#                 email=email
+#             )
+#             selected_address.save()
+
+#         quantity = int(request.POST.get('qty_card', 1))
+#         price = card.price
+
+#         buy_inv = BuyInv(
+#             user=request.user,
+#             inv=card,
+#             qty=quantity,
+#             price=price,
+#             date=request.POST.get('date'),
+#             address=selected_address
+#         )
+#         buy_inv.save()
+
+#         return redirect('view_bookings') 
+
+#     return render(request, 'user/order.html', {'card': card, 'user_address': user_address})
+
+
+
+# @login_required
+# def des_address_page(request, id):
 #     des = DestinationWedding.objects.get(id=id)
+#     user_address = Address.objects.filter(user=request.user).first() 
 
-#     if req.method == 'POST':
-#         name = req.POST.get('name')
-#         address = req.POST.get('address')
-#         phone_number = req.POST.get('phone_number')
-#         email = req.POST.get('email')
-#         wedding_date = req.POST.get('date')  
+#     if request.method == 'POST':
+#         use_saved_address = request.POST.get('use_saved_address')
 
-#         user_address = Address(user=req.user, name=name, address=address, phone_number=phone_number, email=email)
-#         user_address.save()
+#         if use_saved_address == 'yes' and user_address:
+#             selected_address = user_address 
+#         else:
+#             name = request.POST.get('name')
+#             address = request.POST.get('address')
+#             phone_number = request.POST.get('phone_number')
+#             email = request.POST.get('email')
 
-#         buy = BuyDesWedding(user=req.user, des=des, price=des.package_price, date=wedding_date, address=user_address)
+#             selected_address = Address(
+#                 user=request.user,
+#                 name=name,
+#                 address=address,
+#                 phone_number=phone_number,
+#                 email=email
+#             )
+#             selected_address.save()  
+
+#         wedding_date = request.POST.get('date')
+
+
+#         buy = BuyDesWedding(
+#             user=request.user,
+#             des=des,
+#             price=des.package_price,
+#             date=wedding_date,
+#             address=selected_address
+#         )
 #         buy.save()
 
-#         return redirect(view_bookings)
+#         return redirect('view_bookings')
 
-#     return render(req, 'user/order.html', {'des': des})
-
-@login_required
-def des_address_page(request, id):
-    des = DestinationWedding.objects.get(id=id)
-    user_address = Address.objects.filter(user=request.user).first()  # Get saved address if available
-
-    if request.method == 'POST':
-        use_saved_address = request.POST.get('use_saved_address')
-
-        if use_saved_address == 'yes' and user_address:
-            selected_address = user_address  # Use saved address
-        else:
-            name = request.POST.get('name')
-            address = request.POST.get('address')
-            phone_number = request.POST.get('phone_number')
-            email = request.POST.get('email')
-
-            selected_address = Address(
-                user=request.user,
-                name=name,
-                address=address,
-                phone_number=phone_number,
-                email=email
-            )
-            selected_address.save()  
-
-        wedding_date = request.POST.get('date')
+#     return render(request, 'user/order.html', {'des': des, 'user_address': user_address})
 
 
-        buy = BuyDesWedding(
-            user=request.user,
-            des=des,
-            price=des.package_price,
-            date=wedding_date,
-            address=selected_address
-        )
-        buy.save()
+# @login_required
+# def items_address_page(request, item_ids):
+#     item_ids = item_ids.split(',')  
+#     items = Item.objects.select_related('category').filter(id__in=item_ids)
 
-        return redirect('view_bookings')
+#     user_address = Address.objects.filter(user=request.user).first()
 
-    return render(request, 'user/order.html', {'des': des, 'user_address': user_address})
+#     if request.method == 'POST':
+#         use_saved_address = request.POST.get('use_saved_address')
 
+#         if use_saved_address == 'yes' and user_address:
+#             selected_address = user_address
+#         else:
+#             name = request.POST.get('name')
+#             address = request.POST.get('address')
+#             phone_number = request.POST.get('phone_number')
+#             email = request.POST.get('email')
 
-@login_required
-def items_address_page(request, item_ids):
-    item_ids = item_ids.split(',')  
-    items = Item.objects.select_related('category').filter(id__in=item_ids)
+#             selected_address = Address(
+#                 user=request.user,
+#                 name=name,
+#                 address=address,
+#                 phone_number=phone_number,
+#                 email=email
+#             )
+#             selected_address.save()
 
-    user_address = Address.objects.filter(user=request.user).first()
+#         for item in items:
+#             quantity = int(request.POST.get(f'qty_{item.id}', 1))
+#             price = item.category.price
 
-    if request.method == 'POST':
-        use_saved_address = request.POST.get('use_saved_address')
+#             order = BuyItem(
+#                 user=request.user,
+#                 item=item,
+#                 quantity=quantity,
+#                 price=price,
+#                 date=request.POST.get('date'),
+#                 address=selected_address  
+#             )
+#             order.save()
 
-        if use_saved_address == 'yes' and user_address:
-            selected_address = user_address
-        else:
-            name = request.POST.get('name')
-            address = request.POST.get('address')
-            phone_number = request.POST.get('phone_number')
-            email = request.POST.get('email')
+#         return redirect('view_bookings')  
 
-            selected_address = Address(
-                user=request.user,
-                name=name,
-                address=address,
-                phone_number=phone_number,
-                email=email
-            )
-            selected_address.save()
-
-        for item in items:
-            quantity = int(request.POST.get(f'qty_{item.id}', 1))
-            price = item.category.price
-
-            order = BuyItem(
-                user=request.user,
-                item=item,
-                quantity=quantity,
-                price=price,
-                date=request.POST.get('date'),
-                address=selected_address  
-            )
-            order.save()
-
-        return redirect('view_bookings')  
-
-    return render(request, 'user/order.html', {'items': items, 'user_address': user_address})
-
+#     return render(request, 'user/order.html', {'items': items, 'user_address': user_address})
 
 def view_bookings(req):
     user = get_object_or_404(User, username=req.session.get('user'))
@@ -825,12 +729,35 @@ def view_bookings(req):
     for booking in invitations:
         booking.total_price = booking.price * booking.qty  
 
+    for booking in weddings:
+        booking.total_price = booking.price  # No quantity field, so just assign price
+
     context = {
         'items': items,
         'weddings': weddings,
         'invitations': invitations,
     }
     return render(req, 'user/view_bookings.html', context)
+
+# def view_bookings(req):
+#     user = get_object_or_404(User, username=req.session.get('user'))
+
+#     items = BuyItem.objects.filter(user=user).select_related('item').order_by('-id')
+#     weddings = BuyDesWedding.objects.filter(user=user).select_related('des').order_by('-id')
+#     invitations = BuyInv.objects.filter(user=user).select_related('inv').order_by('-id')
+
+#     for booking in items:
+#         booking.total_price = booking.price * booking.quantity  
+
+#     for booking in invitations:
+#         booking.total_price = booking.price * booking.qty  
+
+#     context = {
+#         'items': items,
+#         'weddings': weddings,
+#         'invitations': invitations,
+#     }
+#     return render(req, 'user/view_bookings.html', context)
 
 def user_orders(request):
     user = get_object_or_404(User, username=request.session.get('user'))
@@ -1086,3 +1013,351 @@ def update_profile(request):
         return redirect("profile_view")
 
     return render(request, "user/profile.html", {"user": request.user})
+
+
+
+# ________________________________________________________________________________________________________
+
+@login_required
+def invitation_address_page(req, id):
+    card = get_object_or_404(InvitationCard, pk=id)
+    user = req.user
+    
+    # Fetch the most recent address if it exists
+    user_address = Address.objects.filter(user=user).order_by('-id').first()
+
+    if req.method == 'POST':
+        name = req.POST.get('name')
+        address = req.POST.get('address')
+        phone_number = req.POST.get('phone_number')
+        quantity = int(req.POST.get('qty_card', 1))
+
+        if user_address:
+            # If address exists, update it
+            user_address.name = name
+            user_address.address = address
+            user_address.phone_number = phone_number
+            user_address.save()
+        else:
+            # If no address exists, create a new one
+            user_address = Address.objects.create(user=user, name=name, address=address, phone_number=phone_number)
+
+        # Store in session
+        req.session['invitation_card'] = id
+        req.session['quantity'] = quantity
+
+        return redirect('invitation_order_payment')
+
+    return render(req, 'user/order.html', {'card': card, 'user_address': user_address})
+
+
+@login_required
+def des_address_page(req, id):
+    des = get_object_or_404(DestinationWedding, id=id)
+    user = req.user  
+
+    user_address = Address.objects.filter(user=user).order_by('-id').first()
+
+    if req.method == 'POST':
+        name = req.POST.get('name')
+        address = req.POST.get('address')
+        phone_number = req.POST.get('phone_number')
+
+        if user_address:
+            # ✅ Update existing address
+            Address.objects.filter(user=user).update(
+                name=name, address=address, phone_number=phone_number, email=user.email
+        )
+        else:
+            # ✅ Create new address if not exists
+            Address.objects.create(
+                user=user, name=name, address=address, phone_number=phone_number, email=user.email
+        )
+
+
+        # if user_address:
+        #     # ✅ Update existing address (same as cake logic)
+        #     Address.objects.filter(user=user).update(name=name, address=address, phone_number=phone_number)
+        # else:
+        #     # ✅ Create new address if not exists
+        #     Address.objects.create(user=user, name=name, address=address, phone_number=phone_number)
+
+        req.session['wedding'] = des.id  
+
+        return redirect(des_order_payment)  # ✅ Redirect to payment page
+
+    return render(req, 'user/order.html', {
+        'des': des,
+        'user_address': user_address  
+    })
+
+@login_required
+def des_order_payment(req):
+    if 'wedding' not in req.session:
+        messages.error(req, "Invalid session. Please select a wedding package first.")
+        return redirect('des_address_page', id=req.session.get('wedding', 1))  # ✅ Fixed redirect
+
+    user = req.user
+    wedding = get_object_or_404(DestinationWedding, id=req.session['wedding'])
+    
+    total_amount = wedding.package_price  # ✅ Get package price
+
+    # ✅ Create Razorpay Order
+    razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    razorpay_order = razorpay_client.order.create({
+        "amount": int(total_amount) * 100,  
+        "currency": "INR",
+        "payment_capture": "1"
+    })
+
+    # ✅ Create Order Entry in Database
+    order = Order.objects.create(
+        user=user,
+        price=total_amount,  
+        provider_order_id=razorpay_order['id']
+    )
+
+    # ✅ Get User's Latest Address
+    address = Address.objects.filter(user=user).order_by('-id').first()
+
+    # ✅ Create the Booking Entry for Destination Wedding
+    BuyDesWedding.objects.create(
+        user=user,
+        des=wedding,
+        price=total_amount,
+        date=timezone.now().date(),  # Use current date or pass a selected date
+        purchase_date=timezone.now().date(),
+        address=address,
+        order=order  
+    )
+
+    # ✅ Store Order ID in Session for Future Reference
+    req.session['order_id'] = order.pk  
+
+    return render(req, "user/payment.html", {
+        "callback_url": "http://127.0.0.1:8000/callback/",
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+        "order": order,
+    })
+
+# @login_required
+# def des_order_payment(req):
+#     if 'wedding' not in req.session:
+#         messages.error(req, "Invalid session. Please select a wedding package first.")
+#         return redirect(des_address_page, id=req.session.get('wedding', 1))  # ✅ Redirect back to address page
+
+#     user = req.user
+#     wedding = get_object_or_404(DestinationWedding, id=req.session['wedding'])
+    
+#     total_amount = wedding.package_price  
+
+#     razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+#     razorpay_order = razorpay_client.order.create({
+#         "amount": int(total_amount) * 100,  
+#         "currency": "INR",
+#         "payment_capture": "1"
+#     })
+
+#     order = Order.objects.create(
+#         user=user,
+#         price=total_amount,  
+#         provider_order_id=razorpay_order['id']
+#     )
+
+#     req.session['order_id'] = order.pk  
+
+#     return render(req, "user/payment.html", {
+#         "callback_url": "http://127.0.0.1:8000/callback/",
+#         "razorpay_key": settings.RAZORPAY_KEY_ID,
+#         "order": order,
+#     })
+
+
+
+
+# @login_required
+# def items_address_page(req, item_ids):
+#     item_ids_list = item_ids.split(',')
+#     items = Item.objects.filter(id__in=item_ids_list)
+#     user = req.user
+#     user_address = Address.objects.filter(user=user).order_by('-id').first()
+
+#     if req.method == 'POST':
+#         name = req.POST.get('name')
+#         address = req.POST.get('address')
+#         phone_number = req.POST.get('phone_number')
+
+#         Address.objects.update_or_create(user=user, defaults={'name': name, 'address': address, 'phone_number': phone_number})
+
+#         req.session['item_ids'] = item_ids
+#         req.session['quantities'] = {item.id: int(req.POST.get(f'qty_{item.id}', 1)) for item in items}
+
+#         return redirect('items_order_payment')
+
+#     return render(req, 'user/order.html', {'items': items, 'user_address': user_address})
+
+@login_required
+def items_address_page(req, item_ids):
+    item_ids_list = item_ids.split(',')
+    items = Item.objects.filter(id__in=item_ids_list)
+    user = req.user
+    user_address = Address.objects.filter(user=user).order_by('-id').first()  # ✅ Get latest address
+
+    if req.method == 'POST':
+        name = req.POST.get('name')
+        address = req.POST.get('address')
+        phone_number = req.POST.get('phone_number')
+
+        if user_address:
+            # ✅ Update the latest address only
+            Address.objects.filter(id=user_address.id).update(name=name, address=address, phone_number=phone_number)
+        else:
+            # ✅ Create a new address if none exists
+            Address.objects.create(user=user, name=name, address=address, phone_number=phone_number)
+
+        req.session['item_ids'] = item_ids
+        req.session['quantities'] = {item.id: int(req.POST.get(f'qty_{item.id}', 1)) for item in items}
+
+        return redirect('items_order_payment')
+
+    return render(req, 'user/order.html', {'items': items, 'user_address': user_address})
+
+
+@login_required
+def invitation_order_payment(req):
+    user = req.user
+    card = get_object_or_404(InvitationCard, pk=req.session['invitation_card'])
+    quantity = req.session.get('quantity', 1)
+    total_amount = card.price * quantity
+
+    razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    razorpay_order = razorpay_client.order.create({
+        "amount": int(total_amount * 100),
+        "currency": "INR",
+        "payment_capture": "1"
+    })
+
+    order = Order.objects.create(user=user, price=total_amount, provider_order_id=razorpay_order['id'])
+    req.session['order_id'] = order.pk
+
+    return render(req, "user/payment.html", {
+        "callback_url": "http://127.0.0.1:8000/callback/",
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+        "order": order,
+    })
+
+@login_required
+def items_order_payment(req):
+    user = req.user
+    item_ids_list = req.session.get('item_ids', '').split(',')
+    quantities = req.session.get('quantities', {})
+    items = Item.objects.filter(id__in=item_ids_list)
+
+    total_amount = sum(item.category.price * quantities.get(str(item.id), 1) for item in items)
+
+    razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    razorpay_order = razorpay_client.order.create({
+        "amount": int(total_amount * 100),
+        "currency": "INR",
+        "payment_capture": "1"
+    })
+
+    order = Order.objects.create(user=user, price=total_amount, provider_order_id=razorpay_order['id'])
+    req.session['order_id'] = order.pk
+
+    return render(req, "user/payment.html", {
+        "callback_url": "http://127.0.0.1:8000/callback/",
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+        "order": order,
+    })
+
+# @login_required
+# def pay(req):
+#     user = req.user
+#     order_id = req.session.get('order_id')
+#     order = get_object_or_404(Order, pk=order_id)
+
+#     if 'invitation_card' in req.session:
+#         card = get_object_or_404(InvitationCard, pk=req.session['invitation_card'])
+#         quantity = req.session.get('quantity', 1)
+#         BuyInv.objects.create(user=user, inv=card, qty=quantity, price=card.price * quantity, order=order)
+
+#     elif 'wedding_id' in req.session:
+#         wedding = get_object_or_404(DestinationWedding, pk=req.session['wedding_id'])
+#         BuyDesWedding.objects.create(user=user, des=wedding, price=wedding.package_price, order=order)
+
+#     elif 'item_ids' in req.session:
+#         item_ids_list = req.session.get('item_ids', '').split(',')
+#         quantities = req.session.get('quantities', {})
+#         items = Item.objects.filter(id__in=item_ids_list)
+
+#         for item in items:
+#             BuyItem.objects.create(user=user, item=item, quantity=quantities.get(str(item.id), 1), price=item.category.price, order=order)
+
+#     return redirect(view_bookings)
+from django.utils.timezone import now
+
+@login_required
+def pay(req):
+    user = req.user
+    order_id = req.session.get('order_id')
+    order = get_object_or_404(Order, pk=order_id)
+    
+    # Get the user's latest address (assuming they have at least one)
+    user_address = Address.objects.filter(user=user).order_by('-id').first()
+    if not user_address:
+        messages.error(req, "Please add an address before proceeding to payment.")
+        return redirect('items_address_page')  # Redirect user to address page
+
+    if 'item_ids' in req.session:
+        item_ids_list = req.session.get('item_ids', '').split(',')
+        quantities = req.session.get('quantities', {})
+        items = Item.objects.filter(id__in=item_ids_list)
+
+        for item in items:
+            BuyItem.objects.create(
+                user=user,
+                item=item,
+                quantity=quantities.get(str(item.id), 1),
+                price=item.category.price,
+                order=order,
+                address=user_address,  # ✅ Add address here
+                date=now()
+            )
+
+    return redirect(view_bookings)
+
+
+@csrf_exempt
+def callback(request):
+    def verify_signature(response_data):
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        return client.utility.verify_payment_signature(response_data)
+
+    if "razorpay_signature" in request.POST:
+        payment_id = request.POST.get("razorpay_payment_id", "")
+        provider_order_id = request.POST.get("razorpay_order_id", "")
+        signature_id = request.POST.get("razorpay_signature", "")
+
+        order = Order.objects.get(provider_order_id=provider_order_id)
+        order.payment_id = payment_id
+        order.signature_id = signature_id
+
+        if verify_signature(request.POST):
+            order.status = PaymentStatus.SUCCESS
+        else:
+            order.status = PaymentStatus.FAILURE
+
+        order.save()
+        return redirect(pay)
+    
+
+    else:
+        payment_data = json.loads(request.POST.get("error[metadata]", "{}"))
+        provider_order_id = payment_data.get("order_id", "")
+        order = Order.objects.get(provider_order_id=provider_order_id)
+        order.status = PaymentStatus.FAILURE
+        order.save()
+
+        return redirect(pay)
+

@@ -60,9 +60,9 @@ path('toggle_confirmation/<int:order_id>/<str:order_type>/', views.toggle_confir
     path('destination_wedding',views.destination_wedding),
     path('view_des_wed/<id>',views.view_des_wed),
     path('buy_des/<int:id>/', views.buy_des, name='buy_des'), 
-    path('des_address_page/<int:id>/', views.des_address_page, name='des_address_page'),
-    path('invitation_address_page/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
-    path('order/address/items/<str:item_ids>/', views.items_address_page, name='items_address_page'),
+    # path('des_address_page/<int:id>/', views.des_address_page, name='des_address_page'),
+    # path('invitation_address_page/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
+    # path('order/address/items/<str:item_ids>/', views.items_address_page, name='items_address_page'),
     # path('view_bookings/', views.view_bookings, name='view_bookings'),
     path('item',views.item),
     path('buy_item/<int:id>/', views.buy_item, name='buy_item'), 
@@ -82,10 +82,36 @@ path('toggle_confirmation/<int:order_id>/<str:order_type>/', views.toggle_confir
     path('delete_order/<int:id>/', views.delete_order, name='delete_order'),
 
 
-# path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),
-# path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),
-# path('order_payment/<str:obj_type>/<int:obj_id>/', views.order_payment, name='order_payment'),
+    # path('des-address/<int:id>/', views.des_address_page, name='des_address_page'),
+    # path('items-address/<str:item_ids>/', views.items_address_page, name='items_address_page'),
+    # path('invitation-address/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
+#     path('address/<str:type>/<int:id>/', views.address_page, name='address_page'),
+# path('address/<str:type>/<path:ids>/', views.address_page, name='address_page_multiple'),
 
-    # path("create_order",views.create_order, name="create_order"),
-    # path("razorpay/callback/",views.callback, name="callback"),
+# path('address/<str:type>/<path:ids>/', views.address_page, name='address_page'),
+
+
+    # path('order-payment/', views.order_payment, name='order_payment'),
+    # path('pay/', views.pay, name='pay'),
+    # # path('callback/', views.payment_callback, name='payment_callback'),
+    # path("callback/",views.callback, name="payment_callback"),
+
+    # path('view-bookings/', views.view_bookings, name='view_bookings'),
+    path('des-address/<int:id>/', views.des_address_page, name='des_address_page'),
+    path('inv-address/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
+    # path('items-address/<str:item_ids>/', views.items_address_page, name='items_address_page'),
+path('order/address/items/<str:item_ids>/', views.items_address_page, name='items_address_page'),
+
+    path('des-payment/', views.des_order_payment, name='des_order_payment'),
+    path('inv-payment/', views.invitation_order_payment, name='invitation_order_payment'),
+    path('items-payment/', views.items_order_payment, name='items_order_payment'),
+
+    path('pay/', views.pay, name='pay'),
+
+    path('bookings/', views.view_bookings, name='view_bookings'),
+    path("callback/",views.callback, name="callback"),
+
+
+
+
 ]

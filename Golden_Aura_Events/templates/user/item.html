@@ -164,11 +164,21 @@
         });
     });
 
+    // buyBtn.addEventListener('click', () => {
+    //     if (selectedItems.length > 0) {
+    //         window.location.href = "{% url 'buy_item' %}?items=" + selectedItems.join(',');
+    //     }
+    // });
     buyBtn.addEventListener('click', () => {
         if (selectedItems.length > 0) {
-            window.location.href = "{% url 'buy_item' %}?items=" + selectedItems.join(',');
+            const buyUrl = `/items-address/${selectedItems.join(',')}/`;  // ✅ Matches Django URL pattern
+            window.location.href = buyUrl;
+        } else {
+            alert("Please select at least one item before proceeding.");
         }
     });
+
+
 </script>
 
 </body>
