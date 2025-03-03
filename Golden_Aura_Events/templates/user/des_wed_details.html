@@ -137,44 +137,53 @@
   </style>
 </head>
 <body>
-  <!-- Navbar (Unchanged in style) -->
+  
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
-              aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../about">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Events</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Menu</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../view_bookings">Bookings</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../logout">Logout</a>
-          </li>
-        </ul>
-      </div>
+       
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../">𝐆𝐨𝐥𝐝𝐞𝐧 𝐀𝐮𝐫𝐚 𝐄𝐯𝐞𝐧𝐭𝐬</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../about">About</a>
+                </li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Services
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="../destination_wedding">Destination Wedding</a></li><hr>
+                        <li><a class="dropdown-item" href="../invitation">Invitation Card</a></li><hr>
+                        <li><a class="dropdown-item" href="../item">Cattering Service</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../item">Menu</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../contact">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../view_bookings">Bookings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../profile">
+                      <i style="color:rgb(16, 16, 16); font-weight: bolder; font-size: 19px;" class="bi bi-person-circle"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../logout">Logout</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
   
   <!-- Main Content -->
   <div class="container">

@@ -60,13 +60,8 @@ path('toggle_confirmation/<int:order_id>/<str:order_type>/', views.toggle_confir
     path('destination_wedding',views.destination_wedding),
     path('view_des_wed/<id>',views.view_des_wed),
     path('buy_des/<int:id>/', views.buy_des, name='buy_des'), 
-    # path('des_address_page/<int:id>/', views.des_address_page, name='des_address_page'),
-    # path('invitation_address_page/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
-    # path('order/address/items/<str:item_ids>/', views.items_address_page, name='items_address_page'),
-    # path('view_bookings/', views.view_bookings, name='view_bookings'),
     path('item',views.item),
     path('buy_item/<int:id>/', views.buy_item, name='buy_item'), 
-    # path('cancel-booking/<str:booking_type>/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
 
 
     path('profile/', views.profile_view, name='profile_view'),
@@ -81,22 +76,6 @@ path('toggle_confirmation/<int:order_id>/<str:order_type>/', views.toggle_confir
     path('user_orders/', views.user_orders, name='user_orders'),
     path('delete_order/<int:id>/', views.delete_order, name='delete_order'),
 
-
-    # path('des-address/<int:id>/', views.des_address_page, name='des_address_page'),
-    # path('items-address/<str:item_ids>/', views.items_address_page, name='items_address_page'),
-    # path('invitation-address/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
-#     path('address/<str:type>/<int:id>/', views.address_page, name='address_page'),
-# path('address/<str:type>/<path:ids>/', views.address_page, name='address_page_multiple'),
-
-# path('address/<str:type>/<path:ids>/', views.address_page, name='address_page'),
-
-
-    # path('order-payment/', views.order_payment, name='order_payment'),
-    # path('pay/', views.pay, name='pay'),
-    # # path('callback/', views.payment_callback, name='payment_callback'),
-    # path("callback/",views.callback, name="payment_callback"),
-
-    # path('view-bookings/', views.view_bookings, name='view_bookings'),
     path('des-address/<int:id>/', views.des_address_page, name='des_address_page'),
     path('inv-address/<int:id>/', views.invitation_address_page, name='invitation_address_page'),
     # path('items-address/<str:item_ids>/', views.items_address_page, name='items_address_page'),
@@ -113,5 +92,6 @@ path('order/address/items/<str:item_ids>/', views.items_address_page, name='item
 
 
 
+    path('confirm-order/<int:order_id>/<str:order_type>/',views.confirm_order, name='confirm_order'),
 
 ]
