@@ -166,6 +166,11 @@
                 font-size: 1rem;  
             }
         }
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -223,13 +228,12 @@
                 <a href="../shop_destination_weddings">
                 <img src="{% static 'img/v3.jpg' %}" alt="Venues">
                 <div class="text-overlay">
-                    <h5>+</h5>
                     <h5>Venues</h5>
                 </div>
                 </a>
             </div>
             <div class="wedding-card">
-                <a href="../shop_items">
+                <a href="../category_view">
                 <img src="{% static 'img/v8.webp' %}" alt="Photographers">
                 <div class="text-overlay">
                     <h5>Cattering</h5>
@@ -237,7 +241,7 @@
                 </a>
             </div>
             <div class="wedding-card">
-                <a href="../shop_invitations">
+                <a href="../inv_cat_view">
                 <img src="{% static 'img/v9.jpg' %}" alt="Event Planners">
                 <div class="text-overlay">
                     <h5>Invitation</h5>

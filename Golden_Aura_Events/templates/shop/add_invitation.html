@@ -5,15 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Invitation Category & Card</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/styles.css' %}"> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             background: #f8f8f8;
             text-align: center;
         }
-        
+
+        .container {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 5rem;
+        }
+        h2 {
+            margin-bottom: 15px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            background: #140f4c;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #537192;
+        }
+        .form-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .container h2{
+            font-family: 'Playfair Display', serif;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #success-message {
+            display: none;
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
         .navbar {
             padding: 1rem 2rem;
             /* background-color: #fffaf3; */
@@ -46,11 +94,12 @@
             transition: color 0.3s;
         }
 
-        .navbar-nav .nav-link:hover {
+        .nav-item .navbar-nav .nav-link:hover {
             color: #d4a256;
         }
-        .btn-logout{
+        .nav-item .btn-logout{
             color: rgb(29, 25, 25);
+            text-decoration: none;
         }
 
         .btn-book {
@@ -59,53 +108,17 @@
             padding: 8px 20px;
             border-radius: 20px;
             font-weight: 400;
+            text-decoration: none;
         }
 
-        .container {
-            width: 50%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        h2 {
-            margin-bottom: 15px;
-        }
-        .btn {
-            padding: 10px 20px;
-            margin: 10px;
-            border: none;
-            background: #007bff;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-        .btn:hover {
-            background: #0056b3;
-        }
-        .form-container {
-            display: none;
-            margin-top: 20px;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        #success-message {
-            display: none;
-            color: green;
-            font-weight: bold;
-            margin-top: 10px;
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
 <body>
-    
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="../">Golden Aura Events</a>
@@ -127,16 +140,17 @@
                     </li>
     
                     <li class="nav-item">
-                        <a class="btn btn-book" href="../admin_bookings">Bookings</a>
+                        <a class="btn-book" href="../admin_bookings">Bookings</a>
                     </li>
     
                     <li class="nav-item">
-                        <a class="btn btn-logout" href="../logout">Logout</a>
+                        <a class="btn-logout" href="../logout">Logout</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+
 
     <div class="container">
         <h2>Manage Invitation Categories & Cards</h2>
@@ -193,6 +207,7 @@
             return true; // Continue form submission
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

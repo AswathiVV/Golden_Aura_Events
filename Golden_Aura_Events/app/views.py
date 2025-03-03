@@ -264,10 +264,19 @@ def delete_wedding(req, wedding_id):
     return redirect(shop_destination_weddings)
 
 
-def shop_items(req):
+def category_view(request):
     categories = ItemCategory.objects.all()
-    items = Item.objects.all()
-    return render(req, 'shop/items.html', {'categories': categories, 'items': items})
+    return render(request, 'shop/item_category.html', {'categories': categories})
+
+def items_view(request, category_id):
+    category = get_object_or_404(ItemCategory, id=category_id)
+    items = Item.objects.filter(category=category)
+    return render(request, 'shop/items.html', {'category': category, 'items': items})
+
+# def shop_items(req):
+#     categories = ItemCategory.objects.all()
+#     items = Item.objects.all()
+#     return render(req, 'shop/items.html', {'categories': categories, 'items': items})
 
 def edit_category(req, category_id):
     category = get_object_or_404(ItemCategory, id=category_id)
@@ -278,14 +287,14 @@ def edit_category(req, category_id):
         if req.FILES.get("img"):
             category.img = req.FILES.get("img")
         category.save()
-        return redirect(shop_items)
+        return redirect(category_view)
 
     return render(req, "shop/edit_category.html", {"category": category})
 
 def delete_category(req, category_id):
     category = get_object_or_404(ItemCategory, id=category_id)
     category.delete()
-    return redirect(shop_items)
+    return redirect(category_view)
 
 def edit_item(req, item_id):
     item = get_object_or_404(Item, id=item_id)
@@ -297,19 +306,29 @@ def edit_item(req, item_id):
         if req.FILES.get("img"):
             item.img = req.FILES.get("img")
         item.save()
-        return redirect(shop_items)
+        return redirect(category_view)
 
     return render(req, "shop/edit_item.html", {"item": item, "categories": ItemCategory.objects.all()})
 
 def delete_item(req, item_id):
     item = get_object_or_404(Item, id=item_id)
     item.delete()
-    return redirect(shop_items)
+    return redirect(category_view)
 
-def shop_invitations(req):
+# def shop_invitations(req):
+#     categories = InvitationCategory.objects.all()
+#     cards = InvitationCard.objects.all()
+#     return render(req, "shop/invitations.html", {"categories": categories, "cards": cards})
+
+def inv_cat_view(request):
     categories = InvitationCategory.objects.all()
-    cards = InvitationCard.objects.all()
-    return render(req, "shop/invitations.html", {"categories": categories, "cards": cards})
+    return render(request, 'shop/inv_category.html', {'categories': categories})
+
+# View for managing cards inside a specific category
+def inv_cards_view(request, category_id):
+    category = get_object_or_404(InvitationCategory, id=category_id)
+    cards = InvitationCard.objects.filter(category=category)
+    return render(request, 'shop/invitation_cards.html', {'category': category, 'cards': cards})
 
 def edit_invitation_category(req, category_id):
     category = get_object_or_404(InvitationCategory, id=category_id)
@@ -319,14 +338,14 @@ def edit_invitation_category(req, category_id):
         if req.FILES.get("img"):
             category.img = req.FILES.get("img")
         category.save()
-        return redirect(shop_invitations)
+        return redirect(inv_cat_view)
 
     return render(req, "shop/edit_inv_category.html", {"category": category})
 
 def delete_invitation_category(req, category_id):
     category = get_object_or_404(InvitationCategory, id=category_id)
     category.delete()
-    return redirect(shop_invitations)
+    return redirect(inv_cat_view)
 
 def edit_invitation_card(req, card_id):
     card = get_object_or_404(InvitationCard, id=card_id)
@@ -339,14 +358,14 @@ def edit_invitation_card(req, card_id):
             card.img1 = req.FILES.get("img1")
         card.save()
         
-        return redirect(shop_invitations)
+        return redirect(inv_cards_view)
 
     return render(req, "shop/edit_inv_card.html", {"card": card})
 
 def delete_invitation_card(req, card_id):
     card = get_object_or_404(InvitationCard, id=card_id)
     card.delete()
-    return redirect(shop_invitations)
+    return redirect(inv_cards_view)
 
 
 # def bookings(req):
@@ -509,35 +528,29 @@ def cancel_order(req, order_id, order_type):
 
 #     return redirect("admin_bookings")
 def confirm_order(request, order_id, order_type):
-    print("Confirm Order Function Called")  # Debugging
-
-    # Fetch order based on type
     if order_type == "item":
         order = get_object_or_404(BuyItem, pk=order_id)
-        item_name = order.item.name
+        item_name = order.item.name  # Use item
     elif order_type == "wedding":
         order = get_object_or_404(BuyDesWedding, pk=order_id)
-        item_name = order.des.name
+        item_name = order.des.name  # Use des
     elif order_type == "inv":
         order = get_object_or_404(BuyInv, pk=order_id)
-        item_name = order.inv.name
+        item_name = order.inv.name  # Use inv
     else:
-        print("Invalid order type!") 
+        print("Invalid order type!")  
         return redirect("admin_bookings")
-
-    print(f"Order found: {item_name}")  # Debugging
 
     if not order.is_confirmed:
         order.is_confirmed = True
         order.save()
-        print("Order status updated and saved")  # Debugging
 
         if not order.user or not order.user.email:
             print("Error: User does not have an email address!")  
             return redirect("admin_bookings")
 
         recipient_email = order.user.email
-        print(f"Attempting to send email to: {recipient_email}")  # Debugging
+        print(f"Attempting to send email to: {recipient_email}")  
 
         subject = "Order Confirmation"
         message = f"""
@@ -558,9 +571,9 @@ def confirm_order(request, order_id, order_type):
                 [recipient_email],
                 fail_silently=False,
             )
-            print("Email sent successfully!")  # Debugging
+            print("Email sent successfully!")  
         except Exception as e:
-            print(f"Email sending failed: {e}")  # Debugging
+            print(f"Email sending failed: {e}")  
 
     return redirect("admin_bookings")
 
@@ -568,17 +581,53 @@ def confirm_order(request, order_id, order_type):
 def toggle_confirmation(request, order_id, order_type):
     if order_type == "item":
         order = get_object_or_404(BuyItem, pk=order_id)
+        item_name = order.item.name
     elif order_type == "wedding":
         order = get_object_or_404(BuyDesWedding, pk=order_id)
+        item_name = order.des.name
     elif order_type == "inv":
         order = get_object_or_404(BuyInv, pk=order_id)
+        item_name = order.inv.name
     else:
-        return redirect(admin_bookings)  
+        return redirect("admin_bookings")  
 
-    order.is_confirmed = True
-    order.save()
+    if not order.is_confirmed:
+        order.is_confirmed = True
+        order.save()
+        print(f" Order {order_id} confirmed!")  # Debugging
 
-    return redirect("admin_bookings")
+        if not order.user or not order.user.email:
+            print(" Error: User does not have an email address!")
+            return redirect("admin_bookings")
+
+        recipient_email = order.user.email
+        print(f"📧 Attempting to send email to: {recipient_email}")  
+
+        subject = "Order Confirmation"
+        message = f"""
+        Dear {order.user.first_name},
+
+        Your order ({item_name}) has been confirmed.
+        Thank you for choosing Golden Aura Events!
+
+        Best regards,
+        Golden Aura Events Team
+        """
+
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [recipient_email],
+                fail_silently=False,
+            )
+            print("Email sent successfully!")  
+        except Exception as e:
+            print(f" Email sending failed: {e}")  
+
+    return redirect(admin_bookings)
+
 
 # #------------------------------------- User--------------------------------------------------------------
 

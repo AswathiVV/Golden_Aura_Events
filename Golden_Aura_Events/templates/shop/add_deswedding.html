@@ -153,6 +153,9 @@
         .container{
             margin-top: 3rem;
         }
+        .container h2{
+            font-family: 'Playfair Display', serif;
+        }
 
         .form-container {
             background: white;
@@ -167,7 +170,8 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .btn-custom {
-            background-color: #ff5733;
+            background-color: #140f4c;
+            color: white;
             border: none;
             padding: 10px 20px;
             font-size: 18px;
@@ -175,7 +179,12 @@
             transition: 0.3s;
         }
         .btn-custom:hover {
-            background-color: #c70039;
+            background-color: #5a53ac;
+        }
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>

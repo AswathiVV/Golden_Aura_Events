@@ -115,6 +115,8 @@ class BuyDesWedding(models.Model):
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
+    is_confirmed = models.BooleanField(default=False)  
+
 
 
     # def can_cancel(self):
@@ -131,6 +133,8 @@ class BuyInv(models.Model):
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
+    is_confirmed = models.BooleanField(default=False)
+
 
 
     def total_price(self):

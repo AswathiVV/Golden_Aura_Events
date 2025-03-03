@@ -22,12 +22,17 @@ urlpatterns=[
     path('add_categoryitem/<int:category_id>/', views.add_item, name='add_categoryitem'),  
 
 
-    path('shop_items/', views.shop_items, name='shop_items'),
+    path('category_view/',views.category_view, name='category_view'),
+    path('items_view/<int:category_id>/',views.items_view, name='items_view'),
+    # path('shop_items/', views.shop_items, name='shop_items'),
     path('edit_category/<int:category_id>/', views.edit_category, name='edit_category'),
     path('delete_category/<int:category_id>/', views.delete_category, name='delete_category'),
     path('edit_item/<int:item_id>/', views.edit_item, name='edit_item'),
     path('delete_item/<int:item_id>/', views.delete_item, name='delete_item'),
-    path("shop_invitations/", views.shop_invitations, name="shop_invitations"),
+
+    path('inv_cat_view/', views.inv_cat_view, name='inv_cat_view'),
+    path('inv_cards_view/<int:category_id>/', views.inv_cards_view, name='inv_cards_view'),
+    # path("shop_invitations/", views.shop_invitations, name="shop_invitations"),
     path("edit_invitation_category/<int:category_id>/", views.edit_invitation_category, name="edit_invitation_category"),
     path("delete_invitation_category/<int:category_id>/", views.delete_invitation_category, name="delete_invitation_category"),
     path("edit_invitation_card/<int:card_id>/", views.edit_invitation_card, name="edit_invitation_card"),
@@ -36,6 +41,7 @@ urlpatterns=[
     path('admin_bookings/',views.admin_bookings, name='admin_bookings'),
 
     path('cancel_order/<int:order_id>/<str:order_type>/',views.cancel_order, name='cancel_order'),
+    # path('confirm_order/<int:order_id>/<str:order_type>/',views.confirm_order, name='confirm_order'),
     path('confirm_order/<int:order_id>/<str:order_type>/',views.confirm_order, name='confirm_order'),
 
     # path('toggle_confirmation/<int:order_id>/<str:order_type>/',views.toggle_confirmation, name='toggle_confirmation'),
