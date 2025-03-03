@@ -6,6 +6,56 @@
     <title>All User Bookings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
+<style>
+    
+    .navbar {
+            padding: 1rem 2rem;
+            /* background-color: #fffaf3; */
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: rgb(20, 17, 17);
+        }
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        .navbar-nav {
+            margin: 0 auto; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0 10px;
+            color: rgb(15, 12, 12);
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #d4a256;
+        }
+        .btn-logout{
+            color: rgb(29, 25, 25);
+        }
+
+        .btn-book {
+            /* background-color: #d4a256; */
+            color: rgb(23, 18, 18);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 400;
+        }
+
+</style>
 <body>
     <div class="container mt-4">
         <h2 class="mb-4 text-center">All User Bookings</h2>
