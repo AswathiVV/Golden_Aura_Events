@@ -434,7 +434,7 @@ def confirm_order(request, order_id, order_type):
         order = get_object_or_404(BuyInv, pk=order_id)
         item_name = order.inv.name
     else:
-        return redirect("admin_bookings")  # Invalid type, do nothing
+        return redirect("admin_bookings")  
 
     if not order.is_confirmed:
         order.is_confirmed = True
@@ -457,6 +457,7 @@ def confirm_order(request, order_id, order_type):
             print(f"Email sending failed: {e}")
 
     return redirect("admin_bookings")
+
 
 
 def toggle_confirmation(request, order_id, order_type):
