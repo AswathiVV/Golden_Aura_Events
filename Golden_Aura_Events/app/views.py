@@ -347,6 +347,24 @@ def delete_invitation_category(req, category_id):
     category.delete()
     return redirect(inv_cat_view)
 
+# def edit_invitation_card(req, card_id):
+#     card = get_object_or_404(InvitationCard, id=card_id)
+
+#     if req.method == "POST":
+#         card.name = req.POST.get("name")
+#         card.price = req.POST.get("price")
+#         card.size = req.POST.get("size")
+#         if req.FILES.get("img1"):
+#             card.img1 = req.FILES.get("img1")
+#         card.save()
+        
+#         return redirect(inv_cards_view)
+
+#     return render(req, "shop/edit_inv_card.html", {"card": card})
+
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+
 def edit_invitation_card(req, card_id):
     card = get_object_or_404(InvitationCard, id=card_id)
 
@@ -354,13 +372,25 @@ def edit_invitation_card(req, card_id):
         card.name = req.POST.get("name")
         card.price = req.POST.get("price")
         card.size = req.POST.get("size")
+
         if req.FILES.get("img1"):
             card.img1 = req.FILES.get("img1")
+        if req.FILES.get("img2"):
+            card.img2 = req.FILES.get("img2")
+        if req.FILES.get("img3"):
+            card.img3 = req.FILES.get("img3")
+        if req.FILES.get("img4"):
+            card.img4 = req.FILES.get("img4")
+
         card.save()
         
-        return redirect(inv_cards_view)
+        # Ensure category_id is available
+        category_id = card.category.id  # Assuming `card` has a `category` ForeignKey
+
+        return redirect(reverse('inv_cards_view', args=[category_id]))  # Corrected redirect
 
     return render(req, "shop/edit_inv_card.html", {"card": card})
+
 
 def delete_invitation_card(req, card_id):
     card = get_object_or_404(InvitationCard, id=card_id)

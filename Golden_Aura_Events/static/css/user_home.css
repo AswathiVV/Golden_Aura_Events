@@ -145,7 +145,7 @@ background-color: #0056b3;
   text-decoration: underline;
 }     */
 
-
+/* 
 .wedding-container {
     text-align: center;
     padding: 6rem 12rem;
@@ -154,15 +154,12 @@ background-color: #0056b3;
 }
 
 .wedding-container h1 {
-    /* font-size: 2.5rem; */
     color: #333;
     margin-bottom: 2rem;
     font-weight: 400;
     letter-spacing: 1px;
     font-size: 48px;
     font-family: "Playfair Display", serif;
-    /* font-family: var(--didot); */
-    /* margin: 0; */
     font-weight: 400;
 
 }
@@ -212,7 +209,6 @@ background-color: #0056b3;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* background: rgba(0, 0, 0, 0.6); */
     color:white;
     padding: 0.8rem 1rem;
     border-radius: 5px;
@@ -310,102 +306,156 @@ background-color: #0056b3;
         font-size: 1rem; 
     }
 }
-
-
-/* .wedding-container {
-  padding: 2rem;
-  background-color: #f8efeb; 
-  font-family: 'Didot', serif;
-  padding-left: 40px; 
-  padding-right: 40px;
+ */
+ 
+ .wedding-container {
   text-align: center;
+  padding: 6rem 12rem;
+  background-color: #ffffff;
+  font-family: 'Arial', sans-serif;
 }
 
 .wedding-container h1 {
-  font-size: 3.3rem;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #8a6a5d;
+  color: #333;
+  margin-bottom: 2rem;
   font-weight: 400;
+  letter-spacing: 1px;
+  font-size: 48px;
+  font-family: "Playfair Display", serif;
 }
 
 .wedding-container p {
-  font-size: 1.5rem;
-  margin-bottom: 2.5rem;
-  color: #8a6a5d;
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 4rem;
+  line-height: 1.6;
   font-style: italic;
+  font-family: "Playfair Display", serif;
 }
 
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: center;
+/* Default Grid - 3 Columns */
+.wedding-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  padding: 0;
 }
 
-.wedding-card {
+/* .wedding-card {
   position: relative;
   overflow: hidden;
-  border-radius: 15px;
-  transition: all 0.3s ease-in-out;
-  width: 100%;
-  height: 350px;
+  border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 1 / 1; 
 }
 
 .wedding-card img {
   width: 100%;
   height: 100%;
-  object-fit: cover; 
-  transition: transform 0.3s ease-in-out;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+} */
+.wedding-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 1 / 1.2; /* Increased height while maintaining responsiveness */
 }
 
-.wedding-card:hover img {
-  transform: scale(1.1);
+.wedding-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures images fill the container without distortion */
+  transition: transform 0.3s ease;
 }
+
 
 .wedding-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.overlay {
+.wedding-card:hover img {
+  transform: scale(1.05);
+}
+
+.text-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  border-radius: 15px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  padding: 0.8rem 1rem;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.3s ease, font-size 0.3s ease;
+  text-decoration: underline;
+  font-family: "Playfair Display", serif;
 }
 
-.wedding-card:hover .overlay {
-  opacity: 1;
+/* Responsive: 2 per row, last spans 2 columns */
+@media (max-width: 992px) and (min-width: 768px) {
+  .wedding-container {
+      padding: 4rem 8rem;
+  }
+
+  .wedding-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+  }
+
+  /* Make the last item span 2 columns if odd */
+  .wedding-card:last-child:nth-child(odd) {
+      grid-column: span 2;
+      aspect-ratio: 2 / 1.2; /* Makes it wider but keeps height balanced */
+
+  }
 }
 
-.overlay h5 {
-  color: #fff;
-  font-size: 1.25rem;
-  font-weight: 500;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-  margin: 0;
+/* Responsive: 1 per row */
+@media (max-width: 768px) {
+  .wedding-container {
+      padding: 3rem 6rem;
+  }
+
+  .wedding-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+  }
+
+  /* Remove spanning when single column */
+  .wedding-card:last-child:nth-child(odd) {
+      grid-column: span 1;
+  }
 }
 
-@media (max-width: 576px) {
-  h1 {
+@media (max-width: 480px) {
+  .wedding-container {
+      padding: 2rem 3rem;
+  }
+
+  .wedding-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+  }
+
+  .text-overlay {
+      font-size: 0.8rem;
+      padding: 0.5rem 0.6rem;
+  }
+
+  .wedding-container h1 {
       font-size: 1.8rem;
   }
 
-  p {
+  .wedding-container p {
       font-size: 1rem;
   }
-
-  .wedding-card {
-      height: 200px; 
-  }
-} */
+}
