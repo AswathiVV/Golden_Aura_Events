@@ -1,10 +1,12 @@
 from django.urls import path
 from . import views
 urlpatterns=[
-    path('',views.shop_login),
+    path('',views.shop_login,name='login'),
     path('register/',views.register),
     path('logout/',views.shop_logout),
     path('contact_us/', views.contact_us, name='contact_us'),
+    path('validate/', views.validate, name='validate'),
+
     # ___ shop _____________________________________________________________________________
 
     path('shop_home',views.shop_home),
@@ -74,7 +76,7 @@ path('toggle_confirmation/<int:order_id>/<str:order_type>/', views.toggle_confir
     path('add-address/', views.add_address, name='add_address'),
     path('edit-address/<int:address_id>/', views.edit_address, name='edit_address'),
     path('delete-address/<int:address_id>/', views.delete_address, name='delete_address'),
-    path('delete_account', views.delete_account, name='delete_account'),
+    path('delete_account/', views.delete_account, name='delete_account'),
     path('update_profile', views.update_profile, name='update_profile'),
 
 

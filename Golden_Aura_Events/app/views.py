@@ -13,90 +13,208 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 import razorpay
 import json
+import random
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.db.utils import IntegrityError  
+import math
+import random
+import re
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth.models import User
 
 def shop_login(req):
     if 'shop' in req.session:
         return redirect(shop_home)
     if 'user' in req.session:
         return redirect(user_home)
-    else:
     
-        if req.method=='POST':
-            uname=req.POST['uname']
-            password=req.POST['password']
-            data=authenticate(username=uname,password=password)
-            if data:
-                login(req,data)
-                if data.is_superuser:
-                    req.session['shop']=uname      
-                    return redirect(shop_home)
-                else:
-                    req.session['user']=uname      
-                    return redirect(user_home)
+    if req.method == 'POST':
+        uname = req.POST['uname']
+        password = req.POST['password']
+        data = authenticate(username=uname, password=password)
+        if data:
+            login(req, data)
+            if data.is_superuser:
+                req.session['shop'] = uname  
+                return redirect(shop_home)
             else:
-                messages.warning(req,"invalid uname or password")  
-        return render(req,'login.html') 
-    
-def shop_logout(req):
-    logout(req)
-    req.session.flush()              
-    return redirect(shop_login) 
+                req.session['user'] = uname  
+                return redirect(user_home)
+        else:
+            messages.warning(req, "Invalid username or password")  
+    return render(req, 'login.html') 
+
+
+
+def OTP():
+    digits = "0123456789"
+    otp = "".join(random.choice(digits) for _ in range(6))
+    return otp
 
 
 def register(req):
     if req.method == 'POST':
-        name = req.POST.get('name', '').strip()
-        email = req.POST.get('email', '').strip()
-        password = req.POST.get('password', '').strip()
+        name = req.POST['name']
+        email = req.POST['email']
+        password = req.POST['password']
+        otp = OTP()  
 
-        if not name or not email or not password:
-            messages.error(req, "All fields are required.")
-            return redirect(register)
-
-        email_regex = r'^[a-z][a-z0-9._%+-]*\d[a-z0-9._%+-]*@[a-z0-9.-]+\.[a-z]{2,}$'
-        if not re.fullmatch(email_regex, email): 
-            messages.error(req, "Invalid email format.")
-            return redirect(register)
-
-        if len(password) < 6:
-            messages.error(req, "Password must be at least 6 characters long.")
-            return redirect(register)
-        if not re.search(r'[A-Z]', password):
-            messages.error(req, "Password must contain at least one uppercase letter.")
-            return redirect(register)
-        if not re.search(r'\d', password):
-            messages.error(req, "Password must contain at least one number.")
-            return redirect(register)
-
-        if User.objects.filter(username=email).exists():
-            messages.warning(req, "User already exists.")
-            return redirect(register)
+        if User.objects.filter(email=email).exists():
+            messages.error(req, "Email is already in use.")
+            return redirect('shop_register')
 
         try:
-            user = User.objects.create_user(first_name=name, username=email, email=email, password=password)
-            user.save()
-
             send_mail(
-                'Golden Aura Events Registration',
-                'Welcome to Golden Aura Events! Your account has been created successfully.',
+                'Your registration OTP',
+                f"Your OTP for registration is: {otp}",
                 settings.EMAIL_HOST_USER,
                 [email],
                 fail_silently=False
             )
-
-            messages.success(req, "Registration successful! Please log in.")
-            return redirect(shop_login)
-
+            print(f"OTP sent: {otp}") 
         except Exception as e:
-            messages.error(req, f"Registration failed: {str(e)}")
-            return redirect(register)
+            print(f"Error sending OTP: {e}") 
+            messages.error(req, "Failed to send OTP. Please try again.")
+            return redirect('shop_register')
+
+        req.session['otp_data'] = {
+            'name': name,
+            'email': email,
+            'password': password,
+            'otp': otp
+        }
+
+        messages.success(req, "Registration successful. Please check your email for OTP.")
+        return redirect(validate)  
 
     return render(req, 'register.html')
 
+
+def validate(req):
+    user_data = req.session.get('otp_data', {})
+
+    if not user_data:
+        messages.error(req, "Session expired. Please register again.")
+        return redirect(register)
+
+    name = user_data['name']
+    email = user_data['email']
+    password = user_data['password']
+    otp = user_data['otp']
+
+    if req.method == 'POST':
+        uotp = req.POST['uotp']
+
+        if uotp == otp:
+            if User.objects.filter(username=email).exists(): 
+                messages.error(req, "This email is already registered. Please log in.")
+                return redirect(shop_login)
+
+            try:
+                User.objects.create_user(first_name=name, email=email, password=password, username=email)
+                messages.success(req, "OTP verified successfully. You can now log in.")
+
+                del req.session['otp_data']
+                return redirect(shop_login)
+
+            except IntegrityError:  
+                messages.error(req, "This email is already registered. Please log in.")
+                return redirect(shop_login)
+
+        else:
+            messages.error(req, "Invalid OTP. Please try again.")
+            return redirect("validate")
+
+    return render(req, 'validate.html', {'email': email})
+
+
+
+# def shop_login(req):
+#     if 'shop' in req.session:
+#         return redirect(shop_home)
+#     if 'user' in req.session:
+#         return redirect(user_home)
+#     else:
+    
+#         if req.method=='POST':
+#             uname=req.POST['uname']
+#             password=req.POST['password']
+#             data=authenticate(username=uname,password=password)
+#             if data:
+#                 login(req,data)
+#                 if data.is_superuser:
+#                     req.session['shop']=uname      
+#                     return redirect(shop_home)
+#                 else:
+#                     req.session['user']=uname      
+#                     return redirect(user_home)
+#             else:
+#                 messages.warning(req,"invalid uname or password")  
+#         return render(req,'login.html') 
+     
+
+
+# def register(req):
+#     if req.method == 'POST':
+#         name = req.POST.get('name', '').strip()
+#         email = req.POST.get('email', '').strip()
+#         password = req.POST.get('password', '').strip()
+
+#         if not name or not email or not password:
+#             messages.error(req, "All fields are required.")
+#             return redirect(register)
+
+#         email_regex = r'^[a-z][a-z0-9._%+-]*\d[a-z0-9._%+-]*@[a-z0-9.-]+\.[a-z]{2,}$'
+#         if not re.fullmatch(email_regex, email): 
+#             messages.error(req, "Invalid email format.")
+#             return redirect(register)
+
+#         if len(password) < 6:
+#             messages.error(req, "Password must be at least 6 characters long.")
+#             return redirect(register)
+#         if not re.search(r'[A-Z]', password):
+#             messages.error(req, "Password must contain at least one uppercase letter.")
+#             return redirect(register)
+#         if not re.search(r'\d', password):
+#             messages.error(req, "Password must contain at least one number.")
+#             return redirect(register)
+
+#         if User.objects.filter(username=email).exists():
+#             messages.warning(req, "User already exists.")
+#             return redirect(register)
+
+#         try:
+#             user = User.objects.create_user(first_name=name, username=email, email=email, password=password)
+#             user.save()
+
+#             send_mail(
+#                 'Golden Aura Events Registration',
+#                 'Welcome to Golden Aura Events! Your account has been created successfully.',
+#                 settings.EMAIL_HOST_USER,
+#                 [email],
+#                 fail_silently=False
+#             )
+
+#             messages.success(req, "Registration successful! Please log in.")
+#             return redirect(shop_login)
+
+#         except Exception as e:
+#             messages.error(req, f"Registration failed: {str(e)}")
+#             return redirect(register)
+
+#     return render(req, 'register.html')
+
+def shop_logout(req):
+    logout(req)
+    req.session.flush()              
+    return redirect(shop_login)
 
 def contact_us(request):
     if request.method == 'POST':
