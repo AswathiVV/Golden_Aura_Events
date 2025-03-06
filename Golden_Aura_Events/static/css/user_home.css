@@ -333,7 +333,6 @@ background-color: #0056b3;
   font-family: "Playfair Display", serif;
 }
 
-/* Default Grid - 3 Columns */
 .wedding-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -362,13 +361,13 @@ background-color: #0056b3;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  aspect-ratio: 1 / 1.2; /* Increased height while maintaining responsiveness */
+  aspect-ratio: 1 / 1.2; 
 }
 
 .wedding-card img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures images fill the container without distortion */
+  object-fit: cover;
   transition: transform 0.3s ease;
 }
 
@@ -400,7 +399,9 @@ background-color: #0056b3;
   font-family: "Playfair Display", serif;
 }
 
-/* Responsive: 2 per row, last spans 2 columns */
+
+
+
 @media (max-width: 992px) and (min-width: 768px) {
   .wedding-container {
       padding: 4rem 8rem;
@@ -411,15 +412,13 @@ background-color: #0056b3;
       gap: 2rem;
   }
 
-  /* Make the last item span 2 columns if odd */
   .wedding-card:last-child:nth-child(odd) {
       grid-column: span 2;
-      aspect-ratio: 2 / 1.2; /* Makes it wider but keeps height balanced */
+      aspect-ratio: 2 / 1.2; 
 
   }
 }
 
-/* Responsive: 1 per row */
 @media (max-width: 768px) {
   .wedding-container {
       padding: 3rem 6rem;
@@ -430,7 +429,6 @@ background-color: #0056b3;
       gap: 1.5rem;
   }
 
-  /* Remove spanning when single column */
   .wedding-card:last-child:nth-child(odd) {
       grid-column: span 1;
   }

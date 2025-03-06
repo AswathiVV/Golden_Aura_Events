@@ -168,6 +168,7 @@
     color: #fff; 
     padding: 50px 20px;
     border-top: 1px solid #333;
+    margin-top: 5%;
 
 }
 
@@ -265,6 +266,122 @@
     border-top: 1px solid #333;
     padding-top: 15px;
     padding-bottom: 10px;
+}
+
+.gallery-section {
+    text-align: center;
+    padding: 20px 10px;
+}
+
+.gallery-section h2 {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: "Playfair Display", serif;
+
+}
+.gallery-section p{
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 20px;
+}
+
+.carousel-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0; 
+}
+
+.carousel {
+    display: flex;
+    animation: scroll 40s linear infinite; 
+    width: max-content; 
+}
+
+.carousel img {
+    height: 450px;
+    width: auto;
+    margin: 0 5px;
+    object-fit: cover; 
+    border-radius: 8px; 
+}
+.about-us-section {
+    background-color: white;
+}
+
+.image-wrapper img {
+    max-width: 90%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.image-wrapper img:hover {
+    transform: scale(1.05);
+}
+
+.text-wrapper h2 {
+    font-size: 2rem;
+    color: #333;
+    font-family: "Playfair Display", serif;
+
+}
+
+.description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.features-list i {
+    font-size: 1.2rem;
+    margin-right: 8px;
+  
+}
+.features-list li {
+    font-family: "Playfair Display", serif;
+    /* font-style: italic; */
+    font-weight: 600;
+}
+
+
+.btn-primary {
+    background-color: #d4a373;
+    border-color: #d4a373;
+}
+
+.btn-primary:hover {
+    background-color: #b88658;
+    border-color: #b88658;
+}
+
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-section h2 {
+        font-size: 24px;
+    }
+    .carousel img {
+        height: 300px; 
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel img {
+        height: 250px; 
+    }
 }
 
 @media (max-width: 768px) {
@@ -450,7 +567,7 @@
             <!-- <a href="destination_wedding"> -->
             <div class="wedding-card">
                 <a href="destination_wedding">
-                <img src="{% static 'img/v3.jpg' %}" alt="Venues">
+                <img src="{% static 'img/vimg10.png' %}" alt="Venues">
                 <div class="text-overlay">
                     <h5>Venues</h5>
                 </div>
@@ -458,7 +575,7 @@
             </div>
             <div class="wedding-card">
                 <a href="item">
-                <img src="{% static 'img/v8.webp' %}" alt="Photographers">
+                <img src="{% static 'img/g1.jpg' %}" alt="Photographers">
                 <div class="text-overlay">
                     <h5>Cattering</h5>
                 </div>
@@ -466,7 +583,7 @@
             </div>
             <div class="wedding-card">
                 <a href="invitation">
-                <img src="{% static 'img/v9.jpg' %}" alt="Event Planners">
+                <img src="{% static 'img/invitation.jpg' %}" alt="Event Planners">
                 <div class="text-overlay">
                     <h5>Invitation</h5>
                 </div>
@@ -474,37 +591,55 @@
             </div>
         </div>
     </div>
-    
-
-    <section class="about-us-section">
+    <section class="about-us-section py-5">
         <div class="container">
-          <div class="row align-items-center">
-            <div class="col-md-6">
-              <div class="image-wrapper">
-                <img src="{% static 'img/about.jpg' %}" alt="Food Table" class="img-fluid shadow rounded">
-              </div>
-            </div>
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="image-wrapper text-center">
+                        <img src="{% static 'img/cat.jpg' %}" alt="Elegant Wedding Catering" class="img-fluid shadow-lg rounded-3">
+                    </div>
+                </div>
     
-            <div class="col-md-6">
-              <div class="text-wrapper">
-                <button class="btn btn-outline-secondary mb-3">ABOUT US</button>
-                <h2>Trusted By <span class="highlight">200+</span> satisfied clients</h2>
-                <p class="description">
-                  Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.
-                </p>
-                
-                <ul class="features-list">
-                  <li>👉 Fresh and Fast Food Delivery</li>
-                  <li>👉 Easy Customization Options</li>
-                  <li>👉 24/7 Customer Support</li>
-                  <li>👉 Delicious Deals for Delicious Meals</li>
-                </ul>
-                <a href="../about" class="btn btn-primary mt-3">About Us →</a>
-              </div>
+                <div class="col-lg-6">
+                    <div class="text-wrapper">
+                        <button class="btn btn-outline-secondary mb-3">ABOUT US</button>
+                        <h2 class="fw-bold">Trusted By <span class="highlight text-secondary">200+</span> Happy Couples</h2>
+                        <p class="description">
+                            We make wedding catering effortless and unforgettable. From exquisite multi-course meals to elegant buffet spreads, we ensure every bite is as special as your big day. Our expert chefs craft personalized menus tailored to your theme, creating a memorable dining experience.
+                        </p>
+    
+                        <ul class="list-unstyled features-list">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> Exquisite Wedding Catering</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> Personalized Cuisine Options</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> Seamless & Professional Service</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> Exceptional Quality & Taste</li>
+                        </ul>
+    
+                        <a href="../about" class="btn btn-primary mt-3">Learn More →</a>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </section>
+    </section>
+    
+    <div class="gallery-section">
+        <h2>Gallery</h2>
+        <p>Our Latest and Greatest</p>
+    </div>
+
+    <div class="carousel-container">
+        <div class="carousel">
+            <img src="{% static 'img/about_us.jpg' %}" alt="Event 1">
+            <img src="{% static 'img/g2.jpg' %}" alt="Event 2">
+            <img src="{% static 'img/g1.jpg' %}" alt="Event 3">
+            <img src="{% static 'img/g3.webp' %}" alt="Event 4">
+            <!-- Duplicate images for smooth looping -->
+            <img src="{% static 'img/g4.webp' %}" alt="Event 1">
+            <img src="{% static 'img/g5.jpg' %}" alt="Event 2">
+            <img src="{% static 'img/vimg12.jpeg' %}" alt="Event 3">
+            <img src="{% static 'img/g7.jpg' %}" alt="Event 4">
+        </div>
+    </div>
 
 
       <footer class="footer">
@@ -583,6 +718,15 @@
             });
         });
     </script>
+
+    
+<script>
+    window.addEventListener("load", function() {
+        const track = document.querySelector(".carousel");
+        const clone = track.innerHTML; 
+        track.innerHTML += clone;
+    });
+</script>
     <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
 
 
