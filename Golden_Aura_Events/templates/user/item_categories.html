@@ -126,7 +126,6 @@
             animation: fadeIn 0.5s ease-in-out;
         }
         .navbar {
-        /* padding: 1rem 2rem; */
         background-color: white;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
@@ -137,7 +136,6 @@
             background: transparent;
             transition: background 0.3s ease-in-out;
             z-index: 10;
-            /* background: rgba(76, 74, 74, 0.2);  */
             padding: 1rem 2rem;
         }
 
@@ -177,7 +175,6 @@
             }
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .category-container {
                 gap: 10px;
@@ -247,7 +244,6 @@
         </div>
     </nav>
 
-<!-- <h2>Select a Category</h2> -->
 <div class="category-container">
     {% for category in categories %}
     <div class="category-item" data-category-id="{{ category.id }}">
@@ -283,7 +279,6 @@
 </div>
 
 <script>
-    // Show items based on selected category
     document.querySelectorAll('.category-item').forEach(item => {
         item.addEventListener('click', function () {
             let categoryId = this.getAttribute('data-category-id');
@@ -296,7 +291,6 @@
         });
     });
 
-    // Update total price dynamically and update Buy Now link
     function updateTotalPrice() {
         let total = 0;
         let selectedItems = document.querySelectorAll('.item-checkbox:checked');
@@ -313,12 +307,11 @@
 
         document.getElementById('total-price').textContent = total;
 
-        // Update Buy Now button URL dynamically
         if (selectedItemIds.length > 0) {
             document.getElementById('buyNowBtn').href = `/order/address/items/${selectedItemIds.join(',')}/`;
 
         } else {
-            document.getElementById('buyNowBtn').href = "javascript:void(0);"; // Prevent empty link action
+            document.getElementById('buyNowBtn').href = "javascript:void(0);"; 
         }
     }
 </script>

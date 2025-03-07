@@ -5,18 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Destination Wedding Details</title>
   {% load static %}
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0;
       overflow-x: hidden;
-      background-color: #ffffff; /* white background */
+      background-color: #ffffff; 
     }
-    /* Navbar - Positioned in normal flow with white background */
     .navbar {
       position: relative;
       width: 100%;
@@ -40,13 +37,11 @@
     .navbar-nav .nav-link:hover {
       color: #d4a256;
     }
-    /* Main Container */
     .container {
       margin-top: 2rem;
       background-color: #ffffff;
       padding-bottom: 2rem;
     }
-    /* Fade-in Animation for Main Content */
     .fade-in {
       opacity: 0;
       transform: translateY(20px);
@@ -64,7 +59,6 @@
       border-radius: 20px;
       box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
-    /* Product Details */
     .product-title {
       font-size: 2.5rem;
       font-weight: bold;
@@ -84,7 +78,6 @@
       text-align: center;
       font-family: 'Playfair Display', serif;
     }
-    /* Centered Buy Now Button */
     .buy-btn-container {
       text-align: center;
       margin-top: 1.5rem;
@@ -105,7 +98,6 @@
       box-shadow: 0 8px 20px rgba(72, 61, 139, 0.4);
       transform: scale(1.03);
     }
-    /* About Section */
     .about-section {
       margin-top: 3rem;
       text-align: center;
@@ -185,7 +177,6 @@
     </div>
 </nav>
   
-  <!-- Main Content -->
   <div class="container">
     <div class="row align-items-center">
       <div class="col-md-7 fade-in">
@@ -218,10 +209,8 @@
     </div>
   </div>
   
-  <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Intersection Observer for fade-in animation on scroll
     const faders = document.querySelectorAll('.fade-in');
     const appearOptions = { threshold: 0.3 };
     const appearOnScroll = new IntersectionObserver((entries, observer) => {

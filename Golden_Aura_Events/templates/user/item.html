@@ -208,7 +208,6 @@
 
             totalPriceElem.textContent = totalPrice.toFixed(2);
 
-            // Show the "Buy Now" button if at least one item is selected
             if (selectedItems.length > 0) {
                 buyBtn.style.display = 'inline-block';
             } else {
@@ -217,14 +216,9 @@
         });
     });
 
-    // buyBtn.addEventListener('click', () => {
-    //     if (selectedItems.length > 0) {
-    //         window.location.href = "{% url 'buy_item' %}?items=" + selectedItems.join(',');
-    //     }
-    // });
     buyBtn.addEventListener('click', () => {
         if (selectedItems.length > 0) {
-            const buyUrl = `/items-address/${selectedItems.join(',')}/`;  // ✅ Matches Django URL pattern
+            const buyUrl = `/items-address/${selectedItems.join(',')}/`;  
             window.location.href = buyUrl;
         } else {
             alert("Please select at least one item before proceeding.");

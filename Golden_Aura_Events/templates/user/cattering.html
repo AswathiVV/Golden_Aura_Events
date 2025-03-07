@@ -85,7 +85,6 @@
 </head>
 <body>
 
-<!-- Category Display -->
 <div class="category-container">
     {% for category in categories %}
     <div class="category-item" data-category-id="{{ category.id }}">
@@ -95,7 +94,6 @@
     {% endfor %}
 </div>
 
-<!-- Item Containers for Each Category -->
 {% for category in categories %}
 <div class="invitation-container" id="category-{{ category.id }}">
     {% for item in items %}
@@ -104,7 +102,6 @@
         <a href="#">
             <img src="{{ item.img.url }}" alt="{{ item.name }}">
             <h3>{{ item.name }}</h3>
-            <!-- Optionally, display item price -->
             <p class="price">₹ {{ item.price }}</p>
         </a>
     </div>
@@ -114,7 +111,6 @@
 {% endfor %}
 
 <script>
-    // Category Item Click Handler
     document.querySelectorAll('.category-item').forEach(item => {
         item.addEventListener('click', function() {
             let categoryId = this.getAttribute('data-category-id');
@@ -122,9 +118,7 @@
         });
     });
 
-    // Show items for the selected category
     function showItems(categoryId) {
-        // Hide all item containers
         document.querySelectorAll('.invitation-container').forEach(el => {
             el.style.display = 'none';
         });

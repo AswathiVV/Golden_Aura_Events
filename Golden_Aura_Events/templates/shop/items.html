@@ -1,371 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Categories & Items</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #f5af19, #f12711);
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .container {
-            margin-top: 50px;
-        }
-
-        .category-card {
-            border-radius: 15px;
-            transition: 0.3s;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .category-card img {
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .category-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn {
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-
-        .btn-warning:hover {
-            background-color: #e67e22;
-        }
-
-        .btn-danger:hover {
-            background-color: #c70039;
-        }
-
-        .items-container {
-            display: none;
-            margin-top: 15px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2 class="text-center text-dark">Manage Categories & Items</h2>
-
-    <div class="row justify-content-center">
-        {% for category in categories %}
-        <div class="col-md-4 mb-4">
-            <div class="card category-card shadow-lg">
-                <img src="{{ category.img.url }}" class="card-img-top" alt="{{ category.name }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ category.name }}</h5>
-                    <p class="card-text">Price: ${{ category.price }}</p>
-                    <a href="{% url 'edit_category' category.id %}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
-                    <a href="{% url 'delete_category' category.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this category?');">
-                        <i class="fas fa-trash"></i> Delete
-                    </a>
-                    <button class="btn btn-primary mt-2 show-items-btn" data-category-id="{{ category.id }}">
-                        Show Items
-                    </button>
-                </div>
-            </div>
-
-            <div class="items-container" id="items-{{ category.id }}">
-                <h5 class="text-center text-white mt-3">Items in {{ category.name }}</h5>
-                <div class="row justify-content-center">
-                    {% for item in items %}
-                        {% if item.category.id == category.id %}
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-lg">
-                                <img src="{{ item.img.url }}" class="card-img-top" alt="{{ item.name }}">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title">{{ item.name }}</h6>
-                                    <a href="{% url 'edit_item' item.id %}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
-                                    <a href="{% url 'delete_item' item.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<script>
-    document.querySelectorAll(".show-items-btn").forEach(button => {
-        button.addEventListener("click", function() {
-            let categoryId = this.getAttribute("data-category-id");
-            let itemsContainer = document.getElementById("items-" + categoryId);
-
-            if (itemsContainer.style.display === "none" || itemsContainer.style.display === "") {
-                itemsContainer.style.display = "block";
-                this.textContent = "Hide Items";
-            } else {
-                itemsContainer.style.display = "none";
-                this.textContent = "Show Items";
-            }
-        });
-    });
-</script>
-
-</body>
-</html> -->
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Categories & Items</title>
-    {% load static %}
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #f5af19, #f12711);
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .navbar {
-            padding: 1rem 2rem;
-            /* background-color: #fffaf3; */
-            background: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: rgb(20, 17, 17);
-        }
-        .navbar.scrolled {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-        }
-        .navbar-nav {
-            margin: 0 auto; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .navbar-nav .nav-link {
-            font-size: 1rem;
-            font-weight: 500;
-            margin: 0 10px;
-            color: rgb(15, 12, 12);
-            transition: color 0.3s;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #d4a256;
-        }
-        .btn-logout{
-            color: rgb(29, 25, 25);
-        }
-
-        .btn-book {
-            /* background-color: #d4a256; */
-            color: rgb(23, 18, 18);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 400;
-        }
-
-        .container {
-            margin-top: 50px;
-        }
-        .card {
-            border-radius: 10px;
-            overflow: hidden;
-            transition: 0.3s;
-        }
-        .card img {
-            height: 200px;
-            object-fit: cover;
-        }
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        .btn {
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-        .btn-warning:hover {
-            background-color: #e67e22;
-        }
-        .btn-danger:hover {
-            background-color: #c70039;
-        }
-        .items-container {
-            display: none;
-            margin-top: 15px;
-        }
-    </style>
-</head>
-<body>
-    
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="../">Golden Aura Events</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                  
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Add Services
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="../add_deswedding">Add Destination Wedding</a></li><hr>
-                            <li><a class="dropdown-item" href="../add_invitation_card">Add Invitation Card</a></li><hr>
-                            <li><a class="dropdown-item" href="../add_item">Add Items</a></li>
-                        </ul>
-                    </li>
-    
-                    <li class="nav-item">
-                        <a class="btn btn-book" href="../admin_bookings">Bookings</a>
-                    </li>
-    
-                    <li class="nav-item">
-                        <a class="btn btn-logout" href="../logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
-
-<div class="container">
-    <h2 class="text-center text-white">Manage Categories & Items</h2>
-
-    <div class="row">
-        {% for category in categories %}
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-lg">
-                <img src="{{ category.img.url }}" class="card-img-top" alt="{{ category.name }}">
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{ category.name }}</h5>
-                    <p class="card-text">Price: ${{ category.price }}</p>
-                    <a href="{% url 'edit_category' category.id %}" class="btn btn-warning">
-                        <i class="fas fa-edit"></i> Edit Category
-                    </a>
-                    <a href="{% url 'delete_category' category.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?');">
-                        <i class="fas fa-trash"></i> Delete
-                    </a>
-                    <button class="btn btn-primary mt-2 show-items-btn" data-category-id="{{ category.id }}">
-                        Show Items
-                    </button>
-                </div>
-            </div>
-
-            <div class="items-container" id="items-{{ category.id }}">
-                <h5 class="text-center text-white mt-3">Items in {{ category.name }}</h5>
-                <div class="row">
-                    {% for item in items %}
-                        {% if item.category.id == category.id %}
-                        <div class="col-md-6 mb-3">
-                            <div class="card shadow-lg">
-                                <img src="{{ item.img.url }}" class="card-img-top" alt="{{ item.name }}">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title">{{ item.name }}</h6>
-                                    <a href="{% url 'edit_item' item.id %}" class="btn btn-warning">
-                                        <i class="fas fa-edit"></i> Edit Item
-                                    </a>
-                                    <a href="{% url 'delete_item' item.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?');">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <p class="text-white text-center">No categories available.</p>
-        {% endfor %}
-    </div>
-</div>
-
-<script>
-    document.querySelectorAll(".show-items-btn").forEach(button => {
-        button.addEventListener("click", function() {
-            let categoryId = this.getAttribute("data-category-id");
-            let itemsContainer = document.getElementById("items-" + categoryId);
-
-            if (itemsContainer.style.display === "none" || itemsContainer.style.display === "") {
-                itemsContainer.style.display = "block";
-                this.textContent = "Hide Items";
-            } else {
-                itemsContainer.style.display = "none";
-                this.textContent = "Show Items";
-            }
-        });
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html> -->
-<!-- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ category.name }} Items</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: linear-gradient(135deg, #f5af19, #f12711); font-family: 'Poppins', sans-serif; }
-        .container { margin-top: 50px; }
-        .card { border-radius: 10px; overflow: hidden; transition: 0.3s; }
-        .card img { height: 150px; object-fit: cover; }
-        .card:hover { transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3); }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2 class="text-center text-white">Items in {{ category.name }}</h2>
-        <a href="{% url 'category_view' %}" class="btn btn-light mb-3">Back to Categories</a>
-        <div class="row">
-            {% for item in items %}
-            <div class="col-md-4 mb-3">
-                <div class="card shadow-lg">
-                    <img src="{{ item.img.url }}" class="card-img-top" alt="{{ item.name }}">
-                    <div class="card-body text-center">
-                        <h6 class="card-title">{{ item.name }}</h6>
-                        <a href="{% url 'edit_item' item.id %}" class="btn btn-warning">Edit</a>
-                        <a href="{% url 'delete_item' item.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <p class="text-white text-center">No items available.</p>
-            {% endfor %}
-        </div>
-    </div>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -375,8 +7,6 @@
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-
-    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -384,7 +14,6 @@
         
         .navbar {
             padding: 1rem 2rem;
-            /* background-color: #fffaf3; */
             background: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -429,7 +58,6 @@
            
         }
 
-        /* Page Container */
         .container {
             margin-top: 3rem;
         }
@@ -442,7 +70,6 @@
 
         }
 
-        /* Category Cards */
         .card {
             border-radius: 12px;
             overflow: hidden;
@@ -451,12 +78,11 @@
             background: #ffffff;
         }
 
-        /* Ensuring the entire image fits without cutting parts */
         .card img {
             height: 200px;
             width: 100%;
-            object-fit: contain; /* Show the full image without cropping */
-            background-color: #f8f9fa; /* Add a neutral background if image has transparency */
+            object-fit: contain; 
+            background-color: #f8f9fa; 
         }
 
         .card:hover {
@@ -474,7 +100,6 @@
             color: #444;
         }
 
-        /* Buttons */
         .btn {
             border-radius: 8px;
             font-size: 0.9rem;
@@ -519,7 +144,6 @@
             background-color: #bd2130;
         }
 
-        /* Responsive Font Sizes */
         @media (max-width: 768px) {
             h2 {
                 font-size: 1.8rem;
@@ -566,9 +190,6 @@
         </div>
     </nav>
     
-
-
-    <!-- Items Section -->
     <div class="container">
         <h2 class="text-center">{{ category.name }} Items</h2>
         <a href="{% url 'category_view' %}" class="btn btn-light mb-3">
@@ -598,7 +219,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
