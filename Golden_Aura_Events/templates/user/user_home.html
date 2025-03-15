@@ -8,9 +8,8 @@
     <link rel="stylesheet" href="{% static '/css/user_home.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -403,7 +402,6 @@
             }
         }
 
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -486,7 +484,49 @@
                 transform: translateY(0);
             }
         }
+        @media (min-width: 769px) {
+            .footer-container {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
 
+            .footer-section {
+                flex: 1;
+                min-width: 180px; 
+                padding: 10px;
+            }
+
+            .footer-extras {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 0;
+            }
+
+            .social-icons, .payment-icons {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .footer-bottom {
+                text-align: center;
+                padding: 10px 0;
+            }
+        }
+        @media screen and (min-width: 720px) {
+            .footer-container {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr); 
+                gap: 20px;
+            }
+
+            .footer-section {
+                text-align: left;
+                min-width: 150px; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -598,7 +638,6 @@
     
                 <div class="col-lg-6">
                     <div class="text-wrapper">
-                        <button class="btn btn-outline-secondary mb-3">ABOUT US</button>
                         <h2 class="fw-bold">Trusted By <span class="highlight text-secondary">200+</span> Happy Couples</h2>
                         <p class="description">
                             We make wedding catering effortless and unforgettable. From exquisite multi-course meals to elegant buffet spreads, we ensure every bite is as special as your big day. Our expert chefs craft personalized menus tailored to your theme, creating a memorable dining experience.
@@ -722,8 +761,8 @@
         track.innerHTML += clone;
     });
 </script>
-    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
-
+    <!-- <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

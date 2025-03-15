@@ -86,6 +86,7 @@ class Order(models.Model):
     signature_id = models.CharField(
         _("Signature ID"), max_length=128, null=False, blank=False
     )  
+    
 
 class BuyItem(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -102,11 +103,6 @@ class BuyItem(models.Model):
         return self.quantity * self.price
     
 
-    # def can_cancel(self):
-    #     return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'
-
-
-
 class BuyDesWedding(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     des = models.ForeignKey(DestinationWedding, on_delete=models.CASCADE)
@@ -115,12 +111,7 @@ class BuyDesWedding(models.Model):
     purchase_date = models.DateField(auto_now_add=True) 
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
-    is_confirmed = models.BooleanField(default=False)  
-
-
-
-    # def can_cancel(self):
-    #     return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'    
+    is_confirmed = models.BooleanField(default=False)     
 
 
 class BuyInv(models.Model):
@@ -135,14 +126,8 @@ class BuyInv(models.Model):
     order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
     is_confirmed = models.BooleanField(default=False)
 
-
-
     def total_price(self):
         return self.qty * self.price
-
-    # def can_cancel(self):
-    #     return (now().date() - self.purchase_date).days <= 2 and self.status == 'pending'
-
 
 
 class Profile(models.Model):

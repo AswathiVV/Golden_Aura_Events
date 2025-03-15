@@ -31,6 +31,10 @@
             transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
         }
 
+        .card-title{
+            font-family: 'Playfair Display', serif;
+        }
+
         .card:hover {
             transform: scale(1.05);
             box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
@@ -89,7 +93,6 @@
     </style>
 </head>
 <body>
-    
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="../">Golden Aura Events</a>
@@ -123,14 +126,14 @@
     </nav>
 
     <div class="container">
-        <h2 class="text-center">Manage Invitation Categories</h2>
+        <h2 class="text-center">Invitation Categories</h2>
         <div class="row">
             {% for category in categories %}
             <div class="col-md-4 mb-4">
                 <div class="card shadow-lg">
                     <img src="{{ category.img.url }}" class="card-img-top" alt="{{ category.name }}">
                     <div class="card-body text-center">
-                        <h5 class="card-title">{{ category.name }}</h5>
+                        <h5 class="fw-bold card-title">{{ category.name }}</h5>
                         <a href="{% url 'edit_invitation_category' category.id %}" class="btn btn-warning">Edit</a>
                         <a href="{% url 'delete_invitation_category' category.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
                         <a href="{% url 'inv_cards_view' category.id %}" class="btn btn-primary">View Cards</a>

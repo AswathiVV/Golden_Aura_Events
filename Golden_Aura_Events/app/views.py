@@ -19,9 +19,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db.utils import IntegrityError  
+from django.utils.timezone import now
 import math
 import random
 import re
+from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -134,82 +136,6 @@ def validate(req):
 
     return render(req, 'validate.html', {'email': email})
 
-
-
-# def shop_login(req):
-#     if 'shop' in req.session:
-#         return redirect(shop_home)
-#     if 'user' in req.session:
-#         return redirect(user_home)
-#     else:
-    
-#         if req.method=='POST':
-#             uname=req.POST['uname']
-#             password=req.POST['password']
-#             data=authenticate(username=uname,password=password)
-#             if data:
-#                 login(req,data)
-#                 if data.is_superuser:
-#                     req.session['shop']=uname      
-#                     return redirect(shop_home)
-#                 else:
-#                     req.session['user']=uname      
-#                     return redirect(user_home)
-#             else:
-#                 messages.warning(req,"invalid uname or password")  
-#         return render(req,'login.html') 
-     
-
-
-# def register(req):
-#     if req.method == 'POST':
-#         name = req.POST.get('name', '').strip()
-#         email = req.POST.get('email', '').strip()
-#         password = req.POST.get('password', '').strip()
-
-#         if not name or not email or not password:
-#             messages.error(req, "All fields are required.")
-#             return redirect(register)
-
-#         email_regex = r'^[a-z][a-z0-9._%+-]*\d[a-z0-9._%+-]*@[a-z0-9.-]+\.[a-z]{2,}$'
-#         if not re.fullmatch(email_regex, email): 
-#             messages.error(req, "Invalid email format.")
-#             return redirect(register)
-
-#         if len(password) < 6:
-#             messages.error(req, "Password must be at least 6 characters long.")
-#             return redirect(register)
-#         if not re.search(r'[A-Z]', password):
-#             messages.error(req, "Password must contain at least one uppercase letter.")
-#             return redirect(register)
-#         if not re.search(r'\d', password):
-#             messages.error(req, "Password must contain at least one number.")
-#             return redirect(register)
-
-#         if User.objects.filter(username=email).exists():
-#             messages.warning(req, "User already exists.")
-#             return redirect(register)
-
-#         try:
-#             user = User.objects.create_user(first_name=name, username=email, email=email, password=password)
-#             user.save()
-
-#             send_mail(
-#                 'Golden Aura Events Registration',
-#                 'Welcome to Golden Aura Events! Your account has been created successfully.',
-#                 settings.EMAIL_HOST_USER,
-#                 [email],
-#                 fail_silently=False
-#             )
-
-#             messages.success(req, "Registration successful! Please log in.")
-#             return redirect(shop_login)
-
-#         except Exception as e:
-#             messages.error(req, f"Registration failed: {str(e)}")
-#             return redirect(register)
-
-#     return render(req, 'register.html')
 
 def shop_logout(req):
     logout(req)
@@ -391,10 +317,6 @@ def items_view(request, category_id):
     items = Item.objects.filter(category=category)
     return render(request, 'shop/items.html', {'category': category, 'items': items})
 
-# def shop_items(req):
-#     categories = ItemCategory.objects.all()
-#     items = Item.objects.all()
-#     return render(req, 'shop/items.html', {'categories': categories, 'items': items})
 
 def edit_category(req, category_id):
     category = get_object_or_404(ItemCategory, id=category_id)
@@ -433,16 +355,11 @@ def delete_item(req, item_id):
     item.delete()
     return redirect(category_view)
 
-# def shop_invitations(req):
-#     categories = InvitationCategory.objects.all()
-#     cards = InvitationCard.objects.all()
-#     return render(req, "shop/invitations.html", {"categories": categories, "cards": cards})
 
 def inv_cat_view(request):
     categories = InvitationCategory.objects.all()
     return render(request, 'shop/inv_category.html', {'categories': categories})
 
-# View for managing cards inside a specific category
 def inv_cards_view(request, category_id):
     category = get_object_or_404(InvitationCategory, id=category_id)
     cards = InvitationCard.objects.filter(category=category)
@@ -465,23 +382,6 @@ def delete_invitation_category(req, category_id):
     category.delete()
     return redirect(inv_cat_view)
 
-# def edit_invitation_card(req, card_id):
-#     card = get_object_or_404(InvitationCard, id=card_id)
-
-#     if req.method == "POST":
-#         card.name = req.POST.get("name")
-#         card.price = req.POST.get("price")
-#         card.size = req.POST.get("size")
-#         if req.FILES.get("img1"):
-#             card.img1 = req.FILES.get("img1")
-#         card.save()
-        
-#         return redirect(inv_cards_view)
-
-#     return render(req, "shop/edit_inv_card.html", {"card": card})
-
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
 
 def edit_invitation_card(req, card_id):
     card = get_object_or_404(InvitationCard, id=card_id)
@@ -502,10 +402,9 @@ def edit_invitation_card(req, card_id):
 
         card.save()
         
-        # Ensure category_id is available
-        category_id = card.category.id  # Assuming `card` has a `category` ForeignKey
+        category_id = card.category.id  
 
-        return redirect(reverse('inv_cards_view', args=[category_id]))  # Corrected redirect
+        return redirect(reverse('inv_cards_view', args=[category_id])) 
 
     return render(req, "shop/edit_inv_card.html", {"card": card})
 
@@ -514,40 +413,6 @@ def delete_invitation_card(req, card_id):
     card = get_object_or_404(InvitationCard, id=card_id)
     card.delete()
     return redirect(inv_cards_view)
-
-
-# def bookings(req):
-#     user = User.objects.get(username=req.session['user'])
-
-#     if user.is_superuser:
-#         destination_bookings = BuyDesWedding.objects.all().order_by('-id')
-#         invitation_bookings = BuyInv.objects.all().order_by('-id')
-#         item_bookings = BuyItem.objects.all().order_by('-id')
-#     else:
-#         destination_bookings = BuyDesWedding.objects.filter(user=user).order_by('-id')
-#         invitation_bookings = BuyInv.objects.filter(user=user).order_by('-id')
-#         item_bookings = BuyItem.objects.filter(user=user).order_by('-id')
-
-#     return render(req, 'user/view_bookings.html', {
-#         'destination_bookings': destination_bookings,
-#         'invitation_bookings': invitation_bookings,
-#         'item_bookings': item_bookings
-#     })
-
-
-# def bookings(req):
-#     if not req.user.is_superuser:
-#         return redirect('login') 
-
-#     destination_bookings = BuyDesWedding.objects.all().order_by('-id')
-#     invitation_bookings = BuyInv.objects.all().order_by('-id')
-#     item_bookings = BuyItem.objects.all().order_by('-id')
-
-#     return render(req, 'shop/bookings.html', {
-#         'destination_bookings': destination_bookings,
-#         'invitation_bookings': invitation_bookings,
-#         'item_bookings': item_bookings
-#     })
 
 
 def admin_bookings(req):
@@ -573,10 +438,6 @@ def admin_bookings(req):
 
 
 def cancel_order(req, order_id, order_type):
-    """
-    Cancels an order based on its type.
-    order_type should be 'item', 'wedding', or 'inv'.
-    """
     if order_type == "item":
         order = get_object_or_404(BuyItem, pk=order_id)
     elif order_type == "wedding":
@@ -584,107 +445,22 @@ def cancel_order(req, order_id, order_type):
     elif order_type == "inv":
         order = get_object_or_404(BuyInv, pk=order_id)
     else:
-        return redirect("admin_bookings")  # Invalid type, do nothing
+        return redirect("admin_bookings")  
 
     order.delete()
     return redirect("admin_bookings")
 
 
-# def confirm_order(request, order_id, order_type):
-#     if order_type == "item":
-#         order = get_object_or_404(BuyItem, pk=order_id)
-#         item_name = order.item.name
-#     elif order_type == "wedding":
-#         order = get_object_or_404(BuyDesWedding, pk=order_id)
-#         item_name = order.des.name
-#     elif order_type == "inv":
-#         order = get_object_or_404(BuyInv, pk=order_id)
-#         item_name = order.inv.name
-#     else:
-#         return redirect(admin_bookings)  
-
-#     if not order.is_confirmed:
-#         order.is_confirmed = True
-#         order.save()
-
-#         subject = "Order Confirmation"
-#         message = f"Dear {order.user.first_name},\n\nYour order ({item_name}) has been confirmed. Thank you for shopping with us!\n\nBest regards,\nGolden Aura Events Team"
-
-#         recipient_email = order.user.email  
-
-#         try:
-#             send_mail(
-#                 subject,
-#                 message,
-#                 settings.EMAIL_HOST_USER,
-#                 [recipient_email],
-#                 fail_silently=False,
-#             )
-#         except Exception as e:
-#             print(f"Email sending failed: {e}")
-
-#     return redirect("admin_bookings")
-
-
-# def confirm_order(request, order_id, order_type):
-#     if order_type == "item":
-#         order = get_object_or_404(BuyItem, pk=order_id)
-#         item_name = order.item.name
-#     elif order_type == "wedding":
-#         order = get_object_or_404(BuyDesWedding, pk=order_id)
-#         item_name = order.des.name
-#     elif order_type == "inv":
-#         order = get_object_or_404(BuyInv, pk=order_id)
-#         item_name = order.inv.name
-#     else:
-#         print("Invalid order type!") 
-#         return redirect("admin_bookings")
-
-#     if not order.is_confirmed:
-#         order.is_confirmed = True
-#         order.save()
-
-#         if not order.user or not order.user.email:
-#             print("Error: User does not have an email address!")  
-#             return redirect("admin_bookings")
-
-#         recipient_email = order.user.email
-#         print(f"Attempting to send email to: {recipient_email}")  
-
-#         subject = "Order Confirmation"
-#         message = f"""
-#         Dear {order.user.first_name},
-
-#         Your order ({item_name}) has been confirmed.
-#         Thank you for choosing Golden Aura Events!
-
-#         Best regards,
-#         Golden Aura Events Team
-#         """
-
-#         try:
-#             send_mail(
-#                 subject,
-#                 message,
-#                 settings.EMAIL_HOST_USER,
-#                 [recipient_email],
-#                 fail_silently=False,
-#             )
-#             print("Email sent successfully!")  
-#         except Exception as e:
-#             print(f"Email sending failed: {e}")  
-
-#     return redirect("admin_bookings")
 def confirm_order(request, order_id, order_type):
     if order_type == "item":
         order = get_object_or_404(BuyItem, pk=order_id)
-        item_name = order.item.name  # Use item
+        item_name = order.item.name  
     elif order_type == "wedding":
         order = get_object_or_404(BuyDesWedding, pk=order_id)
-        item_name = order.des.name  # Use des
+        item_name = order.des.name  
     elif order_type == "inv":
         order = get_object_or_404(BuyInv, pk=order_id)
-        item_name = order.inv.name  # Use inv
+        item_name = order.inv.name  
     else:
         print("Invalid order type!")  
         return redirect("admin_bookings")
@@ -742,7 +518,7 @@ def toggle_confirmation(request, order_id, order_type):
     if not order.is_confirmed:
         order.is_confirmed = True
         order.save()
-        print(f" Order {order_id} confirmed!")  # Debugging
+        print(f" Order {order_id} confirmed!")  
 
         if not order.user or not order.user.email:
             print(" Error: User does not have an email address!")
@@ -854,7 +630,7 @@ def view_bookings(req):
         booking.total_price = booking.price * booking.qty  
 
     for booking in weddings:
-        booking.total_price = booking.price  # No quantity field, so just assign price
+        booking.total_price = booking.price  
 
     context = {
         'items': items,
@@ -977,7 +753,6 @@ def delete_account(request):
         return redirect('login')
     
     return render(request, "user/profile.html")
-
 
 
 @login_required
@@ -1225,7 +1000,6 @@ def items_order_payment(req):
         "order": order,
     })
 
-from django.utils.timezone import now
 
 @login_required
 def pay(req):
@@ -1289,4 +1063,3 @@ def callback(request):
         order.save()
 
         return redirect(pay)
-

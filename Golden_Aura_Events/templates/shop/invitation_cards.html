@@ -26,6 +26,11 @@
             overflow: hidden;
             transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
         }
+        .card-title{
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+
+        }
 
         .card:hover {
             transform: scale(1.05);
@@ -80,6 +85,11 @@
             border-radius: 20px;
             font-weight: 400;
         }
+        .container h2{
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 3rem;
+            font-weight:bold;
+        }
         @media (max-width: 768px) {
             .navbar-brand {
                 font-size: 1.3rem;
@@ -88,10 +98,9 @@
     </style>
 </head>
 <body>
- 
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="../">Golden Aura Events</a>
+            <a class="navbar-brand" href="/">Golden Aura Events</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -110,11 +119,11 @@
                     </li>
     
                     <li class="nav-item">
-                        <a class="btn btn-book" href="../admin_bookings">Bookings</a>
+                        <a class="btn btn-book" href="/admin_bookings">Bookings</a>
                     </li>
     
                     <li class="nav-item">
-                        <a class="btn btn-logout" href="../logout">Logout</a>
+                        <a class="btn btn-logout" href="/logout">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -122,7 +131,7 @@
     </nav>
 
     <div class="container">
-        <h2 class="text-center">Manage Invitation Cards</h2>
+        <h2 class="text-center">Invitation Cards</h2>
         <a href="{% url 'inv_cat_view' %}" class="btn btn-secondary mb-3">Back to Categories</a>
         <div class="row">
             {% for card in cards %}
@@ -130,7 +139,7 @@
                 <div class="card shadow-lg">
                     <img src="{{ card.img1.url }}" class="card-img-top" alt="{{ card.name }}">
                     <div class="card-body text-center">
-                        <h6 class="card-title">{{ card.name }}</h6>
+                        <h4 class="card-title">{{ card.name }}</h4>
                         <p class="card-text">₹{{ card.price }} | Size: {{ card.size }}</p>
                         <a href="{% url 'edit_invitation_card' card.id %}" class="btn btn-warning">Edit</a>
                         <a href="{% url 'delete_invitation_card' card.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
